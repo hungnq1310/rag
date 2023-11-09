@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Credentials
+adope_credentials/
+
 # Distribution / packaging
 .Python
 build/
