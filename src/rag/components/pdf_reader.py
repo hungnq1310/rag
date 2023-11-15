@@ -1,70 +1,63 @@
-from typing import (
-     Optional,
-     List,
-     Union,
-     Dict,
-)
+"""Simple reader that reads files of different formats from a directory."""
+import logging
+import os
+import glob
+from datetime import datetime
+from pathlib import Path
+from typing import Callable, Dict, Generator, List, Optional, Type, Union
 
-from rag.entity.base_loader import PDFLoader_Base
+from rag.entity.base_reader import BaseReader
+from rag.entity.schema import Document
 
-class PyPDFLoader(PDFLoader_Base):
-    """Load PDF using pypdf into list of documents.
 
-    Loader chunks by page and stores page numbers in metadata.
-    """
+class PyPDFReader(BaseReader):
+    """PDF parser."""
 
-    def __init__(
-        self,
-        file_path: str,
-        password: Optional[Union[str, bytes]] = None,
-        headers: Optional[Dict] = None,
-        extract_images: bool = False,
-    ) -> None:
-        """Initialize with a file path."""
+    def load_data(
+        self, file_path: Path, extra_info: Optional[Dict] = None
+    ) -> List[Document]:
+        """Parse file."""
         try:
-            import pypdf  # noqa:F401
+            import pypdf
         except ImportError:
             raise ImportError(
-                "pypdf package not found, please install it with " "`pip install pypdf`"
+                "pypdf is required to read PDF files: `pip install pypdf`"
             )
-        super().__init__(file_path, headers=headers)
-        self.parser = PyPDFParser(password=password, extract_images=extract_images)
+        # get all pdf files from directory
+        pdf_files: List[Path] = glob.glob(os.path.join(file_path, "*.pdf"))
 
+        docs = []
+        for each_file in pdf_files:
+            with open(each_file, "rb") as fp:
+                # Create a PDF object
+                pdf = pypdf.PdfReader(fp)
 
-[docs]    def load(self) -> List[Document]:
-        """Load given path as pages."""
-        return list(self.lazy_load())
+                # Get the number of pages in the PDF document
+                num_pages = len(pdf.pages)
 
+                # Iterate over every page
+                pages_text = []
+                for page in range(num_pages):
+                    # Extract the text from the page
+                    pages_text.append(pdf.pages[page].extract_text())
+                # concatenate all pages to one long text.
+                text = "".join(pages_text)
+                # add description
+                metadata = {"num_pages": num_pages, "file_name": each_file.name}
+                if extra_info is not None:
+                    metadata.update(extra_info)
+            # apply Document class
+            docs.append(Document(text=text, metadata=metadata))
+        return docs
+        
 
-[docs]    def lazy_load(
-        self,
-    ) -> Iterator[Document]:
-        """Lazy load given path as pages."""
-        if self.web_path:
-            blob = Blob.from_data(open(self.file_path, "rb").read(), path=self.web_path)
-        else:
-            blob = Blob.from_path(self.file_path)
-        yield from self.parser.parse(blob)
-
-
-class PDFMinerLoader(PDFLoader_Base):
+class PDFMinerLoader(BaseReader):
     """Load `PDF` files using `PDFMiner`."""
 
-    def __init__(
-        self,
-        file_path: str,
-        *,
-        headers: Optional[Dict] = None,
-        extract_images: bool = False,
-        concatenate_pages: bool = True,
-    ) -> None:
-        """Initialize with file path.
-
-        Args:
-            extract_images: Whether to extract images from PDF.
-            concatenate_pages: If True, concatenate all PDF pages into one a single
-                               document. Otherwise, return one document per page.
-        """
+    def load_data(
+        self, file_path: List[Path], extra_info: Optional[Dict] = None
+    ) -> List[Document]:
+        """Parse file."""
         try:
             from pdfminer.high_level import extract_text  # noqa:F401
         except ImportError:
@@ -72,8 +65,13 @@ class PDFMinerLoader(PDFLoader_Base):
                 "`pdfminer` package not found, please install it with "
                 "`pip install pdfminer.six`"
             )
-
-        super().__init__(file_path, headers=headers)
-        self.parser = PDFMinerParser(
-            extract_images=extract_images, concatenate_pages=concatenate_pages
-        )
+        # get all pdf files from directory
+        pdf_files: List[Path] = glob.glob(file_path + "/*.pdf")
+        docs = []
+        for each_file in pdf_files:
+            text = extract_text(each_file)
+            metadata = {"file_name": each_file.name}
+            if extra_info is not None:
+                metadata.update(extra_info)
+            docs.append(Document(page_content=text, metadata=metadata))
+        return docs
