@@ -26,9 +26,6 @@ DEFAULT_METADATA_TMPL = "{key}: {value}"
 TRUNCATE_LENGTH = 350
 WRAP_WIDTH = 70
 
-ImageType = Union[str, BytesIO]
-
-
 class BaseComponent(BaseModel):
     """Base component object to capture class names."""
 
@@ -402,40 +399,6 @@ class TextNode(BaseNode):
 # TODO: legacy backport of old Node class
 Node = TextNode
 
-
-class ImageNode(TextNode):
-    """Node with image."""
-
-    # TODO: store reference instead of actual image
-    # base64 encoded image str
-    image: Optional[str] = None
-    image_path: Optional[str] = None
-    image_url: Optional[str] = None
-
-    @classmethod
-    def get_type(cls) -> str:
-        return ObjectType.IMAGE
-
-    @classmethod
-    def class_name(cls) -> str:
-        return "ImageNode"
-
-    def resolve_image(self) -> ImageType:
-        """Resolve an image such that PIL can read it."""
-        if self.image is not None:
-            return self.image
-        elif self.image_path is not None:
-            return self.image_path
-        elif self.image_url is not None:
-            # load image from URL
-            import requests
-
-            response = requests.get(self.image_url)
-            return BytesIO(response.content)
-        else:
-            raise ValueError("No image found in node.")
-
-
 class IndexNode(TextNode):
     """Node with reference to any object.
 
@@ -443,7 +406,6 @@ class IndexNode(TextNode):
 
     This can also include other nodes (though this is overlapping with `relationships`
     on the Node class).
-
     """
 
     index_id: str
@@ -530,7 +492,6 @@ class NodeWithScore(BaseComponent):
 
 # Document Classes for Readers
 
-
 class Document(TextNode):
     """Generic interface for a data document.
 
@@ -577,7 +538,7 @@ class Document(TextNode):
 
     def to_langchain_format(self) -> "LCDocument":
         """Convert struct to LangChain document format."""
-        from llama_index.bridge.langchain import Document as LCDocument
+        from rag.bridge.langchain import Document as LCDocument
 
         metadata = self.metadata or {}
         return LCDocument(page_content=self.text, metadata=metadata)
@@ -650,11 +611,3 @@ class Document(TextNode):
     @classmethod
     def class_name(cls) -> str:
         return "Document"
-
-
-class ImageDocument(Document, ImageNode):
-    """Data document containing an image."""
-
-    @classmethod
-    def class_name(cls) -> str:
-        return "ImageDocument"
