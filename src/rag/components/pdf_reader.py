@@ -2,13 +2,13 @@
 import logging
 import os
 import glob
-from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, Generator, List, Optional, Type, Union
+from typing import Dict, List, Optional
 
 from rag.entity.base_reader import BaseReader
 from rag.entity.schema import Document
 
+logger = logging.getLogger(__name__)
 
 class PyPDFReader(BaseReader):
     """PDF parser."""
@@ -55,7 +55,7 @@ class PDFMinerLoader(BaseReader):
     """Load `PDF` files using `PDFMiner`."""
 
     def load_data(
-        self, file_path: List[Path], extra_info: Optional[Dict] = None
+        self, file_path: Path, extra_info: Optional[Dict] = None
     ) -> List[Document]:
         """Parse file."""
         try:
