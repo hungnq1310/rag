@@ -26,61 +26,6 @@ DEFAULT_METADATA_TMPL = "{key}: {value}"
 TRUNCATE_LENGTH = 350
 WRAP_WIDTH = 70
 
-class BaseComponent(BaseModel):
-    """Base component object to capture class names."""
-
-    @classmethod
-    @abstractmethod
-    def class_name(cls) -> str:
-        """
-        Get the class name, used as a unique ID in serialization.
-
-        This provides a key that makes serialization robust against actual class
-        name changes.
-        """
-
-    def __getstate__(self) -> Dict[str, Any]:
-        state = super().__getstate__()
-
-        # tiktoken is not pickleable
-        state["__dict__"].pop("tokenizer", None)
-
-        # remove local functions
-        keys_to_remove = []
-        for key in state["__dict__"]:
-            if key.endswith("_fn"):
-                keys_to_remove.append(key)
-        for key in keys_to_remove:
-            state["__dict__"].pop(key, None)
-
-        # remove private attributes
-        state["__private_attribute_values__"] = {}
-
-        return state
-
-    def to_dict(self, **kwargs: Any) -> Dict[str, Any]:
-        data = self.dict(**kwargs)
-        data["class_name"] = self.class_name()
-        return data
-
-    def to_json(self, **kwargs: Any) -> str:
-        data = self.to_dict(**kwargs)
-        return json.dumps(data)
-
-    # TODO: return type here not supported by current mypy version
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any], **kwargs: Any) -> Self:  # type: ignore
-        if isinstance(kwargs, dict):
-            data.update(kwargs)
-
-        data.pop("class_name", None)
-        return cls(**data)
-
-    @classmethod
-    def from_json(cls, data_str: str, **kwargs: Any) -> Self:  # type: ignore
-        data = json.loads(data_str)
-        return cls.from_dict(data, **kwargs)
-
 
 class NodeRelationship(str, Enum):
     """Node relationships used in `BaseNode` class.
