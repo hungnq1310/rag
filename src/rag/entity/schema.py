@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from typing_extensions import Self
 
-from rag.bridge.pydantic import BaseModel, Field, root_validator
+from rag.bridge.pydantic import BaseModel, Field, validator
 from rag.utils import SAMPLE_TEXT, truncate_text
 
 if TYPE_CHECKING:
@@ -134,6 +134,10 @@ class BaseNode(BaseModel):
 
     # Properties
     @property
+    def node_id(self):
+        return self.id_
+
+    @property
     def source_node(self) -> Optional[RelatedNodeInfo]:
         """Source object node.
 
@@ -205,7 +209,7 @@ class BaseNode(BaseModel):
     def as_related_node_info(self) -> RelatedNodeInfo:
         """Get node as RelatedNodeInfo."""
         return RelatedNodeInfo(
-            node_id=self.id_,
+            node_id=self.node_id,
             node_type=self.get_type(),
             metadata=self.metadata,
             hash=self.hash,
@@ -243,8 +247,9 @@ class TextNode(BaseNode):
     def class_name(cls) -> str:
         return "TextNode"
 
-    @root_validator
-    def _check_hash(cls, values: dict) -> dict:
+    # TODO: find when generating hash of nodebase or relatedInfoNode??
+    @classmethod
+    def _generate_hash(cls, values: dict) -> dict:
         """Generate a hash to represent the node."""
         text = values.get("text", "")
         metadata = values.get("metadata", {})
@@ -254,6 +259,7 @@ class TextNode(BaseNode):
         )
         return values
 
+    # Implement abstract methods
     @classmethod
     def get_type(cls) -> str:
         """Get Object type."""
@@ -345,7 +351,7 @@ class IndexNode(TextNode):
         return "IndexNode"
 
 
-class NodeWithScore(BaseComponent):
+class NodeWithScore(BaseModel):
     node: BaseNode
     score: Optional[float] = None
 
@@ -474,44 +480,6 @@ class Document(TextNode):
         """Convert struct from Haystack document format."""
         return cls(
             text=doc.content, metadata=doc.meta, embedding=doc.embedding, id_=doc.id
-        )
-
-    def to_embedchain_format(self) -> Dict[str, Any]:
-        """Convert struct to EmbedChain document format."""
-        return {
-            "doc_id": self.id_,
-            "data": {"content": self.text, "meta_data": self.metadata},
-        }
-
-    @classmethod
-    def from_embedchain_format(cls, doc: Dict[str, Any]) -> "Document":
-        """Convert struct from EmbedChain document format."""
-        return cls(
-            text=doc["data"]["content"],
-            metadata=doc["data"]["meta_data"],
-            id_=doc["doc_id"],
-        )
-
-    def to_semantic_kernel_format(self) -> "MemoryRecord":
-        """Convert struct to Semantic Kernel document format."""
-        import numpy as np
-        from semantic_kernel.memory.memory_record import MemoryRecord
-
-        return MemoryRecord(
-            id=self.id_,
-            text=self.text,
-            additional_metadata=self.get_metadata_str(),
-            embedding=np.array(self.embedding) if self.embedding else None,
-        )
-
-    @classmethod
-    def from_semantic_kernel_format(cls, doc: "MemoryRecord") -> "Document":
-        """Convert struct from Semantic Kernel document format."""
-        return cls(
-            text=doc._text,
-            metadata={"additional_metadata": doc._additional_metadata},
-            embedding=doc._embedding.tolist() if doc._embedding is not None else None,
-            id_=doc._id,
         )
 
     @classmethod
