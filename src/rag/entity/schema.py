@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from typing_extensions import Self
 
 from rag.bridge.pydantic import BaseModel, Field, validator
-from rag.utils import SAMPLE_TEXT, truncate_text
+from rag.utils.utils import SAMPLE_TEXT, truncate_text
 
 if TYPE_CHECKING:
     from haystack.schema import Document as HaystackDocument
