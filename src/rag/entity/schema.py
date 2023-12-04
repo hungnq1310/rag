@@ -132,14 +132,7 @@ class BaseNode(BaseModel):
     def set_content(self, value: Any) -> None:
         """Set the content of the node."""
 
-    @property
-    def node_id(self) -> str:
-        return self.id_
-
-    @node_id.setter
-    def node_id(self, value: str) -> None:
-        self.id_ = value
-
+    # Properties
     @property
     def source_node(self) -> Optional[RelatedNodeInfo]:
         """Source object node.
@@ -199,28 +192,6 @@ class BaseNode(BaseModel):
             raise ValueError("Child objects must be a list of RelatedNodeInfo objects.")
         return relation
 
-    @property
-    def ref_doc_id(self) -> Optional[str]:
-        """Deprecated: Get ref doc id."""
-        source_node = self.source_node
-        if source_node is None:
-            return None
-        return source_node.node_id
-
-    @property
-    def extra_info(self) -> Dict[str, Any]:
-        """TODO: DEPRECATED: Extra info."""
-        return self.metadata
-
-    def __str__(self) -> str:
-        source_text_truncated = truncate_text(
-            self.get_content().strip(), TRUNCATE_LENGTH
-        )
-        source_text_wrapped = textwrap.fill(
-            f"Text: {source_text_truncated}\n", width=WRAP_WIDTH
-        )
-        return f"Node ID: {self.node_id}\n{source_text_wrapped}"
-
     def get_embedding(self) -> List[float]:
         """Get embedding.
 
@@ -234,7 +205,7 @@ class BaseNode(BaseModel):
     def as_related_node_info(self) -> RelatedNodeInfo:
         """Get node as RelatedNodeInfo."""
         return RelatedNodeInfo(
-            node_id=self.node_id,
+            node_id=self.id_,
             node_type=self.get_type(),
             metadata=self.metadata,
             hash=self.hash,
