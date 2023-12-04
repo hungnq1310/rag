@@ -60,7 +60,7 @@ class MetadataMode(str, Enum):
     NONE = auto()
 
 
-class RelatedNodeInfo(BaseComponent):
+class RelatedNodeInfo(BaseModel):
     node_id: str
     node_type: Optional[ObjectType] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
@@ -75,15 +75,12 @@ RelatedNodeType = Union[RelatedNodeInfo, List[RelatedNodeInfo]]
 
 
 # Node classes for indexes
-class BaseNode(BaseComponent):
+class BaseNode(BaseModel):
     """Base node Object.
 
     Generic abstract interface for retrievable nodes
 
     """
-
-    class Config:
-        allow_population_by_field_name = True
 
     id_: str = Field(
         default_factory=lambda: str(uuid.uuid4()), description="Unique ID of the node."
