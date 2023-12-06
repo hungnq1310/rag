@@ -1,6 +1,7 @@
 """Simple node parser."""
 from logging import getLogger
 from typing import Any, List, Union, Sequence
+from dataclasses import dataclass
 import tiktoken
 
 from llama_index.node_parser import SimpleNodeParser
@@ -13,6 +14,12 @@ from llama_index.schema import (
 )
 
 logger = getLogger(__name__)
+
+@dataclass
+class SplitterMode:
+    SENTENCE = "SentenceSplitter"
+    TOKEN = "TokenTextSplitter"
+    CODE = "CodeSplitter"
 
 class TextNodesParser:
     """Define node parser.
@@ -39,7 +46,7 @@ class TextNodesParser:
         self,
     ) -> Union[SentenceSplitter, TokenTextSplitter, CodeSplitter, None]:
         text_splitter = None
-        if self.text_splitter == "SentenceSplitter":
+        if self.params.splitter_mode == SplitterMode.SENTENCE:
             text_splitter = SentenceSplitter(
                 # separator=" ", 
                 separator=self.params.separator, 
@@ -52,7 +59,7 @@ class TextNodesParser:
                 tokenizer=tiktoken.encoding_for_model(self.params.model_name).encode
             )
             logger.info("Using SentenceSplitter")
-        elif self.text_splitter == "TokenTextSplitter":
+        elif self.params.splitter_mode == SplitterMode.TOKEN:
             text_splitter = TokenTextSplitter(
                 separator=self.params.separator, 
                 chunk_size=self.params.chunk_size, 
