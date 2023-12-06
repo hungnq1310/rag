@@ -39,8 +39,8 @@ class TextNodesParser:
                  ) -> None:
         self.config = config
         self.params = params
-        self.parser = self.load_node_parser()
         self.text_splitter = self.load_text_splitter()
+        self.parser = self.load_node_parser()
 
     def load_text_splitter(
         self,
@@ -81,7 +81,7 @@ class TextNodesParser:
         return text_splitter
 
     def load_node_parser(self):
-        if self.text_splitter:
+        if not self.text_splitter:
             return SimpleNodeParser.from_defaults(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
         return SimpleNodeParser.from_defaults(text_splitter=self.text_splitter)
 
