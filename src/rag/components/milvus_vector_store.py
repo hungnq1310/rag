@@ -6,19 +6,23 @@ An index that is built within Milvus.
 import logging
 from typing import Any, List, Optional
 
-from llama_index.schema import BaseNode, TextNode
 from llama_index.vector_stores.types import (
     MetadataFilters,
-    VectorStore,
     VectorStoreQuery,
     VectorStoreQueryMode,
     VectorStoreQueryResult,
 )
 from llama_index.vector_stores.utils import (
-    DEFAULT_DOC_ID_KEY,
-    DEFAULT_EMBEDDING_KEY,
     metadata_dict_to_node,
     node_to_metadata_dict,
+)
+
+from rag.entity import (
+    MilvusConfig, 
+    MilvusArguments, 
+    BaseNode, 
+    TextNode, 
+    VectorStore
 )
 
 logger = logging.getLogger(__name__)
@@ -82,17 +86,8 @@ class MilvusVectorStore(VectorStore):
 
     def __init__(
         self,
-        uri: str = "http://localhost:19530",
-        token: str = "",
-        collection_name: str = "llamalection",
-        dim: Optional[int] = None,
-        embedding_field: str = DEFAULT_EMBEDDING_KEY,
-        doc_id_field: str = DEFAULT_DOC_ID_KEY,
-        similarity_metric: str = "IP",
-        consistency_level: str = "Strong",
-        overwrite: bool = False,
-        text_key: Optional[str] = None,
-        **kwargs: Any,
+        config: MilvusConfig,
+        params: MilvusArguments,
     ) -> None:
         """Init params."""
         import_err_msg = (
@@ -105,32 +100,34 @@ class MilvusVectorStore(VectorStore):
 
         from pymilvus import MilvusClient
 
-        self.collection_name = collection_name
-        self.dim = dim
-        self.embedding_field = embedding_field
-        self.doc_id_field = doc_id_field
-        self.consistency_level = consistency_level
-        self.overwrite = overwrite
-        self.text_key = text_key
+        self.config = config
+        self.params = params
+
+        self.collection_name = params.collection_name
+        self.dim = params.embedding_dim
+        self.embedding_field = params.embedding_field
+        self.doc_id_field = params.primary_field
+        self.text_field = params.text_field
+        self.consistency_level = params.consistency_level
+        self.overwrite = params.overwrite
+        
 
         # Select the similarity metric
-        if similarity_metric.lower() in ("ip"):
+        metric_type = self.params.search_params.get("metric_type", None)
+        if metric_type.lower() in ("ip"):
             self.similarity_metric = "IP"
-        elif similarity_metric.lower() in ("l2", "euclidean"):
+        elif metric_type.lower() in ("l2", "euclidean"):
             self.similarity_metric = "L2"
 
         # Connect to Milvus instance
-        self.milvusclient = MilvusClient(
-            uri=uri,
-            token=token,
-        )
+        self.milvusclient = self.connect_client()
 
         # Delete previous collection if overwriting
-        if self.overwrite and self.collection_name in self.client.list_collections():
+        if self.overwrite and self.collection_name in self.milvusclient.list_collections():
             self.milvusclient.drop_collection(self.collection_name)
 
         # Create the collection if it does not exist
-        if self.collection_name not in self.client.list_collections():
+        if self.collection_name not in self.milvusclient.list_collections():
             if self.dim is None:
                 raise ValueError("Dim argument required for collection creation.")
             self.milvusclient.create_collection(
@@ -146,10 +143,15 @@ class MilvusVectorStore(VectorStore):
 
         logger.debug(f"Successfully created a new collection: {self.collection_name}")
 
-    @property
-    def client(self) -> Any:
-        """Get client."""
-        return self.milvusclient
+    
+    def connect_client(self) -> MilvusClient:
+        # Order of use is host/port, uri, address
+        if self.config.uri is not None:
+            return MilvusClient(self.config.uri)
+        elif self.config.host is not None and self.config.port is not None:
+            uri = f"http://{self.config.host}:{self.config.port}"
+            return MilvusClient(uri=uri)
+        raise Exception("Cannot connect milvus database")
 
     def add(self, nodes: List[BaseNode], **add_kwargs: Any) -> List[str]:
         """Add the embeddings and their nodes into Milvus.
@@ -271,13 +273,13 @@ class MilvusVectorStore(VectorStore):
 
         # Parse the results
         for hit in res[0]:
-            if not self.text_key:
+            if not self.text_field:
                 node = metadata_dict_to_node(
                     {"_node_content": hit["entity"].get("_node_content", None)}
                 )
             else:
                 try:
-                    text = hit["entity"].get(self.text_key)
+                    text = hit["entity"].get(self.text_field)
                 except Exception:
                     raise ValueError(
                         "The passed in text_key value does not exist "
