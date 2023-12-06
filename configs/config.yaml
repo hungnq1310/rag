@@ -3,3 +3,10 @@ artifacts_root: artifacts
 reader_config: 
   file_path: ./data/
   
+milvus_config: 
+  host: localhost
+  port: 19530
+  address: null
+  uri: null
+  user: null
+

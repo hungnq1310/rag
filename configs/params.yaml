@@ -3,3 +3,14 @@ ExtractPDFOptions:
   only_render_image: True
   with_get_char_info: False
   include_styling_info: False
+
+MilvusParams:
+  collection_name: LangChainCollection
+  consistency_level: Session
+  index_params: null
+  search_params: null
+  overwrite: False
+  primary_field: doc_id
+  text_field: text
+  vector_field: embedding
+  similarity_metric: ip
