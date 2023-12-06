@@ -80,9 +80,6 @@ class MilvusVectorStore(VectorStore):
     stores_text: bool = True
     stores_node: bool = True
 
-    def __init_subclass__(cls) -> None:
-        return super().__init_subclass__()
-
     def __init__(
         self,
         uri: str = "http://localhost:19530",
