@@ -69,7 +69,7 @@ class TextNodesParser:
                 tokenizer=tiktoken.encoding_for_model(self.params.model_name).encode
             )
             logger.info("Using TokenTextSplitter")
-        else:
+        elif self.params.splitter_mode == SplitterMode.CODE:
             text_splitter = CodeSplitter(
                 # language="python", chunk_lines=40, chunk_lines_overlap=15, max_chars=1500,
                 language=self.params.language, 
