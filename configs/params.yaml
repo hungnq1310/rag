@@ -1,0 +1,5 @@
+ExtractPDFOptions:
+  only_extract_text: True
+  only_render_image: True
+  with_get_char_info: False
+  include_styling_info: False
