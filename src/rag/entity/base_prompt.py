@@ -1,14 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
-if TYPE_CHECKING:
-    from llama_index.bridge.langchain import BasePromptTemplate as LangchainTemplate
-    from llama_index.bridge.langchain import (
-        ConditionalPromptSelector as LangchainSelector,
-    )
-
-from llama_index.bridge.pydantic import BaseModel
-from llama_index.bridge.pydantic import Field
+from rag.bridge.pydantic import BaseModel
+from rag.bridge.pydantic import Field
 from llama_index.types import BaseOutputParser
 from llama_index.llms.base import LLM, ChatMessage
 
