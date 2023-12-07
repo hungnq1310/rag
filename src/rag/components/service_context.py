@@ -12,10 +12,9 @@ from llama_index.llm_predictor import LLMPredictor
 from llama_index.llm_predictor.base import BaseLLMPredictor, LLMMetadata
 from llama_index.llms.base import LLM
 from llama_index.llms.utils import LLMType, resolve_llm
-from llama_index.logger import LlamaLogger
 
 
-from rag.components.node_parser import TextNodesParser, 
+from rag.components.node_parser import TextNodesParser
 from llama_index.node_parser.text.sentence import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
@@ -33,7 +32,7 @@ def _get_default_node_parser(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = SENTENCE_CHUNK_OVERLAP,
     callback_manager: Optional[CallbackManager] = None,
-) -> NodeParser:
+) -> TextNodesParser:
     """Get default node parser."""
     return SentenceSplitter(
         chunk_size=chunk_size,
@@ -72,7 +71,7 @@ class ServiceContext:
     - llm_predictor: BaseLLMPredictor
     - prompt_helper: PromptHelper
     - embed_model: BaseEmbedding
-    - node_parser: NodeParser
+    - node_parser: TextNodesParser
     - callback_manager: CallbackManager
 
     """
@@ -90,7 +89,7 @@ class ServiceContext:
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = "default",
-        node_parser: Optional[NodeParser] = None,
+        node_parser: Optional[TextNodesParser] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
@@ -104,8 +103,6 @@ class ServiceContext:
         # prompt helper kwargs
         context_window: Optional[int] = None,
         num_output: Optional[int] = None,
-        # deprecated kwargs
-        chunk_size_limit: Optional[int] = None,
     ) -> "ServiceContext":
         """Create a ServiceContext from defaults.
         If an argument is specified, then use the argument value provided for that
@@ -119,7 +116,7 @@ class ServiceContext:
             prompt_helper (Optional[PromptHelper]): PromptHelper
             embed_model (Optional[BaseEmbedding]): BaseEmbedding
                 or "local" (use local model)
-            node_parser (Optional[NodeParser]): NodeParser
+            node_parser (Optional[TextNodesParser]): TextNodesParser
             chunk_size (Optional[int]): chunk_size
             callback_manager (Optional[CallbackManager]): CallbackManager
             system_prompt (Optional[str]): System-wide prompt to be prepended
@@ -127,15 +124,7 @@ class ServiceContext:
             query_wrapper_prompt (Optional[BasePromptTemplate]): A format to wrap
                 passed-in input queries.
 
-        Deprecated Args:
-            chunk_size_limit (Optional[int]): renamed to chunk_size
-
         """
-        if chunk_size_limit is not None and chunk_size is None:
-            logger.warning(
-                "chunk_size_limit is deprecated, please specify chunk_size instead"
-            )
-            chunk_size = chunk_size_limit
 
         if llama_index.global_service_context is not None:
             return cls.from_service_context(
@@ -147,7 +136,6 @@ class ServiceContext:
                 text_splitter=text_splitter,
                 callback_manager=callback_manager,
                 chunk_size=chunk_size,
-                chunk_size_limit=chunk_size_limit,
             )
 
         callback_manager = callback_manager or CallbackManager([])
@@ -208,7 +196,7 @@ class ServiceContext:
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = "default",
-        node_parser: Optional[NodeParser] = None,
+        node_parser: Optional[TextNodesParser] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
@@ -220,16 +208,8 @@ class ServiceContext:
         # prompt helper kwargs
         context_window: Optional[int] = None,
         num_output: Optional[int] = None,
-        # deprecated kwargs
-        chunk_size_limit: Optional[int] = None,
     ) -> "ServiceContext":
         """Instantiate a new service context using a previous as the defaults."""
-        if chunk_size_limit is not None and chunk_size is None:
-            logger.warning(
-                "chunk_size_limit is deprecated, please specify chunk_size",
-                DeprecationWarning,
-            )
-            chunk_size = chunk_size_limit
 
         callback_manager = callback_manager or service_context.callback_manager
         if llm != "default":
@@ -264,7 +244,7 @@ class ServiceContext:
         transformations = transformations or []
         node_parser_found = False
         for transform in service_context.transformations:
-            if isinstance(transform, NodeParser):
+            if isinstance(transform, TextNodesParser):
                 node_parser_found = True
                 node_parser = transform
                 break
@@ -300,10 +280,10 @@ class ServiceContext:
         return self.llm_predictor.llm
 
     @property
-    def node_parser(self) -> NodeParser:
+    def node_parser(self) -> TextNodesParser:
         """Get the node parser."""
         for transform in self.transformations:
-            if isinstance(transform, NodeParser):
+            if isinstance(transform, TextNodesParser):
                 return transform
         raise ValueError("No node parser found.")
 
