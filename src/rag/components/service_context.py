@@ -13,11 +13,14 @@ from llama_index.llm_predictor.base import BaseLLMPredictor, LLMMetadata
 from llama_index.llms.base import LLM
 from llama_index.llms.utils import LLMType, resolve_llm
 from llama_index.logger import LlamaLogger
-from llama_index.node_parser.interface import NodeParser, TextSplitter
+
+
+from rag.components.node_parser import TextNodesParser, 
 from llama_index.node_parser.text.sentence import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
     SentenceSplitter,
+    TextSplitter
 )
 from llama_index.prompts.base import BasePromptTemplate
 from llama_index.schema import TransformComponent
@@ -70,7 +73,6 @@ class ServiceContext:
     - prompt_helper: PromptHelper
     - embed_model: BaseEmbedding
     - node_parser: NodeParser
-    - llama_logger: LlamaLogger (deprecated)
     - callback_manager: CallbackManager
 
     """
@@ -79,7 +81,6 @@ class ServiceContext:
     prompt_helper: PromptHelper
     embed_model: BaseEmbedding
     transformations: List[TransformComponent]
-
     callback_manager: CallbackManager
 
     @classmethod
@@ -92,7 +93,6 @@ class ServiceContext:
         node_parser: Optional[NodeParser] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
-        llama_logger: Optional[LlamaLogger] = None,
         callback_manager: Optional[CallbackManager] = None,
         system_prompt: Optional[str] = None,
         query_wrapper_prompt: Optional[BasePromptTemplate] = None,
@@ -120,7 +120,6 @@ class ServiceContext:
             embed_model (Optional[BaseEmbedding]): BaseEmbedding
                 or "local" (use local model)
             node_parser (Optional[NodeParser]): NodeParser
-            llama_logger (Optional[LlamaLogger]): LlamaLogger (deprecated)
             chunk_size (Optional[int]): chunk_size
             callback_manager (Optional[CallbackManager]): CallbackManager
             system_prompt (Optional[str]): System-wide prompt to be prepended
@@ -146,7 +145,6 @@ class ServiceContext:
                 embed_model=embed_model,
                 node_parser=node_parser,
                 text_splitter=text_splitter,
-                llama_logger=llama_logger,
                 callback_manager=callback_manager,
                 chunk_size=chunk_size,
                 chunk_size_limit=chunk_size_limit,
@@ -194,14 +192,11 @@ class ServiceContext:
 
         transformations = transformations or [node_parser]
 
-        llama_logger = llama_logger or LlamaLogger()
-
         return cls(
             llm_predictor=llm_predictor,
             embed_model=embed_model,
             prompt_helper=prompt_helper,
             transformations=transformations,
-            llama_logger=llama_logger,  # deprecated
             callback_manager=callback_manager,
         )
 
@@ -216,7 +211,6 @@ class ServiceContext:
         node_parser: Optional[NodeParser] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
-        llama_logger: Optional[LlamaLogger] = None,
         callback_manager: Optional[CallbackManager] = None,
         system_prompt: Optional[str] = None,
         query_wrapper_prompt: Optional[BasePromptTemplate] = None,
@@ -291,14 +285,11 @@ class ServiceContext:
 
         transformations = transformations or service_context.transformations
 
-        llama_logger = llama_logger or service_context.llama_logger
-
         return cls(
             llm_predictor=llm_predictor,
             embed_model=embed_model,
             prompt_helper=prompt_helper,
             transformations=transformations,
-            llama_logger=llama_logger,  # deprecated
             callback_manager=callback_manager,
         )
 
