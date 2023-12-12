@@ -5,20 +5,14 @@ import uuid
 from abc import abstractmethod
 from enum import Enum, auto
 from hashlib import sha256
-from io import BytesIO
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Union
 
+from dataclasses_json import DataClassJsonMixin
 from typing_extensions import Self
 
-from rag.bridge.pydantic import BaseModel, Field, validator
+from rag.bridge.pydantic import BaseModel, Field
 from rag.utils.utils import SAMPLE_TEXT, truncate_text
-
-if TYPE_CHECKING:
-    from haystack.schema import Document as HaystackDocument
-    from semantic_kernel.memory.memory_record import MemoryRecord
-
-    from rag.bridge.langchain import Document as LCDocument
-
 
 DEFAULT_TEXT_NODE_TMPL = "{metadata_str}\n\n{content}"
 DEFAULT_METADATA_TMPL = "{key}: {value}"
@@ -455,33 +449,6 @@ class Document(TextNode):
             name = self._compat_fields[name]
         super().__setattr__(name, value)
 
-    def to_langchain_format(self) -> "LCDocument":
-        """Convert struct to LangChain document format."""
-        from rag.bridge.langchain import Document as LCDocument
-
-        metadata = self.metadata or {}
-        return LCDocument(page_content=self.text, metadata=metadata)
-
-    @classmethod
-    def from_langchain_format(cls, doc: "LCDocument") -> "Document":
-        """Convert struct from LangChain document format."""
-        return cls(text=doc.page_content, metadata=doc.metadata)
-
-    def to_haystack_format(self) -> "HaystackDocument":
-        """Convert struct to Haystack document format."""
-        from haystack.schema import Document as HaystackDocument
-
-        return HaystackDocument(
-            content=self.text, meta=self.metadata, embedding=self.embedding, id=self.id_
-        )
-
-    @classmethod
-    def from_haystack_format(cls, doc: "HaystackDocument") -> "Document":
-        """Convert struct from Haystack document format."""
-        return cls(
-            text=doc.content, metadata=doc.meta, embedding=doc.embedding, id_=doc.id
-        )
-
     @classmethod
     def example(cls) -> "Document":
         return Document(
@@ -492,3 +459,36 @@ class Document(TextNode):
     @classmethod
     def class_name(cls) -> str:
         return "Document"
+
+
+@dataclass
+class QueryBundle(DataClassJsonMixin):
+    """
+    Query bundle.
+
+    This dataclass contains the original query string and associated transformations.
+
+    Args:
+        query_str (str): the original user-specified query string.
+            This is currently used by all non embedding-based queries.
+        embedding_strs (list[str]): list of strings used for embedding the query.
+            This is currently used by all embedding-based queries.
+        embedding (list[float]): the stored embedding for the query.
+    """
+
+    query_str: str
+    custom_embedding_strs: Optional[List[str]] = None
+    embedding: Optional[List[float]] = None
+
+    @property
+    def embedding_strs(self) -> List[str]:
+        """Use custom embedding strs if specified, otherwise use query str."""
+        if self.custom_embedding_strs is None:
+            if len(self.query_str) == 0:
+                return []
+            return [self.query_str]
+        else:
+            return self.custom_embedding_strs
+
+
+QueryType = Union[str, QueryBundle]
