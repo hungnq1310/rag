@@ -1,6 +1,9 @@
 import logging
+from typing import Optional, List
 
 from llama_index.retrievers import VectorIndexRetriever
+from llama_index.response_synthesizers.base import BaseSynthesizer
+from llama_index.postprocessor.types import BaseNodePostprocessor
 from llama_index import (
     VectorStoreIndex,
     StorageContext,
@@ -21,9 +24,9 @@ class SubquetionPipeline:
         config,
         params,
         prompt: PromptTemplate,
-        service_context: ServiceContext,
-        response_synthesizer,
-        node_postprocessors,
+        service_context: Optional[ServiceContext],
+        response_synthesizer: Optional[BaseSynthesizer],
+        node_postprocessors: Optional[List[BaseNodePostprocessor]],
     ) -> None:
         self.config = config
         self.params = params
