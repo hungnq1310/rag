@@ -3,20 +3,21 @@ import logging
 from typing import List, Optional, Sequence, cast
 
 from llama_index.async_utils import run_async_tasks
-from llama_index.bridge.pydantic import BaseModel, Field
 from llama_index.callbacks.base import CallbackManager
 from llama_index.callbacks.schema import CBEventType, EventPayload
 from llama_index.core import BaseQueryEngine
 from llama_index.prompts.mixin import PromptMixinType
-from llama_index.question_gen.llm_generators import LLMQuestionGenerator
-from llama_index.question_gen.openai_generator import OpenAIQuestionGenerator
+from llama_index.response_synthesizers import BaseSynthesizer, get_response_synthesizer
+from llama_index.tools.query_engine import QueryEngineTool
+
 from llama_index.question_gen.types import BaseQuestionGenerator, SubQuestion
 from llama_index.response.schema import RESPONSE_TYPE
-from llama_index.response_synthesizers import BaseSynthesizer, get_response_synthesizer
-from llama_index.schema import NodeWithScore, QueryBundle, TextNode
-from llama_index.service_context import ServiceContext
-from llama_index.tools.query_engine import QueryEngineTool
 from llama_index.utils import get_color_mapping, print_text
+
+from rag.bridge.pydantic import BaseModel, Field
+from rag.entity.service_context import ServiceContext
+from rag.entity.schema import NodeWithScore, QueryBundle, TextNode
+from rag.components.question_generator import LLMQuestionGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -94,21 +95,10 @@ class SubQuestionQueryEngine(BaseQueryEngine):
         elif len(query_engine_tools) > 0:
             callback_manager = query_engine_tools[0].query_engine.callback_manager
 
-        if question_gen is None:
-            if service_context is None:
-                # use default openai model that supports function calling API
-                question_gen = OpenAIQuestionGenerator.from_defaults()
-            else:
-                # try to use OpenAI function calling based question generator.
-                # if incompatible, use general LLM question generator
-                try:
-                    question_gen = OpenAIQuestionGenerator.from_defaults(
-                        llm=service_context.llm
-                    )
-                except ValueError:
-                    question_gen = LLMQuestionGenerator.from_defaults(
-                        service_context=service_context
-                    )
+        # TODO: gen question
+        question_gen = question_gen or LLMQuestionGenerator.from_defaults(
+            service_context=service_context
+        )
 
         synth = response_synthesizer or get_response_synthesizer(
             callback_manager=callback_manager,
@@ -125,12 +115,13 @@ class SubQuestionQueryEngine(BaseQueryEngine):
             use_async=use_async,
         )
 
+    # main function
     def _query(self, query_bundle: QueryBundle) -> RESPONSE_TYPE:
         with self.callback_manager.event(
             CBEventType.QUERY, payload={EventPayload.QUERY_STR: query_bundle.query_str}
         ) as query_event:
+            # gen sub_question and map color
             sub_questions = self._question_gen.generate(self._metadatas, query_bundle)
-
             colors = get_color_mapping([str(i) for i in range(len(sub_questions))])
 
             if self._verbose:
@@ -154,8 +145,8 @@ class SubQuestionQueryEngine(BaseQueryEngine):
             qa_pairs: List[SubQAPairData] = list(filter(None, qa_pairs_all))
 
             nodes = [self._construct_node(pair) for pair in qa_pairs]
-
             source_nodes = [node for qa_pair in qa_pairs for node in qa_pair.sources]
+
             response = self._response_synthesizer.synthesize(
                 query=query_bundle,
                 nodes=nodes,
@@ -191,8 +182,8 @@ class SubQuestionQueryEngine(BaseQueryEngine):
             qa_pairs: List[SubQAPairData] = list(filter(None, qa_pairs_all))
 
             nodes = [self._construct_node(pair) for pair in qa_pairs]
-
             source_nodes = [node for qa_pair in qa_pairs for node in qa_pair.sources]
+
             response = await self._response_synthesizer.asynthesize(
                 query=query_bundle,
                 nodes=nodes,
