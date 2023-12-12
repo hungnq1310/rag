@@ -12,12 +12,12 @@ from llama_index.tools.query_engine import QueryEngineTool
 
 from llama_index.question_gen.types import BaseQuestionGenerator, SubQuestion
 from llama_index.response.schema import RESPONSE_TYPE
-from llama_index.utils import get_color_mapping, print_text
 
 from rag.bridge.pydantic import BaseModel, Field
 from rag.entity.service_context import ServiceContext
 from rag.entity.schema import NodeWithScore, QueryBundle, TextNode
 from rag.components.question_generator import LLMQuestionGenerator
+from rag.utils.utils import get_color_mapping, print_text
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,5 @@
+from typing import List, Dict, Optional
+
 # Sample text from llama_index's readme
 SAMPLE_TEXT = """
 Context
@@ -30,3 +32,80 @@ def truncate_text(text: str, max_length: int) -> str:
     if len(text) <= max_length:
         return text
     return text[: max_length - 3] + "..."
+
+_LLAMA_INDEX_COLORS = {
+    "llama_pink": "38;2;237;90;200",
+    "llama_blue": "38;2;90;149;237",
+    "llama_turquoise": "38;2;11;159;203",
+    "llama_lavender": "38;2;155;135;227",
+}
+
+_ANSI_COLORS = {
+    "red": "31",
+    "green": "32",
+    "yellow": "33",
+    "blue": "34",
+    "magenta": "35",
+    "cyan": "36",
+    "pink": "38;5;200",
+}
+
+def get_color_mapping(
+    items: List[str], use_llama_index_colors: bool = True
+) -> Dict[str, str]:
+    """
+    Get a mapping of items to colors.
+
+    Args:
+        items (List[str]): List of items to be mapped to colors.
+        use_llama_index_colors (bool, optional): Flag to indicate
+        whether to use LlamaIndex colors or ANSI colors.
+            Defaults to True.
+
+    Returns:
+        Dict[str, str]: Mapping of items to colors.
+    """
+    if use_llama_index_colors:
+        color_palette = _LLAMA_INDEX_COLORS
+    else:
+        color_palette = _ANSI_COLORS
+
+    colors = list(color_palette.keys())
+    return {item: colors[i % len(colors)] for i, item in enumerate(items)}
+
+def print_text(text: str, color: Optional[str] = None, end: str = "") -> None:
+    """
+    Print the text with the specified color.
+
+    Args:
+        text (str): Text to be printed.
+        color (str, optional): Color to be applied to the text. Supported colors are:
+            llama_pink, llama_blue, llama_turquoise, llama_lavender,
+            red, green, yellow, blue, magenta, cyan, pink.
+        end (str, optional): String appended after the last character of the text.
+
+    Returns:
+        None
+    """
+    text_to_print = _get_colored_text(text, color) if color is not None else text
+    print(text_to_print, end=end)
+
+def _get_colored_text(text: str, color: str) -> str:
+    """
+    Get the colored version of the input text.
+
+    Args:
+        text (str): Input text.
+        color (str): Color to be applied to the text.
+
+    Returns:
+        str: Colored version of the input text.
+    """
+    all_colors = {**_LLAMA_INDEX_COLORS, **_ANSI_COLORS}
+
+    if color not in all_colors:
+        return f"\033[1;3m{text}\033[0m"  # just bolded and italicized
+
+    color = all_colors[color]
+
+    return f"\033[1;3;{color}m{text}\033[0m"
