@@ -8,8 +8,8 @@ from llama_index.postprocessor.types import BaseNodePostprocessor
 
 from rag.entity.service_context import ServiceContext
 from rag.components.question_generator import LLMQuestionGenerator
-from rag.components.retriever_engine import RetrieverQueryEngine
-from rag.components.milvus_vector_store import MilvusVectorStore
+from rag.components.engine.retriever_engine import RetrieverQueryEngine
+from rag.components.vector_store.milvus import MilvusVectorStore
 
 logger = logging.getLogger(__name__)
 

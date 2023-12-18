@@ -2,7 +2,6 @@
 from abc import ABC
 from typing import Any, Iterable, List
 
-from rag.bridge.langchain import Document as LCDocument
 from rag.entity.schema import Document
 
 class BaseReader(ABC):
@@ -17,8 +16,3 @@ class BaseReader(ABC):
     def load_data(self, *args: Any, **load_kwargs: Any) -> List[Document]:
         """Load data from the input directory."""
         return list(self.lazy_load_data(*args, **load_kwargs))
-
-    def load_langchain_documents(self, **load_kwargs: Any) -> List[LCDocument]:
-        """Load data in LangChain document format."""
-        docs = self.load_data(**load_kwargs)
-        return [d.to_langchain_format() for d in docs]

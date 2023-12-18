@@ -7,7 +7,7 @@ from llama_index.postprocessor.types import BaseNodePostprocessor
 from llama_index.retrievers import VectorIndexRetriever
 
 from rag.components.retriever_engine import RetrieverQueryEngine
-from rag.components.milvus_vector_store import MilvusVectorStore
+from rag.components.vector_store.milvus import MilvusVectorStore
 
 logger = logging.getLogger(__name__)
 

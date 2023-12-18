@@ -12,7 +12,7 @@ from llama_index import (
 
 from rag.entity.service_context import ServiceContext
 from rag.components.retriever_engine import RetrieverQueryEngine
-from rag.components.milvus_vector_store import MilvusVectorStore
+from rag.components.vector_store.milvus import MilvusVectorStore
 from rag.components.subquestion_engine import SubQuestionQueryEngine
 from rag.components.prompt_template import PromptTemplate
 from rag.components.question_generator import LLMQuestionGenerator
