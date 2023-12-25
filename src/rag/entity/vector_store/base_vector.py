@@ -1,8 +1,4 @@
-
 """Vector store index types."""
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from enum import Enum
 from typing import (
     Any,
     List,
@@ -12,8 +8,8 @@ from typing import (
 )
 import fsspec
 
-from llama_index.vector_stores.types import VectorStoreQuery, VectorStoreQueryResult
-from .schema import BaseNode
+from rag.entity.node.base_node import BaseNode
+from rag.entity.vector_store import *
 
 @runtime_checkable
 class VectorStore(Protocol):
