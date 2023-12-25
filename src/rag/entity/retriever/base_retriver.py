@@ -4,11 +4,11 @@ from typing import List, Optional
 
 from llama_index.callbacks.base import CallbackManager
 from llama_index.callbacks.schema import CBEventType, EventPayload
-from llama_index.indices.query.schema import QueryBundle, QueryType
-from llama_index.prompts.mixin import PromptDictType, PromptMixin, PromptMixinType
 
-from rag.entity.schema import NodeWithScore
+from rag.entity.node import NodeWithScore
+from rag.entity.retriever import QueryBundle, QueryType
 from rag.entity.service_context import ServiceContext
+from rag.components.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
 
 class BaseRetriever(PromptMixin):
     """Base retriever."""
