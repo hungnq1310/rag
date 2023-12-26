@@ -1,4 +1,3 @@
-from enum import Enum
 from abc import abstractmethod
 from typing import Any, Sequence, AsyncGenerator, Generator, Optional
 
@@ -7,9 +6,8 @@ from llama_index.callbacks import CallbackManager
 from rag.bridge.pydantic import BaseModel, Field, validator
 from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
 from rag.entity.schema import BaseComponent
-from . import *
 
-class MessageRole(str, Enum):
+class MessageRole:
     """Message role."""
 
     SYSTEM = "system"
@@ -121,9 +119,6 @@ class BaseLLM(BaseComponent):
         default_factory=CallbackManager, exclude=True
     )
 
-    class Config:
-        arbitrary_types_allowed = True
-
     @validator("callback_manager", pre=True)
     def _validate_callback_manager(cls, v: CallbackManager) -> CallbackManager:
         if v is None:
@@ -153,7 +148,7 @@ class BaseLLM(BaseComponent):
     def stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
         """Streaming completion endpoint for LLM."""
 
-    # ===== Async Endpoints =====
+    # ===== Async Function =====
     @abstractmethod
     async def achat(
         self, messages: Sequence[ChatMessage], **kwargs: Any
