@@ -1,9 +1,13 @@
 from enum import Enum
-from typing import AsyncGenerator, Generator, Optional
+from abc import abstractmethod
+from typing import Any, Sequence, AsyncGenerator, Generator, Optional
 
-from rag.bridge.pydantic import BaseModel, Field
-from rag.entity.llm import *
+from llama_index.callbacks import CallbackManager
 
+from rag.bridge.pydantic import BaseModel, Field, validator
+from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
+from rag.entity.schema import BaseComponent
+from . import *
 
 class MessageRole(str, Enum):
     """Message role."""
@@ -69,3 +73,105 @@ class CompletionResponse(BaseModel):
 
 CompletionResponseGen = Generator[CompletionResponse, None, None]
 CompletionResponseAsyncGen = AsyncGenerator[CompletionResponse, None]
+
+
+
+class LLMMetadata(BaseModel):
+    context_window: int = Field(
+        default=DEFAULT_CONTEXT_WINDOW,
+        description=(
+            "Total number of tokens the model can be input and output for one response."
+        ),
+    )
+    num_output: int = Field(
+        default=DEFAULT_NUM_OUTPUTS,
+        description="Number of tokens the model can output when generating a response.",
+    )
+    is_chat_model: bool = Field(
+        default=False,
+        description=(
+            "Set True if the model exposes a chat interface (i.e. can be passed a"
+            " sequence of messages, rather than text), like OpenAI's"
+            " /v1/chat/completions endpoint."
+        ),
+    )
+    is_function_calling_model: bool = Field(
+        default=False,
+        # SEE: https://openai.com/blog/function-calling-and-other-api-updates
+        description=(
+            "Set True if the model supports function calling messages, similar to"
+            " OpenAI's function calling API. For example, converting 'Email Anya to"
+            " see if she wants to get coffee next Friday' to a function call like"
+            " `send_email(to: string, body: string)`."
+        ),
+    )
+    model_name: str = Field(
+        default="unknown",
+        description=(
+            "The model's name used for logging, testing, and sanity checking. For some"
+            " models this can be automatically discerned. For other models, like"
+            " locally loaded models, this must be manually specified."
+        ),
+    )
+
+class BaseLLM(BaseComponent):
+    """LLM interface."""
+
+    callback_manager: CallbackManager = Field(
+        default_factory=CallbackManager, exclude=True
+    )
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    @validator("callback_manager", pre=True)
+    def _validate_callback_manager(cls, v: CallbackManager) -> CallbackManager:
+        if v is None:
+            return CallbackManager([])
+        return v
+
+    @property
+    @abstractmethod
+    def metadata(self) -> LLMMetadata:
+        """LLM metadata."""
+
+    @abstractmethod
+    def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        """Chat endpoint for LLM."""
+
+    @abstractmethod
+    def complete(self, prompt: str, **kwargs: Any) -> CompletionResponse:
+        """Completion endpoint for LLM."""
+
+    @abstractmethod
+    def stream_chat(
+        self, messages: Sequence[ChatMessage], **kwargs: Any
+    ) -> ChatResponseGen:
+        """Streaming chat endpoint for LLM."""
+
+    @abstractmethod
+    def stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
+        """Streaming completion endpoint for LLM."""
+
+    # ===== Async Endpoints =====
+    @abstractmethod
+    async def achat(
+        self, messages: Sequence[ChatMessage], **kwargs: Any
+    ) -> ChatResponse:
+        """Async chat endpoint for LLM."""
+
+    @abstractmethod
+    async def acomplete(self, prompt: str, **kwargs: Any) -> CompletionResponse:
+        """Async completion endpoint for LLM."""
+
+    @abstractmethod
+    async def astream_chat(
+        self, messages: Sequence[ChatMessage], **kwargs: Any
+    ) -> ChatResponseAsyncGen:
+        """Async streaming chat endpoint for LLM."""
+
+    @abstractmethod
+    async def astream_complete(
+        self, prompt: str, **kwargs: Any
+    ) -> CompletionResponseAsyncGen:
+        """Async streaming completion endpoint for LLM."""

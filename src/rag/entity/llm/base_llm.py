@@ -1,366 +1,310 @@
-import asyncio
-from abc import abstractmethod
-from contextlib import contextmanager
-from enum import Enum
-from typing import Any, AsyncGenerator, Callable, Generator, Optional, Sequence, cast
+from collections import ChainMap
+from typing import List, Protocol, runtime_checkable
 
-from llama_index.callbacks import CallbackManager, CBEventType, EventPayload
+from llama_index.callbacks import CBEventType, EventPayload
 
-from rag.bridge.pydantic import BaseModel, Field, validator
-from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
-from rag.entity.schema import BaseComponent
-from rag.entity.llm import *
+from rag.entity.prompt.base_prompt import BasePromptTemplate
+from rag.entity.llm import BaseLLM
+from rag.entity.schema import (
+    BaseOutputParser,
+    PydanticProgramMode,
+    TokenAsyncGen,
+    TokenGen,
+)
+from rag.components.prompt.prompt_template import PromptTemplate
+from . import *
+from .utils import (
+    messages_to_prompt as generic_messages_to_prompt,
+)
 
 
+# NOTE: These two protocols are needed to appease mypy
+@runtime_checkable
+class MessagesToPromptType(Protocol):
+    def __call__(self, messages: Sequence[ChatMessage]) -> str:
+        pass
 
-class LLMMetadata(BaseModel):
-    context_window: int = Field(
-        default=DEFAULT_CONTEXT_WINDOW,
-        description=(
-            "Total number of tokens the model can be input and output for one response."
-        ),
+
+@runtime_checkable
+class CompletionToPromptType(Protocol):
+    def __call__(self, prompt: str) -> str:
+        pass
+
+
+def stream_completion_response_to_tokens(
+    completion_response_gen: CompletionResponseGen,
+) -> TokenGen:
+    """Convert a stream completion response to a stream of tokens."""
+
+    def gen() -> TokenGen:
+        for response in completion_response_gen:
+            yield response.delta or ""
+
+    return gen()
+
+
+def stream_chat_response_to_tokens(
+    chat_response_gen: ChatResponseGen,
+) -> TokenGen:
+    """Convert a stream completion response to a stream of tokens."""
+
+    def gen() -> TokenGen:
+        for response in chat_response_gen:
+            yield response.delta or ""
+
+    return gen()
+
+
+async def astream_completion_response_to_tokens(
+    completion_response_gen: CompletionResponseAsyncGen,
+) -> TokenAsyncGen:
+    """Convert a stream completion response to a stream of tokens."""
+
+    async def gen() -> TokenAsyncGen:
+        async for response in completion_response_gen:
+            yield response.delta or ""
+
+    return gen()
+
+
+async def astream_chat_response_to_tokens(
+    chat_response_gen: ChatResponseAsyncGen,
+) -> TokenAsyncGen:
+    """Convert a stream completion response to a stream of tokens."""
+
+    async def gen() -> TokenAsyncGen:
+        async for response in chat_response_gen:
+            yield response.delta or ""
+
+    return gen()
+
+
+def default_completion_to_prompt(prompt: str) -> str:
+    return prompt
+
+
+class LLM(BaseLLM):
+    system_prompt: Optional[str] = Field(
+        default=None, description="System prompt for LLM calls."
     )
-    num_output: int = Field(
-        default=DEFAULT_NUM_OUTPUTS,
-        description="Number of tokens the model can output when generating a response.",
+    messages_to_prompt: MessagesToPromptType = Field(
+        description="Function to convert a list of messages to an LLM prompt.",
+        default=generic_messages_to_prompt,
+        exclude=True,
     )
-    is_chat_model: bool = Field(
-        default=False,
-        description=(
-            "Set True if the model exposes a chat interface (i.e. can be passed a"
-            " sequence of messages, rather than text), like OpenAI's"
-            " /v1/chat/completions endpoint."
-        ),
+    completion_to_prompt: CompletionToPromptType = Field(
+        description="Function to convert a completion to an LLM prompt.",
+        default=default_completion_to_prompt,
+        exclude=True,
     )
-    is_function_calling_model: bool = Field(
-        default=False,
-        # SEE: https://openai.com/blog/function-calling-and-other-api-updates
-        description=(
-            "Set True if the model supports function calling messages, similar to"
-            " OpenAI's function calling API. For example, converting 'Email Anya to"
-            " see if she wants to get coffee next Friday' to a function call like"
-            " `send_email(to: string, body: string)`."
-        ),
+    output_parser: Optional[BaseOutputParser] = Field(
+        description="Output parser to parse, validate, and correct errors programmatically.",
+        default=None,
+        exclude=True,
     )
-    model_name: str = Field(
-        default="unknown",
-        description=(
-            "The model's name used for logging, testing, and sanity checking. For some"
-            " models this can be automatically discerned. For other models, like"
-            " locally loaded models, this must be manually specified."
-        ),
+    pydantic_program_mode: PydanticProgramMode = PydanticProgramMode.DEFAULT
+
+    # deprecated
+    query_wrapper_prompt: Optional[BasePromptTemplate] = Field(
+        description="Query wrapper prompt for LLM calls.",
+        default=None,
+        exclude=True,
     )
 
+    @validator("messages_to_prompt", pre=True)
+    def set_messages_to_prompt(
+        cls, messages_to_prompt: Optional[MessagesToPromptType]
+    ) -> MessagesToPromptType:
+        return messages_to_prompt or generic_messages_to_prompt
 
-def llm_chat_callback() -> Callable:
-    def wrap(f: Callable) -> Callable:
-        @contextmanager
-        def wrapper_logic(_self: Any) -> Generator[CallbackManager, None, None]:
-            callback_manager = getattr(_self, "callback_manager", None)
-            if not isinstance(callback_manager, CallbackManager):
-                raise ValueError(
-                    "Cannot use llm_chat_callback on an instance "
-                    "without a callback_manager attribute."
-                )
+    @validator("completion_to_prompt", pre=True)
+    def set_completion_to_prompt(
+        cls, completion_to_prompt: Optional[CompletionToPromptType]
+    ) -> CompletionToPromptType:
+        return completion_to_prompt or default_completion_to_prompt
 
-            yield callback_manager
+    def _log_template_data(
+        self, prompt: BasePromptTemplate, **prompt_args: Any
+    ) -> None:
+        template_vars = {
+            k: v
+            for k, v in ChainMap(prompt.kwargs, prompt_args).items()
+            if k in prompt.template_vars
+        }
+        with self.callback_manager.event(
+            CBEventType.TEMPLATING,
+            payload={
+                EventPayload.TEMPLATE: prompt.get_template(llm=self),
+                EventPayload.TEMPLATE_VARS: template_vars,
+                EventPayload.SYSTEM_PROMPT: self.system_prompt,
+                EventPayload.QUERY_WRAPPER_PROMPT: self.query_wrapper_prompt,
+            },
+        ):
+            pass
 
-        async def wrapped_async_llm_chat(
-            _self: Any, messages: Sequence[ChatMessage], **kwargs: Any
-        ) -> Any:
-            with wrapper_logic(_self) as callback_manager:
-                event_id = callback_manager.on_event_start(
-                    CBEventType.LLM,
-                    payload={
-                        EventPayload.MESSAGES: messages,
-                        EventPayload.ADDITIONAL_KWARGS: kwargs,
-                        EventPayload.SERIALIZED: _self.to_dict(),
-                    },
-                )
+    def _get_prompt(self, prompt: BasePromptTemplate, **prompt_args: Any) -> str:
+        formatted_prompt = prompt.format(
+            llm=self,
+            messages_to_prompt=self.messages_to_prompt,
+            completion_to_prompt=self.completion_to_prompt,
+            **prompt_args,
+        )
+        if self.output_parser is not None:
+            formatted_prompt = self.output_parser.format(formatted_prompt)
+        return self._extend_prompt(formatted_prompt)
 
-                f_return_val = await f(_self, messages, **kwargs)
-                if isinstance(f_return_val, AsyncGenerator):
-                    # intercept the generator and add a callback to the end
-                    async def wrapped_gen() -> ChatResponseAsyncGen:
-                        last_response = None
-                        async for x in f_return_val:
-                            yield cast(ChatResponse, x)
-                            last_response = x
+    def _get_messages(
+        self, prompt: BasePromptTemplate, **prompt_args: Any
+    ) -> List[ChatMessage]:
+        messages = prompt.format_messages(llm=self, **prompt_args)
+        if self.output_parser is not None:
+            messages = self.output_parser.format_messages(messages)
+        return self._extend_messages(messages)
 
-                        callback_manager.on_event_end(
-                            CBEventType.LLM,
-                            payload={
-                                EventPayload.MESSAGES: messages,
-                                EventPayload.RESPONSE: last_response,
-                            },
-                            event_id=event_id,
-                        )
+    def structured_predict(
+        self,
+        output_cls: BaseModel,
+        prompt: PromptTemplate,
+        **prompt_args: Any,
+    ) -> BaseModel:
+        from llama_index.program.utils import get_program_for_llm
 
-                    return wrapped_gen()
-                else:
-                    callback_manager.on_event_end(
-                        CBEventType.LLM,
-                        payload={
-                            EventPayload.MESSAGES: messages,
-                            EventPayload.RESPONSE: f_return_val,
-                        },
-                        event_id=event_id,
-                    )
+        program = get_program_for_llm(
+            output_cls,
+            prompt,
+            self,
+            pydantic_program_mode=self.pydantic_program_mode,
+        )
 
-            return f_return_val
+        return program(**prompt_args)
 
-        def wrapped_llm_chat(
-            _self: Any, messages: Sequence[ChatMessage], **kwargs: Any
-        ) -> Any:
-            with wrapper_logic(_self) as callback_manager:
-                event_id = callback_manager.on_event_start(
-                    CBEventType.LLM,
-                    payload={
-                        EventPayload.MESSAGES: messages,
-                        EventPayload.ADDITIONAL_KWARGS: kwargs,
-                        EventPayload.SERIALIZED: _self.to_dict(),
-                    },
-                )
-                f_return_val = f(_self, messages, **kwargs)
+    async def astructured_predict(
+        self,
+        output_cls: BaseModel,
+        prompt: PromptTemplate,
+        **prompt_args: Any,
+    ) -> BaseModel:
+        from llama_index.program.utils import get_program_for_llm
 
-                if isinstance(f_return_val, Generator):
-                    # intercept the generator and add a callback to the end
-                    def wrapped_gen() -> ChatResponseGen:
-                        last_response = None
-                        for x in f_return_val:
-                            yield cast(ChatResponse, x)
-                            last_response = x
+        program = get_program_for_llm(
+            output_cls,
+            prompt,
+            self,
+            pydantic_program_mode=self.pydantic_program_mode,
+        )
 
-                        callback_manager.on_event_end(
-                            CBEventType.LLM,
-                            payload={
-                                EventPayload.MESSAGES: messages,
-                                EventPayload.RESPONSE: last_response,
-                            },
-                            event_id=event_id,
-                        )
+        return await program.acall(**prompt_args)
 
-                    return wrapped_gen()
-                else:
-                    callback_manager.on_event_end(
-                        CBEventType.LLM,
-                        payload={
-                            EventPayload.MESSAGES: messages,
-                            EventPayload.RESPONSE: f_return_val,
-                        },
-                        event_id=event_id,
-                    )
+    def _parse_output(self, output: str) -> str:
+        if self.output_parser is not None:
+            return str(self.output_parser.parse(output))
 
-            return f_return_val
+        return output
 
-        async def async_dummy_wrapper(_self: Any, *args: Any, **kwargs: Any) -> Any:
-            return await f(_self, *args, **kwargs)
+    def predict(
+        self,
+        prompt: BasePromptTemplate,
+        **prompt_args: Any,
+    ) -> str:
+        """Predict."""
+        self._log_template_data(prompt, **prompt_args)
 
-        def dummy_wrapper(_self: Any, *args: Any, **kwargs: Any) -> Any:
-            return f(_self, *args, **kwargs)
-
-        # check if already wrapped
-        is_wrapped = getattr(f, "__wrapped__", False)
-        if not is_wrapped:
-            f.__wrapped__ = True  # type: ignore
-
-        if asyncio.iscoroutinefunction(f):
-            if is_wrapped:
-                return async_dummy_wrapper
-            else:
-                return wrapped_async_llm_chat
+        if self.metadata.is_chat_model:
+            messages = self._get_messages(prompt, **prompt_args)
+            chat_response = self.chat(messages)
+            output = chat_response.message.content or ""
         else:
-            if is_wrapped:
-                return dummy_wrapper
-            else:
-                return wrapped_llm_chat
+            formatted_prompt = self._get_prompt(prompt, **prompt_args)
+            response = self.complete(formatted_prompt)
+            output = response.text
 
-    return wrap
+        return self._parse_output(output)
 
+    def stream(
+        self,
+        prompt: BasePromptTemplate,
+        **prompt_args: Any,
+    ) -> TokenGen:
+        """Stream."""
+        self._log_template_data(prompt, **prompt_args)
 
-def llm_completion_callback() -> Callable:
-    def wrap(f: Callable) -> Callable:
-        @contextmanager
-        def wrapper_logic(_self: Any) -> Generator[CallbackManager, None, None]:
-            callback_manager = getattr(_self, "callback_manager", None)
-            if not isinstance(callback_manager, CallbackManager):
-                raise ValueError(
-                    "Cannot use llm_completion_callback on an instance "
-                    "without a callback_manager attribute."
-                )
-
-            yield callback_manager
-
-        async def wrapped_async_llm_predict(
-            _self: Any, *args: Any, **kwargs: Any
-        ) -> Any:
-            with wrapper_logic(_self) as callback_manager:
-                event_id = callback_manager.on_event_start(
-                    CBEventType.LLM,
-                    payload={
-                        EventPayload.PROMPT: args[0],
-                        EventPayload.ADDITIONAL_KWARGS: kwargs,
-                        EventPayload.SERIALIZED: _self.to_dict(),
-                    },
-                )
-
-                f_return_val = await f(_self, *args, **kwargs)
-
-                if isinstance(f_return_val, AsyncGenerator):
-                    # intercept the generator and add a callback to the end
-                    async def wrapped_gen() -> CompletionResponseAsyncGen:
-                        last_response = None
-                        async for x in f_return_val:
-                            yield cast(CompletionResponse, x)
-                            last_response = x
-
-                        callback_manager.on_event_end(
-                            CBEventType.LLM,
-                            payload={
-                                EventPayload.PROMPT: args[0],
-                                EventPayload.COMPLETION: last_response,
-                            },
-                            event_id=event_id,
-                        )
-
-                    return wrapped_gen()
-                else:
-                    callback_manager.on_event_end(
-                        CBEventType.LLM,
-                        payload={
-                            EventPayload.PROMPT: args[0],
-                            EventPayload.RESPONSE: f_return_val,
-                        },
-                        event_id=event_id,
-                    )
-
-            return f_return_val
-
-        def wrapped_llm_predict(_self: Any, *args: Any, **kwargs: Any) -> Any:
-            with wrapper_logic(_self) as callback_manager:
-                event_id = callback_manager.on_event_start(
-                    CBEventType.LLM,
-                    payload={
-                        EventPayload.PROMPT: args[0],
-                        EventPayload.ADDITIONAL_KWARGS: kwargs,
-                        EventPayload.SERIALIZED: _self.to_dict(),
-                    },
-                )
-
-                f_return_val = f(_self, *args, **kwargs)
-                if isinstance(f_return_val, Generator):
-                    # intercept the generator and add a callback to the end
-                    def wrapped_gen() -> CompletionResponseGen:
-                        last_response = None
-                        for x in f_return_val:
-                            yield cast(CompletionResponse, x)
-                            last_response = x
-
-                        callback_manager.on_event_end(
-                            CBEventType.LLM,
-                            payload={
-                                EventPayload.PROMPT: args[0],
-                                EventPayload.COMPLETION: last_response,
-                            },
-                            event_id=event_id,
-                        )
-
-                    return wrapped_gen()
-                else:
-                    callback_manager.on_event_end(
-                        CBEventType.LLM,
-                        payload={
-                            EventPayload.PROMPT: args[0],
-                            EventPayload.COMPLETION: f_return_val,
-                        },
-                        event_id=event_id,
-                    )
-
-            return f_return_val
-
-        async def async_dummy_wrapper(_self: Any, *args: Any, **kwargs: Any) -> Any:
-            return await f(_self, *args, **kwargs)
-
-        def dummy_wrapper(_self: Any, *args: Any, **kwargs: Any) -> Any:
-            return f(_self, *args, **kwargs)
-
-        # check if already wrapped
-        is_wrapped = getattr(f, "__wrapped__", False)
-        if not is_wrapped:
-            f.__wrapped__ = True  # type: ignore
-
-        if asyncio.iscoroutinefunction(f):
-            if is_wrapped:
-                return async_dummy_wrapper
-            else:
-                return wrapped_async_llm_predict
+        if self.metadata.is_chat_model:
+            messages = self._get_messages(prompt, **prompt_args)
+            chat_response = self.stream_chat(messages)
+            stream_tokens = stream_chat_response_to_tokens(chat_response)
         else:
-            if is_wrapped:
-                return dummy_wrapper
-            else:
-                return wrapped_llm_predict
+            formatted_prompt = self._get_prompt(prompt, **prompt_args)
+            stream_response = self.stream_complete(formatted_prompt)
+            stream_tokens = stream_completion_response_to_tokens(stream_response)
 
-    return wrap
+        if prompt.output_parser is not None or self.output_parser is not None:
+            raise NotImplementedError("Output parser is not supported for streaming.")
 
+        return stream_tokens
 
-class LLM(BaseComponent):
-    """LLM interface."""
+    async def apredict(
+        self,
+        prompt: BasePromptTemplate,
+        **prompt_args: Any,
+    ) -> str:
+        """Async predict."""
+        self._log_template_data(prompt, **prompt_args)
 
-    callback_manager: CallbackManager = Field(
-        default_factory=CallbackManager, exclude=True
-    )
+        if self.metadata.is_chat_model:
+            messages = self._get_messages(prompt, **prompt_args)
+            chat_response = await self.achat(messages)
+            output = chat_response.message.content or ""
+        else:
+            formatted_prompt = self._get_prompt(prompt, **prompt_args)
+            response = await self.acomplete(formatted_prompt)
+            output = response.text
 
-    class Config:
-        arbitrary_types_allowed = True
+        return self._parse_output(output)
 
-    @validator("callback_manager", pre=True)
-    def _validate_callback_manager(cls, v: CallbackManager) -> CallbackManager:
-        if v is None:
-            return CallbackManager([])
-        return v
+    async def astream(
+        self,
+        prompt: BasePromptTemplate,
+        **prompt_args: Any,
+    ) -> TokenAsyncGen:
+        """Async stream."""
+        self._log_template_data(prompt, **prompt_args)
 
-    @property
-    @abstractmethod
-    def metadata(self) -> LLMMetadata:
-        """LLM metadata."""
+        if self.metadata.is_chat_model:
+            messages = self._get_messages(prompt, **prompt_args)
+            chat_response = await self.astream_chat(messages)
+            stream_tokens = await astream_chat_response_to_tokens(chat_response)
+        else:
+            formatted_prompt = self._get_prompt(prompt, **prompt_args)
+            stream_response = await self.astream_complete(formatted_prompt)
+            stream_tokens = await astream_completion_response_to_tokens(stream_response)
 
-    @abstractmethod
-    def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
-        """Chat endpoint for LLM."""
+        if prompt.output_parser is not None or self.output_parser is not None:
+            raise NotImplementedError("Output parser is not supported for streaming.")
 
-    @abstractmethod
-    def complete(self, prompt: str, **kwargs: Any) -> CompletionResponse:
-        """Completion endpoint for LLM."""
+        return stream_tokens
 
-    @abstractmethod
-    def stream_chat(
-        self, messages: Sequence[ChatMessage], **kwargs: Any
-    ) -> ChatResponseGen:
-        """Streaming chat endpoint for LLM."""
+    def _extend_prompt(
+        self,
+        formatted_prompt: str,
+    ) -> str:
+        """Add system and query wrapper prompts to base prompt."""
+        extended_prompt = formatted_prompt
 
-    @abstractmethod
-    def stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
-        """Streaming completion endpoint for LLM."""
+        if self.system_prompt:
+            extended_prompt = self.system_prompt + "\n\n" + extended_prompt
 
-    # ===== Async Endpoints =====
-    @abstractmethod
-    async def achat(
-        self, messages: Sequence[ChatMessage], **kwargs: Any
-    ) -> ChatResponse:
-        """Async chat endpoint for LLM."""
+        if self.query_wrapper_prompt:
+            extended_prompt = self.query_wrapper_prompt.format(
+                query_str=extended_prompt
+            )
 
-    @abstractmethod
-    async def acomplete(self, prompt: str, **kwargs: Any) -> CompletionResponse:
-        """Async completion endpoint for LLM."""
+        return extended_prompt
 
-    @abstractmethod
-    async def astream_chat(
-        self, messages: Sequence[ChatMessage], **kwargs: Any
-    ) -> ChatResponseAsyncGen:
-        """Async streaming chat endpoint for LLM."""
-
-    @abstractmethod
-    async def astream_complete(
-        self, prompt: str, **kwargs: Any
-    ) -> CompletionResponseAsyncGen:
-        """Async streaming completion endpoint for LLM."""
+    def _extend_messages(self, messages: List[ChatMessage]) -> List[ChatMessage]:
+        """Add system prompt to chat message list."""
+        if self.system_prompt:
+            messages = [
+                ChatMessage(role=MessageRole.SYSTEM, content=self.system_prompt),
+                *messages,
+            ]
+        return messages
