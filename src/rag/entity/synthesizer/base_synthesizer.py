@@ -14,16 +14,17 @@ from typing import Any, Dict, Generator, List, Optional, Sequence, Union
 from llama_index.callbacks.schema import CBEventType, EventPayload
 
 from rag.bridge.pydantic import BaseModel
-from rag.components.prompt.mixin import PromptMixin
 from rag.entity.synthesizer import (
     RESPONSE_TYPE,
     PydanticResponse,
     Response,
     StreamingResponse,
 )
-from rag.entity.schema import BaseNode, MetadataMode, NodeWithScore, QueryBundle
+from rag.entity.schema import RESPONSE_TEXT_TYPE
+from rag.entity.node.base_node import BaseNode, MetadataMode, NodeWithScore
+from rag.entity.retriever.base_retriver import QueryBundle
 from rag.entity.service_context import ServiceContext
-from llama_index.types import RESPONSE_TEXT_TYPE
+from rag.components.prompt.mixin import PromptMixin
 
 logger = logging.getLogger(__name__)
 
