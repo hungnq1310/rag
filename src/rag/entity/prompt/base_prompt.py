@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional
 
-from rag.bridge.pydantic import BaseModel
-from rag.bridge.pydantic import Field
-from llama_index.types import BaseOutputParser
-from llama_index.llms.base import LLM, ChatMessage
+from rag.bridge.pydantic import BaseModel, Field
+from rag.entity.schema import BaseOutputParser
+from rag.entity.llm.base_llm import LLM, ChatMessage
 
 class BasePromptTemplate(BaseModel, ABC):
     metadata: Dict[str, Any]
