@@ -1,15 +1,13 @@
 """Vector store index types."""
 from typing import (
     Any,
-    List,
-    Optional,
     Protocol,
     runtime_checkable,
 )
 import fsspec
 
 from rag.entity.node.base_node import BaseNode
-from rag.entity.vector_store import *
+from . import *
 
 @runtime_checkable
 class VectorStore(Protocol):

@@ -1,15 +1,15 @@
 """Vector store index types."""
 from dataclasses import dataclass
-from enum import Enum
 from typing import (
     Union,
-    List,
     Optional,
-    Sequence
+    Sequence,
+    List,
+    Dict
 )
 
 from rag.entity.node.base_node import BaseNode
-from rag.bridge.pydantic import BaseModel, Field
+from rag.bridge.pydantic import BaseModel, StrictInt, StrictFloat, StrictStr
 
 class ExactMatchFilter(BaseModel):
     """Exact match metadata filter for vector stores.
@@ -42,7 +42,7 @@ class MetadataFilters(BaseModel):
             filters.append(filter)
         return cls(filters=filters)
 
-class VectorStoreQueryMode(str, Enum):
+class VectorStoreQueryMode:
     """Vector store query mode."""
 
     DEFAULT = "default"
