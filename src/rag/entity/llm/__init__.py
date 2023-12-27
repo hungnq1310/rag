@@ -3,11 +3,11 @@ from typing import Any, Sequence, AsyncGenerator, Generator, Optional
 
 from llama_index.callbacks import CallbackManager
 
-from rag.bridge.pydantic import BaseModel, Field, validator
+from rag.bridge.pydantic import BaseModel, Field, validator, StrictStr
 from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
 from rag.entity.schema import BaseComponent
 
-class MessageRole:
+class MessageRole(StrictStr):
     """Message role."""
 
     SYSTEM = "system"
