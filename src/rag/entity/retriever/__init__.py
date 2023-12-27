@@ -2,8 +2,6 @@ from typing import Union, Optional, List
 from dataclasses import dataclass
 from dataclasses_json import DataClassJsonMixin
 
-from .base_retriver import *
-
 @dataclass
 class QueryBundle(DataClassJsonMixin):
     """
