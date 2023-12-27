@@ -3,8 +3,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 from rag.bridge.pydantic import BaseModel
 from rag.bridge.pydantic import Field
-from llama_index.types import BaseOutputParser
-from llama_index.llms.base import LLM, ChatMessage
+from rag.entity.schema import BaseOutputParser
+from rag.entity.llm import BaseLLM, ChatMessage
 
 class BasePromptTemplate(BaseModel, ABC):
     metadata: Dict[str, Any]
@@ -74,15 +74,15 @@ class BasePromptTemplate(BaseModel, ABC):
         ...
 
     @abstractmethod
-    def format(self, llm: Optional[LLM] = None, **kwargs: Any) -> str:
+    def format(self, llm: Optional[BaseLLM] = None, **kwargs: Any) -> str:
         ...
 
     @abstractmethod
     def format_messages(
-        self, llm: Optional[LLM] = None, **kwargs: Any
+        self, llm: Optional[BaseLLM] = None, **kwargs: Any
     ) -> List[ChatMessage]:
         ...
 
     @abstractmethod
-    def get_template(self, llm: Optional[LLM] = None) -> str:
+    def get_template(self, llm: Optional[BaseLLM] = None) -> str:
         ...
