@@ -2,19 +2,27 @@ from typing import List, Optional, Sequence, cast
 
 from llama_index.llm_predictor.base import BaseLLMPredictor
 from llama_index.output_parsers.base import StructuredOutput
-from llama_index.prompts.base import BasePromptTemplate, PromptTemplate
-from llama_index.prompts.mixin import PromptDictType
-from llama_index.prompts.prompt_type import PromptType
+
+
+
 from llama_index.question_gen.output_parser import SubQuestionOutputParser
 from llama_index.question_gen.prompts import (
     DEFAULT_SUB_QUESTION_PROMPT_TMPL,
     build_tools_text,
 )
+
 from llama_index.question_gen.types import BaseQuestionGenerator, SubQuestion
-from llama_index.schema import QueryBundle
-from llama_index.service_context import ServiceContext
 from llama_index.tools.types import ToolMetadata
-from llama_index.types import BaseOutputParser
+
+from rag.entity.prompt import PromptType
+from rag.entity.retriever.base_retriver import QueryBundle
+from rag.components.prompt.mixin import PromptDictType
+from rag.components.prompt.prompt_template import PromptTemplate
+from rag.entity.service_context import ServiceContext
+from rag.entity.schema import BaseOutputParser
+
+
+
 
 
 class LLMQuestionGenerator(BaseQuestionGenerator):
