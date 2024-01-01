@@ -5,8 +5,8 @@ import glob
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from rag.entity.base_reader import BaseReader
-from rag.entity.schema import Document
+from rag.entity.reader.base_reader import BaseReader
+from rag.entity.node.base_node import Document
 
 logger = logging.getLogger(__name__)
 
