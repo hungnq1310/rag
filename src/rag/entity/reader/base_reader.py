@@ -2,7 +2,7 @@
 from abc import ABC
 from typing import Any, Iterable, List
 
-from rag.entity.schema import Document
+from rag.entity.node.base_node import Document
 
 class BaseReader(ABC):
     """Utilities for loading data from a directory."""
