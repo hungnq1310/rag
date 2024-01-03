@@ -2,6 +2,7 @@ import asyncio
 import logging
 from typing import List, Optional, Sequence, cast
 
+from llama_index.bridge.pydantic import BaseModel, Field
 from llama_index.async_utils import run_async_tasks
 from llama_index.callbacks.base import CallbackManager
 from llama_index.callbacks.schema import CBEventType, EventPayload
@@ -9,7 +10,6 @@ from llama_index.core import BaseQueryEngine
 from llama_index.tools.query_engine import QueryEngineTool
 from llama_index.response_synthesizers import get_response_synthesizer
 
-from rag.bridge.pydantic import BaseModel, Field
 from rag.entity.service_context import ServiceContext
 from rag.entity.node.base_node import NodeWithScore, TextNode
 from rag.entity.retriever import QueryBundle

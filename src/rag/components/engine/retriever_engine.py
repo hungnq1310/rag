@@ -5,16 +5,16 @@ from llama_index.callbacks.base import CallbackManager
 from llama_index.callbacks.schema import CBEventType, EventPayload
 from llama_index.core import BaseQueryEngine, BaseRetriever
 from llama_index.postprocessor.types import BaseNodePostprocessor
-from llama_index.prompts import BasePromptTemplate
-from llama_index.prompts.mixin import PromptMixinType
-from llama_index.response.schema import RESPONSE_TYPE
 from llama_index.response_synthesizers import (
-    BaseSynthesizer,
     ResponseMode,
     get_response_synthesizer,
 )
-from llama_index.schema import NodeWithScore, QueryBundle
-from llama_index.service_context import ServiceContext
+
+from rag.entity.node.base_node import NodeWithScore
+from rag.entity.retriever.base_retriver import QueryBundle
+from rag.entity.service_context import ServiceContext
+from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE
+from rag.components.prompt.mixin import PromptMixinType, BasePromptTemplate
 
 
 class RetrieverQueryEngine(BaseQueryEngine):
