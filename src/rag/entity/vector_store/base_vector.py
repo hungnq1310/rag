@@ -6,8 +6,8 @@ from typing import (
 )
 import fsspec
 
-from rag.entity.node.base_node import BaseNode
-from . import *
+from rag.entity.node import BaseNode
+from .types import *
 
 @runtime_checkable
 class VectorStore(Protocol):
