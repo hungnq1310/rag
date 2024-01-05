@@ -2,13 +2,11 @@
 from abc import abstractmethod
 from typing import List, Optional
 
-from llama_index.callbacks.base import CallbackManager
-from llama_index.callbacks.schema import CBEventType, EventPayload
-
-from rag.entity.node.base_node import NodeWithScore
+from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
+from rag.entity.node import NodeWithScore
 from rag.entity.service_context import ServiceContext
 from rag.components.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
-from . import *
+from .types import *
 
 class BaseRetriever(PromptMixin):
     """Base retriever."""
