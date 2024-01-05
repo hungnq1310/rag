@@ -1,10 +1,8 @@
 from collections import ChainMap
 from typing import List, Protocol, runtime_checkable
 
-from llama_index.callbacks import CBEventType, EventPayload
-
+from rag.entity.callbacks import CBEventType, EventPayload
 from rag.entity.prompt.base_prompt import BasePromptTemplate
-from rag.entity.llm import BaseLLM
 from rag.entity.schema import (
     BaseOutputParser,
     PydanticProgramMode,
@@ -12,7 +10,8 @@ from rag.entity.schema import (
     TokenGen,
 )
 from rag.components.prompt.prompt_template import PromptTemplate
-from . import *
+
+from .types import *
 from .utils import (
     messages_to_prompt as generic_messages_to_prompt,
 )
