@@ -4,7 +4,7 @@ import uuid
 from abc import abstractmethod
 from hashlib import sha256
 
-from . import *
+from .types import *
 from rag.utils.utils import SAMPLE_TEXT, truncate_text
 
 DEFAULT_TEXT_NODE_TMPL = "{metadata_str}\n\n{content}"
