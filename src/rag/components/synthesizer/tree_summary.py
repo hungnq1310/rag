@@ -2,14 +2,12 @@ import asyncio
 from typing import Any, Optional, Sequence
 
 from llama_index.async_utils import run_async_tasks
-from llama_index.prompts import BasePromptTemplate
-from llama_index.prompts.default_prompt_selectors import (
-    DEFAULT_TREE_SUMMARIZE_PROMPT_SEL,
-)
-from llama_index.prompts.mixin import PromptDictType
-from llama_index.response_synthesizers.base import BaseSynthesizer
-from llama_index.service_context import ServiceContext
-from llama_index.types import RESPONSE_TEXT_TYPE, BaseModel
+from rag.entity.prompt import BasePromptTemplate
+from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
+from rag.components.prompt.mixin import PromptDictType
+from rag.entity.synthesizer import BaseSynthesizer
+from rag.entity.service_context import ServiceContext
+from rag.entity.schema import RESPONSE_TEXT_TYPE, BaseModel
 
 
 class TreeSummarize(BaseSynthesizer):
