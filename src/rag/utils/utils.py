@@ -109,3 +109,11 @@ def _get_colored_text(text: str, color: str) -> str:
     color = all_colors[color]
 
     return f"\033[1;3;{color}m{text}\033[0m"
+
+"""Support for synthesizer"""
+
+def truncate_text(text: str, max_length: int) -> str:
+    """Truncate text to a maximum length."""
+    if len(text) <= max_length:
+        return text
+    return text[: max_length - 3] + "..."
