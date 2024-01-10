@@ -1,5 +1,5 @@
 from collections import ChainMap
-from typing import List, Protocol, Sequence, runtime_checkable, Any
+from typing import List, Protocol, Sequence, runtime_checkable, Any, Union
 
 from llama_index.bridge.pydantic import validator
 from rag.entity.callbacks import CBEventType, EventPayload
@@ -336,3 +336,5 @@ class LLM(BaseLLM):
                 *messages,
             ]
         return messages
+    
+LLMType = Union[str, LLM]
