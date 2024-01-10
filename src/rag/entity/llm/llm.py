@@ -9,7 +9,6 @@ from rag.entity.output_parser import (
     TokenAsyncGen,
     TokenGen,
 )
-from rag.components.prompt.prompt_template import PromptTemplate
 
 from .base_llm import BaseLLM
 from .types import *
@@ -223,42 +222,6 @@ class LLM(BaseLLM):
     @classmethod
     def class_name(cls) -> str:
         return "llm"
-
-    def structured_predict(
-        self,
-        output_cls: BaseModel,
-        prompt: PromptTemplate,
-        **prompt_args: Any,
-    ) -> BaseModel:
-        from llama_index.program.utils import get_program_for_llm
-
-        program = get_program_for_llm(
-            output_cls,
-            prompt,
-            self,
-            # pydantic_program_mode=self.pydantic_program_mode,
-            pydantic_program_mode="default",
-        )
-
-        return program(**prompt_args)
-
-    async def astructured_predict(
-        self,
-        output_cls: BaseModel,
-        prompt: PromptTemplate,
-        **prompt_args: Any,
-    ) -> BaseModel:
-        from llama_index.program.utils import get_program_for_llm
-
-        program = get_program_for_llm(
-            output_cls,
-            prompt,
-            self,
-            # pydantic_program_mode=self.pydantic_program_mode,
-            pydantic_program_mode="default",
-        )
-
-        return await program.acall(**prompt_args)
 
     def _parse_output(self, output: str) -> str:
         if self.output_parser is not None:
