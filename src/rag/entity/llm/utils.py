@@ -257,6 +257,9 @@ def llm_completion_callback() -> Callable:
     return wrap
 
 
+#####################
+# Transform message #
+#####################
 def messages_to_history_str(messages: Sequence[ChatMessage]) -> str:
     """Convert messages to a history string."""
     string_messages = []
