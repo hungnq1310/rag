@@ -1,19 +1,24 @@
 from collections import ChainMap
-from typing import List, Protocol, runtime_checkable
+from typing import List, Protocol, Sequence, runtime_checkable, Any
 
+from llama_index.bridge.pydantic import validator
 from rag.entity.callbacks import CBEventType, EventPayload
 from rag.entity.prompt.base_prompt import BasePromptTemplate
-from rag.entity.schema import (
+from rag.entity.output_parser import (
     BaseOutputParser,
-    PydanticProgramMode,
     TokenAsyncGen,
     TokenGen,
 )
 from rag.components.prompt.prompt_template import PromptTemplate
 
+from .base_llm import BaseLLM
 from .types import *
 from .utils import (
     messages_to_prompt as generic_messages_to_prompt,
+    completion_response_to_chat_response,
+    stream_completion_response_to_chat_response,
+    llm_chat_callback,
+    llm_completion_callback
 )
 
 
@@ -101,14 +106,12 @@ class LLM(BaseLLM):
         default=None,
         exclude=True,
     )
-    pydantic_program_mode: PydanticProgramMode = PydanticProgramMode.DEFAULT
-
-    # deprecated
     query_wrapper_prompt: Optional[BasePromptTemplate] = Field(
         description="Query wrapper prompt for LLM calls.",
         default=None,
         exclude=True,
     )
+
 
     @validator("messages_to_prompt", pre=True)
     def set_messages_to_prompt(
@@ -136,7 +139,6 @@ class LLM(BaseLLM):
                 EventPayload.TEMPLATE: prompt.get_template(llm=self),
                 EventPayload.TEMPLATE_VARS: template_vars,
                 EventPayload.SYSTEM_PROMPT: self.system_prompt,
-                EventPayload.QUERY_WRAPPER_PROMPT: self.query_wrapper_prompt,
             },
         ):
             pass
@@ -160,6 +162,68 @@ class LLM(BaseLLM):
             messages = self.output_parser.format_messages(messages)
         return self._extend_messages(messages)
 
+    @llm_chat_callback()
+    def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        """Implement abstract baseLLM"""
+        prompt = self.messages_to_prompt(messages)
+        completion_response = self.complete(prompt, formatted=True, **kwargs)
+        return completion_response_to_chat_response(completion_response)
+
+    @llm_chat_callback()
+    def stream_chat(
+        self, messages: Sequence[ChatMessage], **kwargs: Any
+    ) -> ChatResponseGen:
+        """Implement abstract baseLLM"""
+        prompt = self.messages_to_prompt(messages)
+        completion_response_gen = self.stream_complete(prompt, formatted=True, **kwargs)
+        return stream_completion_response_to_chat_response(completion_response_gen)
+
+    @llm_chat_callback()
+    async def achat(
+        self,
+        messages: Sequence[ChatMessage],
+        **kwargs: Any,
+    ) -> ChatResponse:
+        """Implement abstract baseLLM"""
+        return self.chat(messages, **kwargs)
+
+    @llm_chat_callback()
+    async def astream_chat(
+        self,
+        messages: Sequence[ChatMessage],
+        **kwargs: Any,
+    ) -> ChatResponseAsyncGen:
+        """Implement abstract baseLLM"""
+        async def gen() -> ChatResponseAsyncGen:
+            for message in self.stream_chat(messages, **kwargs):
+                yield message
+
+        # NOTE: convert generator to async generator
+        return gen()
+
+    @llm_completion_callback()
+    async def acomplete(
+        self, prompt: str, formatted: bool = False, **kwargs: Any
+    ) -> CompletionResponse:
+        """Implement abstract baseLLM"""
+        return self.complete(prompt, formatted=formatted, **kwargs)
+
+    @llm_completion_callback()
+    async def astream_complete(
+        self, prompt: str, formatted: bool = False, **kwargs: Any
+    ) -> CompletionResponseAsyncGen:
+        """Implement abstract baseLLM"""
+        async def gen() -> CompletionResponseAsyncGen:
+            for message in self.stream_complete(prompt, formatted=formatted, **kwargs):
+                yield message
+
+        # NOTE: convert generator to async generator
+        return gen()
+
+    @classmethod
+    def class_name(cls) -> str:
+        return "llm"
+
     def structured_predict(
         self,
         output_cls: BaseModel,
@@ -172,7 +236,8 @@ class LLM(BaseLLM):
             output_cls,
             prompt,
             self,
-            pydantic_program_mode=self.pydantic_program_mode,
+            # pydantic_program_mode=self.pydantic_program_mode,
+            pydantic_program_mode="default",
         )
 
         return program(**prompt_args)
@@ -189,7 +254,8 @@ class LLM(BaseLLM):
             output_cls,
             prompt,
             self,
-            pydantic_program_mode=self.pydantic_program_mode,
+            # pydantic_program_mode=self.pydantic_program_mode,
+            pydantic_program_mode="default",
         )
 
         return await program.acall(**prompt_args)
