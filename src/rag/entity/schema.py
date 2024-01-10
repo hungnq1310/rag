@@ -1,26 +1,15 @@
 """Base schema for data structures."""
 import json
 from abc import abstractmethod
-from abc import ABC, abstractmethod
-from enum import Enum
 from typing import (
     Any,
-    AsyncGenerator,
-    Generator,
-    Generic,
     List,
-    Protocol,
-    Type,
-    TypeVar,
-    Union,
-    runtime_checkable,
     Dict
 )
 
 from rag.bridge.pydantic import BaseModel
-from rag.entity.llm.base_llm import ChatMessage, MessageRole
 from typing_extensions import Self
-
+from .node import BaseNode
 
 class BaseComponent(BaseModel):
     """Base component object to capture class names."""
@@ -96,64 +85,16 @@ class BaseComponent(BaseModel):
         return cls.from_dict(data, **kwargs)
 
 
-Model = TypeVar("Model", bound=BaseModel)
+class TransformComponent(BaseComponent):
+    """Base class for transform components."""
 
-TokenGen = Generator[str, None, None]
-TokenAsyncGen = AsyncGenerator[str, None]
-RESPONSE_TEXT_TYPE = Union[BaseModel, str, TokenGen]
-
-
-# TODO: move into a `core` folder
-# NOTE: this is necessary to make it compatible with pydantic
-@runtime_checkable
-class BaseOutputParser(Protocol):
-    """Output parser class."""
+    class Config:
+        arbitrary_types_allowed = True
 
     @abstractmethod
-    def parse(self, output: str) -> Any:
-        """Parse, validate, and correct errors programmatically."""
+    def __call__(self, nodes: List["BaseNode"], **kwargs: Any) -> List["BaseNode"]:
+        """Transform nodes."""
 
-    @abstractmethod
-    def format(self, query: str) -> str:
-        """Format a query with structured output formatting instructions."""
-
-    def format_messages(self, messages: List[ChatMessage]) -> List[ChatMessage]:
-        """Format a list of messages with structured output formatting instructions."""
-        # NOTE: apply output parser to either the first message if it's a system message
-        #       or the last message
-        if messages:
-            if messages[0].role == MessageRole.SYSTEM:
-                messages[0].content = self.format(messages[0].content or "")
-            else:
-                messages[-1].content = self.format(messages[-1].content or "")
-
-        return messages
-
-
-class BasePydanticProgram(ABC, Generic[Model]):
-    """A base class for LLM-powered function that return a pydantic model.
-
-    Note: this interface is not yet stable.
-    """
-
-    @property
-    @abstractmethod
-    def output_cls(self) -> Type[Model]:
-        pass
-
-    @abstractmethod
-    def __call__(self, *args: Any, **kwds: Any) -> Model:
-        pass
-
-    async def acall(self, *args: Any, **kwds: Any) -> Model:
-        return self(*args, **kwds)
-
-
-class PydanticProgramMode(str, Enum):
-    """Pydantic program mode."""
-
-    DEFAULT = "default"
-    OPENAI = "openai"
-    LLM = "llm"
-    GUIDANCE = "guidance"
-    LM_FORMAT_ENFORCER = "lm-format-enforcer"
+    async def acall(self, nodes: List["BaseNode"], **kwargs: Any) -> List["BaseNode"]:
+        """Async transform nodes."""
+        return self.__call__(nodes, **kwargs)
