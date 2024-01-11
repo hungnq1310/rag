@@ -130,9 +130,3 @@ class SummaryIndex(BaseIndex[IndexList]):
             all_ref_doc_info[ref_node.node_id] = ref_doc_info
         return all_ref_doc_info
 
-
-# Legacy
-GPTListIndex = SummaryIndex
-
-# New name
-ListIndex = SummaryIndex
