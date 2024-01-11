@@ -12,20 +12,20 @@ from abc import abstractmethod
 from enum import Enum
 from typing import Any, Dict, Optional, Sequence, Set, Union
 
-from llama_index.async_utils import run_async_tasks
-from llama_index.core.base_retriever import BaseRetriever
-from llama_index.data_structs.data_structs import KeywordTable
-from llama_index.indices.base import BaseIndex
-from llama_index.indices.keyword_table.utils import extract_keywords_given_response
-from llama_index.prompts import BasePromptTemplate
-from llama_index.prompts.default_prompts import (
+from rag.utils.async_utils import run_async_tasks
+from rag.entity.retriever import BaseRetriever
+from rag.entity.indices.data_struct import KeywordTable
+from rag.entity.indices import BaseIndex
+from rag.entity.indices.keyword_table.utils import extract_keywords_given_response
+from rag.entity.prompt import BasePromptTemplate
+from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
 )
-from llama_index.schema import BaseNode, MetadataMode
-from llama_index.service_context import ServiceContext
-from llama_index.storage.docstore.types import RefDocInfo
-from llama_index.utils import get_tqdm_iterable
+from rag.entity.node import BaseNode, MetadataMode
+from rag.entity.service_context import ServiceContext
+from rag.entity.storage.docstore import RefDocInfo
+from rag.utils.utils import get_tqdm_iterable
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE
 

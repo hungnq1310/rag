@@ -7,11 +7,6 @@ from typing import Any, Dict, List, Optional
 from rag.entity.callbacks import CallbackManager
 from rag.entity.retriever import BaseRetriever
 from .base import BaseKeywordTableIndex
-from llama_index.indices.keyword_table.utils import (
-    extract_keywords_given_response,
-    rake_extract_keywords,
-    simple_extract_keywords,
-)
 from rag.entity.prompt import BasePromptTemplate
 from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
