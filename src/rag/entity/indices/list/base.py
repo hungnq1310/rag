@@ -14,7 +14,7 @@ from rag.entity.indices import BaseIndex
 from rag.entity.node import BaseNode
 from rag.entity.service_context import ServiceContext
 from rag.utils.utils import get_tqdm_iterable
-from llama_index.storage.docstore.types import RefDocInfo
+from rag.entity.storage.docstore import RefDocInfo
 
 class ListRetrieverMode(str, Enum):
     DEFAULT = "default"

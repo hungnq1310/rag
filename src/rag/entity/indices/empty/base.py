@@ -13,7 +13,7 @@ from rag.entity.indices.data_struct import EmptyIndexStruct
 from rag.entity.indices import BaseIndex
 from rag.entity.node import BaseNode
 from rag.entity.service_context import ServiceContext
-from llama_index.storage.docstore.types import RefDocInfo
+from rag.entity.storage.docstore import RefDocInfo
 
 
 class EmptyIndex(BaseIndex[EmptyIndexStruct]):
@@ -83,7 +83,3 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
     def ref_doc_info(self) -> Dict[str, RefDocInfo]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         raise NotImplementedError("ref_doc_info not supported for an empty index.")
-
-
-# legacy
-GPTEmptyIndex = EmptyIndex

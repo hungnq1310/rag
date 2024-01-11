@@ -2,20 +2,21 @@
 import logging
 from typing import Any, Callable, List, Optional, Tuple
 
-from llama_index.callbacks.base import CallbackManager
-from llama_index.core.base_retriever import BaseRetriever
-from llama_index.indices.list.base import SummaryIndex
-from llama_index.indices.query.embedding_utils import get_top_k_embeddings
-from llama_index.indices.utils import (
+from rag.entity.callbacks import CallbackManager
+from rag.entity.retriever import BaseRetriever
+from rag.entity.indices.list import SummaryIndex
+from rag.entity.indices.get_embeddings import get_top_k_embeddings
+from rag.entity.indices.utils import (
     default_format_node_batch_fn,
     default_parse_choice_select_answer_fn,
 )
-from llama_index.prompts import PromptTemplate
-from llama_index.prompts.default_prompts import (
+from rag.components.prompt.prompt_template import PromptTemplate
+from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
-from llama_index.schema import BaseNode, MetadataMode, NodeWithScore, QueryBundle
-from llama_index.service_context import ServiceContext
+from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
+from rag.entity.retriever import QueryBundle
+from rag.entity.service_context import ServiceContext
 
 logger = logging.getLogger(__name__)
 
@@ -199,9 +200,3 @@ class SummaryIndexLLMRetriever(BaseRetriever):
                 ]
             )
         return results
-
-
-# for backwards compatibility
-ListIndexEmbeddingRetriever = SummaryIndexEmbeddingRetriever
-ListIndexLLMRetriever = SummaryIndexLLMRetriever
-ListIndexRetriever = SummaryIndexRetriever
