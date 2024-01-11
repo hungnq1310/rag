@@ -64,7 +64,6 @@ class EventPayload(str, Enum):
     TEMPLATE = "template"  # template used in LLM call
     TEMPLATE_VARS = "template_vars"  # template variables used in LLM call
     SYSTEM_PROMPT = "system_prompt"  # system prompt used in LLM call
-    QUERY_WRAPPER_PROMPT = "query_wrapper_prompt"  # query wrapper prompt used in LLM
     EXCEPTION = "exception"  # exception raised in an event
 
 
