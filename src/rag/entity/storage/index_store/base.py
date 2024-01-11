@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import fsspec
 
-from llama_index.data_structs.data_structs import IndexStruct
+from rag.entity.indices.data_struct import IndexStruct
 
 DEFAULT_PERSIST_DIR = "./storage"
 DEFAULT_PERSIST_FNAME = "index_store.json"
