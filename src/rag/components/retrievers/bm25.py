@@ -7,10 +7,9 @@ from rag.entity.callbacks import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
 from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.entity.node import BaseNode, NodeWithScore
-
-from llama_index.indices.keyword_table.utils import simple_extract_keywords
-from llama_index.indices.vector_store.base import VectorStoreIndex
-from llama_index.storage.docstore.types import BaseDocumentStore
+from rag.entity.indices.keyword_table.utils import simple_extract_keywords
+from rag.entity.indices.vector_store import VectorStoreIndex
+from rag.entity.storage.docstore import BaseDocumentStore
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Tuple, Union
 
-from llama_index.core.base_query_engine import BaseQueryEngine
+from rag.entity.base_query_engine import BaseQueryEngine
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.entity.node import BaseNode, IndexNode, NodeWithScore, TextNode
