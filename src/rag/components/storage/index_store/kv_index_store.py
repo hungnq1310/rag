@@ -1,12 +1,12 @@
 from typing import List, Optional
 
-from llama_index.data_structs.data_structs import IndexStruct
-from llama_index.storage.index_store.types import BaseIndexStore
-from llama_index.storage.index_store.utils import (
+from rag.entity.indices.data_struct import IndexStruct
+from rag.entity.storage.index_store import BaseIndexStore
+from rag.components.storage.index_store.utils import (
     index_struct_to_json,
     json_to_index_struct,
 )
-from llama_index.storage.kvstore.types import BaseKVStore
+from rag.entity.storage.kv_store.base import BaseKVStore
 
 DEFAULT_NAMESPACE = "index_store"
 
