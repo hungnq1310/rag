@@ -4,7 +4,7 @@ An index that is built within Milvus.
 
 """
 import logging
-from typing import Any, List, Optional
+from typing import Any, List
 
 from rag.entity.vector_store import (
     MetadataFilters,
