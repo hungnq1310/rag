@@ -11,12 +11,12 @@ from rag.constants import (
     VECTOR_STORE_KEY,
 )
 
-from rag.components.storage.simple_docstore import SimpleDocumentStore
+from rag.components.storage.docstore import SimpleDocumentStore
 from rag.entity.storage.docstore.base import (
     DEFAULT_PERSIST_FNAME as DOCSTORE_FNAME,
     BaseDocumentStore
 )
-from rag.components.storage.simple_index_store import SimpleIndexStore
+from rag.components.storage.index_store import SimpleIndexStore
 from rag.entity.storage.index_store.base import (
     DEFAULT_PERSIST_FNAME as INDEX_STORE_FNAME,
     BaseIndexStore
