@@ -174,7 +174,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
                 # NOTE: if the vector store keeps text,
                 # we only need to add image and index nodes
                 for node, new_id in zip(nodes_batch, new_ids):
-                    if isinstance(node, (ImageNode, IndexNode)):
+                    if isinstance(node, IndexNode):
                         # NOTE: remove embedding from node to avoid duplication
                         node_without_embedding = node.copy()
                         node_without_embedding.embedding = None
@@ -215,7 +215,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
                 # NOTE: if the vector store keeps text,
                 # we only need to add image and index nodes
                 for node, new_id in zip(nodes_batch, new_ids):
-                    if isinstance(node, (ImageNode, IndexNode)):
+                    if isinstance(node, IndexNode):
                         # NOTE: remove embedding from node to avoid duplication
                         node_without_embedding = node.copy()
                         node_without_embedding.embedding = None
