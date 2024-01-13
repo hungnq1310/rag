@@ -4,9 +4,11 @@ from rag.utils.files import (
     read_yaml, 
     create_directories
 )
-from rag.entity import (
+from .schema import (
     MilvusConfig,
-    MilvusArguments
+    MilvusArguments,
+    NodeParserArguments,
+    NodeParserConfig
 )
 
 class ConfigurationManager: 
@@ -47,3 +49,25 @@ class ConfigurationManager:
             embedding_dim=params.embedding_dim,
         )
         return milvus_params
+    
+    def get_node_parser_config(self) -> NodeParserConfig: 
+        config = self.config.node_parser_config
+        node_parser_config = NodeParserConfig(
+            name=config.name
+        )
+        return node_parser_config
+
+    def get_node_parser_params(self) -> NodeParserArguments: 
+        params = self.param.NodeParserParams
+        node_parser_params = NodeParserArguments(
+            model_name_tokenizer=params.model_name_tokenizer,
+            splitter_mode=params.splitter_mode,
+            separator=params.separator,
+            chunk_size=params.chunk_size,
+            chunk_overlap=params.chunk_overlap,
+            paragraph_separator=params.paragraph_separator,
+            secondary_chunking_regex=params.secondary_chunking_regex,
+            backup_separators=params.backup_separators,
+        )
+        return node_parser_params
+            
