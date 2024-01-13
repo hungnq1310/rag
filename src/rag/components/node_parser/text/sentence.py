@@ -85,6 +85,7 @@ class SentenceSplitter(MetadataAwareTextSplitter):
         self._chunking_tokenizer_fn = (
             chunking_tokenizer_fn or split_by_sentence_tokenizer()
         )
+        #TODO: get_tokenizer should eliminate
         self._tokenizer = tokenizer or get_tokenizer()
 
         self._split_fns = [
