@@ -1,13 +1,13 @@
 import logging
 from typing import Optional, List, Any
 
-from llama_index import VectorStoreIndex, StorageContext, QueryBundle
-from llama_index.retrievers import VectorIndexRetriever
-from llama_index.response_synthesizers.base import BaseSynthesizer
 from llama_index.postprocessor.types import BaseNodePostprocessor
 
+from rag.entity import VectorStoreIndex, StorageContext, QueryBundle
+from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
-from rag.components.question_generator import LLMQuestionGenerator
+from rag.components.retrievers import VectorIndexRetriever
+from rag.components.sub_quetion.question_generator import LLMQuestionGenerator
 from rag.components.engine.retriever_engine import RetrieverQueryEngine
 from rag.components.vector_store.milvus import MilvusVectorStore
 
