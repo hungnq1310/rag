@@ -1,7 +1,7 @@
 from collections import ChainMap
 from typing import List, Protocol, Sequence, runtime_checkable, Any, Union
 
-from llama_index.bridge.pydantic import validator
+from rag.bridge.pydantic import validator
 from rag.entity.callbacks import CBEventType, EventPayload
 from rag.entity.prompt.base_prompt import BasePromptTemplate
 from rag.entity.output_parser import (

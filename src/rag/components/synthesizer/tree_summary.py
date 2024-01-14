@@ -7,7 +7,7 @@ from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMP
 from rag.components.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
-from rag.entity.schema import RESPONSE_TEXT_TYPE, BaseModel
+from rag.entity.output_parser import RESPONSE_TEXT_TYPE, BaseModel
 
 
 class TreeSummarize(BaseSynthesizer):

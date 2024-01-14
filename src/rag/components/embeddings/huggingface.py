@@ -11,8 +11,8 @@ from rag.entity.embeddings import (
 )
 from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
 
-from llama_index.llms.huggingface import HuggingFaceInferenceAPI
-from llama_index.utils import get_cache_dir, infer_torch_device
+from rag.components.llm import HuggingFaceInferenceAPI
+from rag.utils.utils import get_cache_dir, infer_torch_device
 from .utils import (
     format_query,
     format_text,

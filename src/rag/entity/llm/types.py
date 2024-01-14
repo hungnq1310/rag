@@ -1,6 +1,6 @@
 from typing import AsyncGenerator, Generator, Optional
 
-from llama_index.bridge.pydantic import BaseModel, Field, StrictStr
+from rag.bridge.pydantic import BaseModel, Field, StrictStr
 from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
 
 class MessageRole(StrictStr):

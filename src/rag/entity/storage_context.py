@@ -44,7 +44,6 @@ class StorageContext:
     - docstore: BaseDocumentStore
     - index_store: BaseIndexStore
     - vector_store: VectorStore
-    - graph_store: GraphStore
 
     """
 

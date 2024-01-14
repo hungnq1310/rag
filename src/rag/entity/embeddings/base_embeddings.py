@@ -7,7 +7,7 @@ from typing import Any, Callable, Coroutine, List, Optional, Tuple
 
 import numpy as np
 
-from rag.entity.bridge.pydantic import Field, validator
+from rag.bridge.pydantic import Field, validator
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.entity.schema import BaseNode, TransformComponent
 from rag.entity.node import MetadataMode

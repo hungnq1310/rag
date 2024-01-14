@@ -18,7 +18,6 @@ from typing import (
 
 from rag.bridge.pydantic import BaseModel
 from rag.entity.llm.llm import ChatMessage, MessageRole
-from typing_extensions import Self
 
 
 Model = TypeVar("Model", bound=BaseModel)

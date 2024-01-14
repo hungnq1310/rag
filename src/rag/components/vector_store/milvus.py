@@ -17,13 +17,15 @@ from rag.entity.vector_store import (
     node_to_metadata_dict,
 )
 
-from rag.entity import (
-    MilvusConfig, 
-    MilvusArguments, 
+from rag.entity.node import ( 
     BaseNode, 
-    TextNode, 
-    VectorStore
+    TextNode,
 )
+from rag.config.schema import (
+    MilvusConfig, 
+    MilvusArguments,
+)
+from rag.entity.vector_store import VectorStore
 
 logger = logging.getLogger(__name__)
 

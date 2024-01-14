@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Optional, Sequence
 import requests
 from tqdm import tqdm
 
-from llama_index.bridge.pydantic import Field, PrivateAttr
+from rag.bridge.pydantic import Field, PrivateAttr
 from rag.entity.callbacks import CallbackManager
 from rag.constants import (
     DEFAULT_CONTEXT_WINDOW,

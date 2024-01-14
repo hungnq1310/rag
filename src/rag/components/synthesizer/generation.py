@@ -5,7 +5,7 @@ from rag.components.prompt.mixin import PromptDictType
 from rag.entity.prompt import BasePromptTemplate
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
-from rag.entity.schema import RESPONSE_TEXT_TYPE
+from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 
 
 class Generation(BaseSynthesizer):

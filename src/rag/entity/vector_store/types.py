@@ -9,7 +9,7 @@ from typing import (
 )
 
 from rag.entity.node.base_node import BaseNode
-from llama_index.bridge.pydantic import BaseModel, StrictInt, StrictFloat, StrictStr
+from rag.bridge.pydantic import BaseModel, StrictInt, StrictFloat, StrictStr
 
 DEFAULT_PERSIST_DIR = "./storage"
 DEFAULT_PERSIST_FNAME = "vector_store.json"

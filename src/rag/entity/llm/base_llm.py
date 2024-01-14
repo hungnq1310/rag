@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Any, Sequence
 
-from llama_index.bridge.pydantic import Field, validator
+from rag.bridge.pydantic import Field, validator
 from rag.entity.callbacks import CallbackManager
 from rag.entity.schema import BaseComponent
 from rag.entity.prompt import BasePromptTemplate

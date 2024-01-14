@@ -2,7 +2,7 @@ import logging
 from threading import Thread
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union
 
-from llama_index.bridge.pydantic import Field, PrivateAttr
+from rag.bridge.pydantic import Field, PrivateAttr
 from rag.entity.callbacks import CallbackManager
 from rag.constants import (
     DEFAULT_CONTEXT_WINDOW,

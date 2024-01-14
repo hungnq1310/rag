@@ -2,21 +2,21 @@ import logging
 from dataclasses import dataclass
 from typing import List, Optional
 
-import llama_index
-from llama_index.bridge.pydantic import BaseModel
-from llama_index.node_parser.text.sentence import (
+from rag.bridge.pydantic import BaseModel
+from rag.entity.node_parser import (
+    TextSplitter
+)
+from rag.components.node_parser import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
     SentenceSplitter,
-    TextSplitter
 )
-from llama_index.types import PydanticProgramMode
+
 from llama_index.indices.prompt_helper import PromptHelper
 
-from rag.components.node_parser import TextNodesParser
+from rag.components.node_parser import SentenceSplitter
 from rag.components.llm import resolve_llm
 from rag.entity.embeddings import EmbedType, resolve_embed_model
-from rag.entity.prompt import BasePromptTemplate
 from rag.entity.schema import TransformComponent
 from rag.entity.callbacks import CallbackManager
 from rag.entity.llm import LLM, LLMType, LLMMetadata
@@ -29,7 +29,7 @@ def _get_default_node_parser(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = SENTENCE_CHUNK_OVERLAP,
     callback_manager: Optional[CallbackManager] = None,
-) -> TextNodesParser:
+) -> SentenceSplitter:
     """Get default node parser."""
     return SentenceSplitter(
         chunk_size=chunk_size,
@@ -70,7 +70,7 @@ class ServiceContext:
     - callback_manager: CallbackManager
 
     """
-
+    llm: LLM
     prompt_helper: PromptHelper
     embed_model: BaseEmbedding
     transformations: List[TransformComponent]
@@ -82,7 +82,7 @@ class ServiceContext:
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = "default",
-        node_parser: Optional[TextNodesParser] = None,
+        node_parser: Optional[SentenceSplitter] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
@@ -113,17 +113,6 @@ class ServiceContext:
                 passed-in input queries.
 
         """
-
-        if llama_index.global_service_context is not None:
-            return cls.from_service_context(
-                llama_index.global_service_context,
-                prompt_helper=prompt_helper,
-                embed_model=embed_model,
-                node_parser=node_parser,
-                text_splitter=text_splitter,
-                callback_manager=callback_manager,
-                chunk_size=chunk_size,
-            )
 
         callback_manager = callback_manager or CallbackManager([])
         if llm != "default":
@@ -171,7 +160,7 @@ class ServiceContext:
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = "default",
-        node_parser: Optional[TextNodesParser] = None,
+        node_parser: Optional[SentenceSplitter] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
@@ -206,7 +195,7 @@ class ServiceContext:
         transformations = transformations or []
         node_parser_found = False
         for transform in service_context.transformations:
-            if isinstance(transform, TextNodesParser):
+            if isinstance(transform, SentenceSplitter):
                 node_parser_found = True
                 node_parser = transform
                 break
@@ -240,10 +229,10 @@ class ServiceContext:
         return self.llm
 
     @property
-    def node_parser(self) -> TextNodesParser:
+    def node_parser(self) -> SentenceSplitter:
         """Get the node parser."""
         for transform in self.transformations:
-            if isinstance(transform, TextNodesParser):
+            if isinstance(transform, SentenceSplitter):
                 return transform
         raise ValueError("No node parser found.")
 
@@ -292,8 +281,3 @@ class ServiceContext:
             embed_model=embed_model,
             transformations=transformations,
         )
-
-
-def set_global_service_context(service_context: Optional[ServiceContext]) -> None:
-    """Helper function to set the global service context."""
-    llama_index.global_service_context = service_context

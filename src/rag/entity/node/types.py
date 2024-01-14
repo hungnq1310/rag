@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 from enum import Enum, auto
-from llama_index.bridge.pydantic import BaseModel, Field
+from rag.bridge.pydantic import BaseModel, Field
 
 class NodeRelationship(str, Enum):
     """Node relationships used in `BaseNode` class.

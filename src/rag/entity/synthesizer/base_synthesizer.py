@@ -12,7 +12,7 @@ from abc import abstractmethod
 from typing import Any, Dict, Generator, List, Optional, Sequence, Union
 
 from rag.entity.callbacks import CBEventType, EventPayload
-from rag.entity.schema import RESPONSE_TEXT_TYPE
+from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
 from rag.entity.retriever import QueryBundle
 from rag.entity.service_context import ServiceContext

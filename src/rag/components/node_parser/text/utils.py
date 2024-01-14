@@ -1,12 +1,9 @@
 import logging
 from typing import Callable, List
 
-from llama_index.node_parser.interface import TextSplitter
+from rag.entity.node_parser import TextSplitter
 
 logger = logging.getLogger(__name__)
-
-logger = logging.getLogger(__name__)
-
 
 def truncate_text(text: str, text_splitter: TextSplitter) -> str:
     """Truncate text to fit within the chunk size."""
