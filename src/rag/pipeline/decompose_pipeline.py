@@ -1,21 +1,21 @@
 import logging
 from typing import Optional, List
 
-from llama_index.retrievers import VectorIndexRetriever
-from llama_index.response_synthesizers.base import BaseSynthesizer
+from rag.entity.indices.vector_store import VectorIndexRetriever
+from rag.entity.synthesizer import BaseSynthesizer
 from llama_index.postprocessor.types import BaseNodePostprocessor
-from llama_index import (
+from rag.entity import (
     VectorStoreIndex,
     StorageContext,
     QueryBundle
 )
 
 from rag.entity.service_context import ServiceContext
-from rag.components.retriever_engine import RetrieverQueryEngine
+from rag.components.engine.retriever_engine import RetrieverQueryEngine
 from rag.components.vector_store.milvus import MilvusVectorStore
-from rag.components.subquestion_engine import SubQuestionQueryEngine
-from rag.components.prompt_template import PromptTemplate
-from rag.components.question_generator import LLMQuestionGenerator
+from rag.components.engine.subquestion_engine import SubQuestionQueryEngine
+from rag.components.prompt.prompt_template import PromptTemplate
+from rag.components.sub_quetion.question_generator import LLMQuestionGenerator
 
 logger = logging.getLogger(__name__)
 
