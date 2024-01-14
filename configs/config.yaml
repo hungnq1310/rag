@@ -10,3 +10,5 @@ milvus_config:
   uri: null
   user: null
 
+node_parser_config: 
+  name: null

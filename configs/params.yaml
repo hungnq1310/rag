@@ -5,12 +5,77 @@ ExtractPDFOptions:
   include_styling_info: False
 
 MilvusParams:
-  collection_name: LangChainCollection
-  consistency_level: Session
-  index_params: null
-  search_params: null
+  collection_name: MilvusCollection
+  embedding_dim: 128
+  embedding_field: null
+  primary_field: null
+  text_field: False
+  consistency_level: doc_id
   overwrite: False
-  primary_field: doc_id
-  text_field: text
-  vector_field: embedding
-  similarity_metric: ip
+  search_params: 
+  index_params: 
+
+NodeParserParams:
+  model_name_tokenizer: VoVanPhuc/sup-SimCSE-VietNamese-phobert-base
+  # fpr sentence splitter 
+  splitter_mode: sentence
+  separator: " "
+  chunk_size: 1024
+  chunk_overlap: 20
+  paragraph_separator: "\n\n\n"
+  secondary_chunking_regex: "[^,.;。？！]+[,.;。？！]?"
+  # for token splitter
+  backup_separators: null
+
+LlmParams:
+  context_window: 3900
+  max_new_tokens: 256
+  model_name: "StabilityAI/stablelm-tuned-alpha-3b"
+  tokenizer_name: "StabilityAI/stablelm-tuned-alpha-3b"
+  device_map: "cuda"
+  top_p: null
+  top_k: null
+  temperature: 0.1
+  length_penalty: null
+  repetition_penalty: null
+  num_beams: 3
+  do_sample : null
+  pelnaty_alpha: null
+  use_cache: True
+  num_return_sequences: 1
+  pad_token_id: null
+  bos_token_id: null
+  eos_token_id: null
+
+embeddings_params:
+  model_name: BAAI/bge-small-en
+  tokenizer_name: BAAI/bge-small-en
+  pooling: cls
+  max_length: 512
+  normalize: True
+  embedding_batch_size: 10
+  cache_folder: "./"
+  trust_remote_code: True
+
+IndexRetrieveParams:
+  index_type: vector_store
+  similarity_top_k: 2
+  sparse_top_k: null 
+  alpha: null
+  list_query_mode: null
+  keyword_table_mode: null
+  max_keywords_per_chunk: null
+  max_keywords_per_query: null
+  num_chunks_per_query: null
+  vector_store_query_mode: default
+  store_nodes_override: False
+  insert_batch_size: 2048
+  use_async: False
+  show_progress: False
+
+
+ResponseParams:
+  verbose: False
+  response_mode: tree_summary
+  use_async: False
+  streaming: False
