@@ -3,7 +3,7 @@ from typing import Dict, Union
 from collections import defaultdict
 from copy import deepcopy
 
-from rag.entity.prompt.base_prompt import BasePromptTemplate
+from .base_prompt import BasePromptTemplate
 
 HasPromptType = Union["PromptMixin", BasePromptTemplate]
 PromptDictType = Dict[str, BasePromptTemplate]

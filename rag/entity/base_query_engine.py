@@ -4,11 +4,11 @@ import logging
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Sequence
 
-from rag.entity.callbacks import CallbackManager
-from rag.entity.synthesizer import RESPONSE_TYPE
-from rag.components.prompt import PromptDictType, PromptMixin
-from rag.entity.node import NodeWithScore
-from rag.entity.retriever import QueryBundle, QueryType
+from .callbacks import CallbackManager
+from .synthesizer import RESPONSE_TYPE
+from .prompt import PromptDictType, PromptMixin
+from .node import NodeWithScore
+from .retriever import QueryBundle, QueryType
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ from typing import Any, Optional, Sequence
 from llama_index.async_utils import run_async_tasks
 from rag.entity.prompt import BasePromptTemplate
 from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
-from rag.components.prompt.mixin import PromptDictType
+from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
 from rag.entity.output_parser import RESPONSE_TEXT_TYPE, BaseModel

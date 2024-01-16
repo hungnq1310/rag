@@ -1,7 +1,7 @@
 from typing import Any, Optional, Sequence
 
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.components.prompt.mixin import PromptDictType
+from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.prompt import BasePromptTemplate
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext

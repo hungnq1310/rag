@@ -15,7 +15,7 @@ from rag.entity.schema import BaseOutputParser
 from rag.entity.prompt.base_prompt import BasePromptTemplate
 from rag.components.sub_quetion import BaseQuestionGenerator, SubQuestion
 from rag.components.sub_quetion.output_parser import SubQuestionOutputParser
-from rag.components.prompt.mixin import PromptDictType
+from rag.entity.prompt.mixin import PromptDictType
 from rag.components.prompt.prompt_template import PromptTemplate
 
 

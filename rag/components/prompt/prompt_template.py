@@ -3,8 +3,7 @@ from copy import deepcopy
 from typing import Any, Callable, Dict, List, Optional
 import logging
 
-from rag.entity.prompt import PromptType
-from rag.entity.prompt.base_prompt import BasePromptTemplate 
+from rag.entity.prompt import PromptType, BasePromptTemplate 
 from rag.entity.output_parser import BaseOutputParser
 from rag.entity.llm.llm import LLM, ChatMessage
 

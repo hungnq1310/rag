@@ -1,13 +1,11 @@
 """Prompts."""
-from copy import deepcopy
 from typing import Any, Callable, Tuple, List, Optional
 import logging
 
-from rag.entity.prompt.base_prompt import BasePromptTemplate 
-from rag.entity.llm import BaseLLM, ChatMessage
-from rag.entity.llm import ChatMessage
+from rag.entity.prompt import BasePromptTemplate 
+from rag.entity.llm import BaseLLM, ChatMessage, ChatMessage
 
-from .utils import get_template_vars, messages_to_prompt, is_chat_model
+from .utils import is_chat_model
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from typing import Any, Sequence
 
-from rag.components.prompt.mixin import PromptDictType
+from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 

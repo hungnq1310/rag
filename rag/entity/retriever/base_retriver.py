@@ -5,7 +5,7 @@ from typing import List, Optional
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.entity.node import NodeWithScore
 from rag.entity.service_context import ServiceContext
-from rag.components.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
+from rag.entity.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
 from .types import *
 
 class BaseRetriever(PromptMixin):

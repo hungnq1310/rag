@@ -2,7 +2,7 @@ from typing import Any, Generator, Optional, Sequence, cast
 
 from rag.entity.prompt import BasePromptTemplate
 from rag.components.prompt.selector_template import DEFAULT_TEXT_QA_PROMPT_SEL
-from rag.components.prompt.mixin import PromptDictType
+from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
 from rag.entity.output_parser import RESPONSE_TEXT_TYPE

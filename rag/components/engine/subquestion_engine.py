@@ -15,7 +15,7 @@ from rag.entity.node.base_node import NodeWithScore, TextNode
 from rag.entity.retriever import QueryBundle
 from rag.entity.synthesizer import RESPONSE_TYPE
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
-from rag.components.prompt.mixin import PromptMixinType
+from rag.entity.prompt.mixin import PromptMixinType
 from rag.components.sub_quetion import BaseQuestionGenerator, SubQuestion
 from rag.components.sub_quetion.question_generator import LLMQuestionGenerator
 from rag.utils.utils import get_color_mapping, print_text

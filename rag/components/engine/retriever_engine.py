@@ -14,7 +14,7 @@ from rag.entity.node.base_node import NodeWithScore
 from rag.entity.retriever.base_retriver import QueryBundle
 from rag.entity.service_context import ServiceContext
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE
-from rag.components.prompt.mixin import PromptMixinType, BasePromptTemplate
+from rag.entity.prompt.mixin import PromptMixinType, BasePromptTemplate
 
 
 class RetrieverQueryEngine(BaseQueryEngine):
