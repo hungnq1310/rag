@@ -6,7 +6,7 @@ from rag.entity.callbacks import CBEventType, EventPayload
 
 from .interface import BaseLLM
 from .types import *
-from .utils import (
+from .generic_utils import (
     messages_to_prompt as generic_messages_to_prompt,
     completion_response_to_chat_response,
     stream_completion_response_to_chat_response,
@@ -97,7 +97,7 @@ class LLM(BaseLLM):
         default=default_completion_to_prompt,
         exclude=True,
     )
-    output_parser: Optional[BaseOutputParser] = Field(
+    output_parser: Optional["BaseOutputParser"] = Field(
         description="Output parser to parse, validate, and correct errors programmatically.",
         default=None,
         exclude=True,

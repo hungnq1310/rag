@@ -17,6 +17,9 @@ class BaseLLM(BaseComponent):
         default_factory=CallbackManager, exclude=True
     )
 
+    class Config:
+        arbitrary_types_allowed = True
+
     @validator("callback_manager", pre=True)
     def _validate_callback_manager(cls, v: CallbackManager) -> CallbackManager:
         if v is None:
