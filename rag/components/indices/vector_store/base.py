@@ -83,7 +83,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
 
     def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
-        from rag.entity.indices.vector_store import VectorIndexRetriever
+        from rag.components.indices.vector_store import VectorIndexRetriever
 
         return VectorIndexRetriever(
             self,
