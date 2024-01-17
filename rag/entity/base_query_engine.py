@@ -5,7 +5,7 @@ from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Sequence
 
 from .callbacks import CallbackManager
-from .synthesizer import RESPONSE_TYPE
+from .synthesizer.types import RESPONSE_TYPE
 from .prompt import PromptDictType, PromptMixin
 from .node import NodeWithScore
 from .retriever import QueryBundle, QueryType

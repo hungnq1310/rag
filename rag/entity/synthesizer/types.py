@@ -3,9 +3,9 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
-from llama_index.bridge.pydantic import BaseModel
+from rag.bridge.pydantic import BaseModel
 from rag.entity.node import NodeWithScore
-from rag.entity.schema import TokenGen
+from rag.entity.output_parser import TokenGen
 from rag.utils.utils import truncate_text
 
 @dataclass

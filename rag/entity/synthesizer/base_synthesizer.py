@@ -16,7 +16,7 @@ from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
 from rag.entity.retriever import QueryBundle
 from rag.entity.service_context import ServiceContext
-from rag.components.prompt import PromptMixin
+from rag.entity.prompt import PromptMixin
 from .types import *
 
 logger = logging.getLogger(__name__)

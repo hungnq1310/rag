@@ -5,7 +5,7 @@ import logging
 
 from rag.entity.prompt import PromptType, BasePromptTemplate
 from rag.entity.output_parser import BaseOutputParser
-from rag.entity.llm.llm import LLM, ChatMessage
+from entity.llm.base import LLM, ChatMessage
 from rag.entity.llm import ChatMessage, MessageRole
 
 from .utils import get_template_vars, messages_to_prompt
