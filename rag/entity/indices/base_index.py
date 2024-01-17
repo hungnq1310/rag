@@ -1,16 +1,19 @@
 """Base index classes."""
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, cast
-from rag.entity.base_query_engine import BaseQueryEngine
-from rag.entity.retriever import BaseRetriever
-from .data_struct import IndexStruct
-from llama_index.ingestion import run_transformations
+from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, TYPE_CHECKING
 
+from llama_index.ingestion import run_transformations
 from rag.entity.node import BaseNode, Document
 from rag.entity.service_context import ServiceContext
-from rag.entity.storage.docstore import BaseDocumentStore, RefDocInfo
 from rag.entity.storage_context import StorageContext
+from .data_struct import IndexStruct
+
+if TYPE_CHECKING:
+    from rag.entity.base_query_engine import BaseQueryEngine
+    from rag.entity.retriever import BaseRetriever
+    from rag.entity.storage.docstore import BaseDocumentStore, RefDocInfo
+
 
 IS = TypeVar("IS", bound=IndexStruct)
 IndexType = TypeVar("IndexType", bound="BaseIndex")
@@ -142,7 +145,7 @@ class BaseIndex(Generic[IS], ABC):
         self._storage_context.index_store.add_index_struct(self._index_struct)
 
     @property
-    def docstore(self) -> BaseDocumentStore:
+    def docstore(self) -> "BaseDocumentStore":
         """Get the docstore corresponding to the index."""
         return self._docstore
 
@@ -329,15 +332,15 @@ class BaseIndex(Generic[IS], ABC):
 
     @property
     @abstractmethod
-    def ref_doc_info(self) -> Dict[str, RefDocInfo]:
+    def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         ...
 
     @abstractmethod
-    def as_retriever(self, **kwargs: Any) -> BaseRetriever:
+    def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         ...
 
-    def as_query_engine(self, **kwargs: Any) -> BaseQueryEngine:
+    def as_query_engine(self, **kwargs: Any) -> "BaseQueryEngine":
         # NOTE: lazy import
         from llama_index.query_engine.retriever_query_engine import RetrieverQueryEngine
 

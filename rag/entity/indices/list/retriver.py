@@ -1,22 +1,24 @@
 """Retrievers for SummaryIndex."""
 import logging
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.list import SummaryIndex
-from rag.entity.indices.get_embeddings import get_top_k_embeddings
-from rag.entity.indices.utils import (
-    default_format_node_batch_fn,
-    default_parse_choice_select_answer_fn,
-)
-from rag.components.prompt.prompt_template import PromptTemplate
+from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
 from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
-from rag.entity.retriever import QueryBundle
-from rag.entity.service_context import ServiceContext
+from .base import SummaryIndex
+from ..get_embeddings import get_top_k_embeddings
+from ..utils import (
+    default_format_node_batch_fn,
+    default_parse_choice_select_answer_fn,
+)
+
+if TYPE_CHECKING:
+    from rag.components.prompt.prompt_template import PromptTemplate
+    from rag.entity.service_context import ServiceContext
+
 
 logger = logging.getLogger(__name__)
 
@@ -146,11 +148,11 @@ class SummaryIndexLLMRetriever(BaseRetriever):
     def __init__(
         self,
         index: SummaryIndex,
-        choice_select_prompt: Optional[PromptTemplate] = None,
+        choice_select_prompt: Optional["PromptTemplate"] = None,
         choice_batch_size: int = 10,
         format_node_batch_fn: Optional[Callable] = None,
         parse_choice_select_answer_fn: Optional[Callable] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         callback_manager: Optional[CallbackManager] = None,
         **kwargs: Any,
     ) -> None:

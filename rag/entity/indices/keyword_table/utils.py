@@ -5,8 +5,8 @@ from typing import Optional, Set
 
 import pandas as pd
 
-from rag.entity.indices.utils import expand_tokens_with_subtokens
 from rag.utils.utils import globals_helper
+from ..utils import expand_tokens_with_subtokens
 
 
 def simple_extract_keywords(

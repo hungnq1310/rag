@@ -3,18 +3,17 @@ from typing import Any, Dict, List, Optional
 
 from rag.entity.callbacks import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.data_struct import IndexDict
-from rag.entity.indices.vector_store import VectorStoreIndex
+from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.entity.node import NodeWithScore, ObjectType
-from rag.entity.retriever import QueryBundle
 from rag.entity.vector_store import (
     MetadataFilters,
     VectorStoreQuery,
     VectorStoreQueryMode,
     VectorStoreQueryResult,
 )
-from rag.entity.indices.utils import log_vector_store_query_result
+from .base import VectorStoreIndex
+from ..data_struct import IndexDict
+from ..utils import log_vector_store_query_result
 
 
 class VectorIndexRetriever(BaseRetriever):

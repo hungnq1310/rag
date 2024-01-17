@@ -4,22 +4,21 @@ An index that that is built on top of an existing vector store.
 
 """
 import logging
-from typing import Any, Dict, List, Optional, Sequence
-
-from rag.utils.async_utils import run_async_tasks
-from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.data_struct import IndexDict
-from rag.entity.indices import BaseIndex
+from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 
 from rag.entity.node import BaseNode, IndexNode, MetadataMode
-from rag.entity.service_context import ServiceContext
 from rag.entity.storage_context import StorageContext
-from rag.entity.vector_store import VectorStore
-
-from rag.entity.storage.docstore import RefDocInfo
+from rag.utils.async_utils import run_async_tasks
 from rag.utils.utils import iter_batch
-from rag.entity.indices.utils import async_embed_nodes, embed_nodes
+from ..data_struct import IndexDict
+from ..base_index import BaseIndex
+from ..utils import async_embed_nodes, embed_nodes
 
+if TYPE_CHECKING:
+    from rag.entity.retriever import BaseRetriever
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.vector_store import VectorStore
+    from rag.entity.storage.docstore import RefDocInfo
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexDict] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         storage_context: Optional[StorageContext] = None,
         use_async: bool = False,
         store_nodes_override: bool = False,
@@ -64,8 +63,8 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
     @classmethod
     def from_vector_store(
         cls,
-        vector_store: VectorStore,
-        service_context: Optional[ServiceContext] = None,
+        vector_store: "VectorStore",
+        service_context: Optional["ServiceContext"] = None,
         **kwargs: Any,
     ) -> "VectorStoreIndex":
         if not vector_store.stores_text:
@@ -79,12 +78,12 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         )
 
     @property
-    def vector_store(self) -> VectorStore:
+    def vector_store(self) -> "VectorStore":
         return self._vector_store
 
-    def as_retriever(self, **kwargs: Any) -> BaseRetriever:
+    def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
-        from llama_index.indices.vector_store.retrievers import VectorIndexRetriever
+        from rag.entity.indices.vector_store import VectorIndexRetriever
 
         return VectorIndexRetriever(
             self,

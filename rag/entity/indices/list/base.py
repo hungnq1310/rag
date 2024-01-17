@@ -6,15 +6,18 @@ in sequence in order to answer a given query.
 """
 
 from enum import Enum
-from typing import Any, Dict, Optional, Sequence, Union
+from typing import Any, Dict, Optional, Sequence, Union, TYPE_CHECKING
 
-from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.data_struct import IndexList
-from rag.entity.indices import BaseIndex
 from rag.entity.node import BaseNode
-from rag.entity.service_context import ServiceContext
 from rag.utils.utils import get_tqdm_iterable
-from rag.entity.storage.docstore import RefDocInfo
+from ..data_struct import IndexList
+from ..base_index import BaseIndex
+
+if TYPE_CHECKING:
+    from rag.entity.retriever import BaseRetriever
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.storage.docstore import RefDocInfo
+
 
 class ListRetrieverMode(str, Enum):
     DEFAULT = "default"

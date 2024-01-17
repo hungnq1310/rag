@@ -10,22 +10,26 @@ existing keywords in the table.
 
 from abc import abstractmethod
 from enum import Enum
-from typing import Any, Dict, Optional, Sequence, Set, Union
+from typing import Any, Dict, Optional, Sequence, Set, Union, TYPE_CHECKING
 
 from rag.utils.async_utils import run_async_tasks
-from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.data_struct import KeywordTable
-from rag.entity.indices import BaseIndex
-from rag.entity.indices.keyword_table.utils import extract_keywords_given_response
-from rag.entity.prompt import BasePromptTemplate
+from rag.entity.node import BaseNode, MetadataMode
+from rag.utils.utils import get_tqdm_iterable
+from ..data_struct import KeywordTable
+from ..base_index import BaseIndex
+from .utils import extract_keywords_given_response
+
 from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
 )
-from rag.entity.node import BaseNode, MetadataMode
-from rag.entity.service_context import ServiceContext
-from rag.entity.storage.docstore import RefDocInfo
-from rag.utils.utils import get_tqdm_iterable
+
+if TYPE_CHECKING:
+    from rag.entity.retriever import BaseRetriever
+    from rag.entity.prompt import BasePromptTemplate
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.storage.docstore import RefDocInfo  
+
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE
 
@@ -63,8 +67,8 @@ class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[KeywordTable] = None,
-        service_context: Optional[ServiceContext] = None,
-        keyword_extract_template: Optional[BasePromptTemplate] = None,
+        service_context: Optional["ServiceContext"] = None,
+        keyword_extract_template: Optional["BasePromptTemplate"] = None,
         max_keywords_per_chunk: int = 10,
         use_async: bool = False,
         show_progress: bool = False,
@@ -95,7 +99,7 @@ class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
             str, KeywordTableRetrieverMode
         ] = KeywordTableRetrieverMode.DEFAULT,
         **kwargs: Any,
-    ) -> BaseRetriever:
+    ) -> "BaseRetriever":
         # NOTE: lazy import
         from llama_index.indices.keyword_table.retrievers import (
             KeywordTableGPTRetriever,
@@ -190,7 +194,7 @@ class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
             del self._index_struct.table[keyword]
 
     @property
-    def ref_doc_info(self) -> Dict[str, RefDocInfo]:
+    def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         node_doc_ids_sets = list(self._index_struct.table.values())
         node_doc_ids = list(set().union(*node_doc_ids_sets))

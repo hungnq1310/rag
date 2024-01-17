@@ -7,8 +7,8 @@ pure LLM calls.
 
 from typing import Any, Dict, Optional, Sequence, TYPE_CHECKING
 
-from rag.entity.indices.data_struct import EmptyIndexStruct
-from rag.entity.indices import BaseIndex
+from ..data_struct import EmptyIndexStruct
+from ..base_index import BaseIndex 
 
 if TYPE_CHECKING:
     from rag.entity.retriever import BaseRetriever

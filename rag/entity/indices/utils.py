@@ -1,12 +1,14 @@
 """Utilities for GPT indices."""
 import logging
 import re
-from typing import Dict, List, Optional, Sequence, Set, Tuple
+from typing import Dict, List, Optional, Sequence, Set, Tuple, TYPE_CHECKING
 
-from rag.entity.embeddings import BaseEmbedding
 from rag.entity.node import BaseNode, MetadataMode
 from rag.utils.utils import globals_helper, truncate_text
 from rag.entity.vector_store import VectorStoreQueryResult
+
+if TYPE_CHECKING:
+    from rag.entity.embeddings import BaseEmbedding
 
 _logger = logging.getLogger(__name__)
 
@@ -110,7 +112,7 @@ def default_parse_choice_select_answer_fn(
 
 
 def embed_nodes(
-    nodes: Sequence[BaseNode], embed_model: BaseEmbedding, show_progress: bool = False
+    nodes: Sequence[BaseNode], embed_model: "BaseEmbedding", show_progress: bool = False
 ) -> Dict[str, List[float]]:
     """Get embeddings of the given nodes, run embedding model if necessary.
 
@@ -145,7 +147,7 @@ def embed_nodes(
 
 
 async def async_embed_nodes(
-    nodes: Sequence[BaseNode], embed_model: BaseEmbedding, show_progress: bool = False
+    nodes: Sequence[BaseNode], embed_model: "BaseEmbedding", show_progress: bool = False
 ) -> Dict[str, List[float]]:
     """Async get embeddings of the given nodes, run embedding model if necessary.
 

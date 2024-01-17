@@ -1,13 +1,16 @@
 """Default query for EmptyIndex."""
-from typing import Any, List, Optional
+from typing import Any, List, Optional, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
 from rag.entity.retriever import BaseRetriever
-from rag.entity.indices.empty import EmptyIndex
-from rag.entity.prompt import BasePromptTemplate
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.entity.node import NodeWithScore
-from rag.entity.retriever import QueryBundle
+from .base import EmptyIndex
+
+if TYPE_CHECKING:
+    from rag.entity.prompt import BasePromptTemplate
+    from rag.entity.node import NodeWithScore
+    from rag.entity.retriever import QueryBundle
+
 
 
 class EmptyIndexRetriever(BaseRetriever):
@@ -24,7 +27,7 @@ class EmptyIndexRetriever(BaseRetriever):
     def __init__(
         self,
         index: EmptyIndex,
-        input_prompt: Optional[BasePromptTemplate] = None,
+        input_prompt: Optional["BasePromptTemplate"] = None,
         callback_manager: Optional[CallbackManager] = None,
         **kwargs: Any,
     ) -> None:
@@ -33,7 +36,7 @@ class EmptyIndexRetriever(BaseRetriever):
         self._input_prompt = input_prompt or DEFAULT_SIMPLE_INPUT_PROMPT
         super().__init__(callback_manager)
 
-    def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
+    def _retrieve(self, query_bundle: "QueryBundle") -> List["NodeWithScore"]:
         """Retrieve relevant nodes."""
         del query_bundle  # Unused
         return []
