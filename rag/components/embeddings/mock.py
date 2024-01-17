@@ -2,7 +2,7 @@
 
 from typing import Any, List
 
-from rag.entity.embeddings import BaseEmbedding
+from rag.entity.embeddings.base_embeddings import BaseEmbedding
 
 
 class MockEmbedding(BaseEmbedding):
