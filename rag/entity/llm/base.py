@@ -10,7 +10,7 @@ from rag.entity.output_parser import (
     TokenGen,
 )
 
-from .base_llm import BaseLLM
+from .interface import BaseLLM
 from .types import *
 from .utils import (
     messages_to_prompt as generic_messages_to_prompt,
