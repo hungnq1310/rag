@@ -2,14 +2,14 @@
 
 from typing import Dict, Type
 
-from .data_struct import (
+from rag.entity.indices.data_struct import (
     EmptyIndexStruct,
     IndexDict,
     IndexList,
     IndexStruct,
     KeywordTable,
 )
-from .types import IndexStructType
+from rag.entity.indices.types import IndexStructType
 
 INDEX_STRUCT_TYPE_TO_INDEX_STRUCT_CLASS: Dict[IndexStructType, Type[IndexStruct]] = {
     IndexStructType.LIST: IndexList,
