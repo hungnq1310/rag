@@ -5,7 +5,7 @@ from typing import Any, Callable, List, Optional, Tuple
 
 import numpy as np
 
-from rag.entity.embeddings import similarity as default_similarity_fn
+from rag.entity.embeddings.base_embeddings import similarity as default_similarity_fn
 from rag.entity.vector_store.types import VectorStoreQueryMode
 
 

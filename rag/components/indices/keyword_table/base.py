@@ -15,8 +15,8 @@ from typing import Any, Dict, Optional, Sequence, Set, Union, TYPE_CHECKING
 from rag.utils.async_utils import run_async_tasks
 from rag.entity.node import BaseNode, MetadataMode
 from rag.utils.utils import get_tqdm_iterable
-from ..data_struct import KeywordTable
-from ..base_index import BaseIndex
+from rag.entity.indices.data_struct import KeywordTable
+from rag.entity.indices.base_index import BaseIndex
 from .utils import extract_keywords_given_response
 
 from rag.constants.default_prompt import (

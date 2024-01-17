@@ -10,9 +10,9 @@ from rag.entity.node import BaseNode, IndexNode, MetadataMode
 from rag.entity.storage_context import StorageContext
 from rag.utils.async_utils import run_async_tasks
 from rag.utils.utils import iter_batch
-from ..data_struct import IndexDict
-from ..base_index import BaseIndex
-from ..utils import async_embed_nodes, embed_nodes
+from rag.entity.indices.data_struct import IndexDict
+from rag.entity.indices.base_index import BaseIndex
+from rag.entity.indices.utils import async_embed_nodes, embed_nodes
 
 if TYPE_CHECKING:
     from rag.entity.retriever import BaseRetriever

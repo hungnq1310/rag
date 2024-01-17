@@ -10,7 +10,7 @@ from rag.constants.default_prompt import (
 from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
 from .base import SummaryIndex
 from ..get_embeddings import get_top_k_embeddings
-from ..utils import (
+from rag.entity.indices.utils import (
     default_format_node_batch_fn,
     default_parse_choice_select_answer_fn,
 )

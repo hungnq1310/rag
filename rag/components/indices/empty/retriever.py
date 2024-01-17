@@ -2,15 +2,13 @@
 from typing import Any, List, Optional, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever
+from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
 from .base import EmptyIndex
 
 if TYPE_CHECKING:
     from rag.entity.prompt import BasePromptTemplate
     from rag.entity.node import NodeWithScore
-    from rag.entity.retriever import QueryBundle
-
 
 
 class EmptyIndexRetriever(BaseRetriever):

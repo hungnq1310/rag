@@ -12,8 +12,8 @@ from rag.entity.vector_store import (
     VectorStoreQueryResult,
 )
 from .base import VectorStoreIndex
-from ..data_struct import IndexDict
-from ..utils import log_vector_store_query_result
+from rag.entity.indices.data_struct import IndexDict
+from rag.entity.indices.utils import log_vector_store_query_result
 
 
 class VectorIndexRetriever(BaseRetriever):

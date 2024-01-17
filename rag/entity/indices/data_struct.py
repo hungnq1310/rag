@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Set
 
 from dataclasses_json import DataClassJsonMixin
 
-from rag.entity.indices.types import IndexStructType
+from .types import IndexStructType
 from rag.entity.node import BaseNode, TextNode
 
 # TODO: legacy backport of old Node class

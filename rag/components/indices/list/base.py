@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional, Sequence, Union, TYPE_CHECKING
 
 from rag.entity.node import BaseNode
 from rag.utils.utils import get_tqdm_iterable
-from ..data_struct import IndexList
-from ..base_index import BaseIndex
+from rag.entity.indices.data_struct import IndexList
+from rag.entity.indices.base_index import BaseIndex
 
 if TYPE_CHECKING:
     from rag.entity.retriever import BaseRetriever
