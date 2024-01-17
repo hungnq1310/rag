@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import os
 
 from rag.constants.default_huggingface import (
@@ -9,11 +9,13 @@ from rag.constants.default_huggingface import (
     DEFAULT_EMBED_INSTRUCTION,
     DEFAULT_QUERY_BGE_INSTRUCTION_EN
 )
-from rag.entity.embeddings import EmbedType, BaseEmbedding
 from rag.utils.utils import get_cache_dir
 
 from .huggingface import HuggingFaceEmbedding
 from .mock import MockEmbedding
+
+if TYPE_CHECKING:
+    from rag.entity.embeddings import EmbedType, BaseEmbedding
 
 def get_query_instruct_for_model_name(model_name: Optional[str]) -> str:
     """Get query text instruction for a given model name."""
@@ -52,7 +54,7 @@ def format_text(
 
 
 
-def resolve_embed_model(embed_model: Optional[EmbedType] = None) -> BaseEmbedding:
+def resolve_embed_model(embed_model: Optional["EmbedType"] = None) -> "BaseEmbedding":
     """Resolve embed model."""
 
     if isinstance(embed_model, str):

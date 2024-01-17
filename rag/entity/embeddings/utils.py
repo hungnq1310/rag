@@ -1,11 +1,9 @@
 """Embedding utils for LlamaIndex."""
 from typing import TYPE_CHECKING, List, Union
 
-if TYPE_CHECKING:
-    from llama_index.bridge.langchain import Embeddings as LCEmbeddings
 from .base_embeddings import BaseEmbedding
 
-EmbedType = Union[BaseEmbedding, "LCEmbeddings", str]
+EmbedType = Union[BaseEmbedding, str]
 
 
 def save_embedding(embedding: List[float], file_path: str) -> None:
