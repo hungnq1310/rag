@@ -5,15 +5,17 @@ pure LLM calls.
 
 """
 
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, Optional, Sequence, TYPE_CHECKING
 
-from rag.entity.base_query_engine import BaseQueryEngine
-from rag.entity.retriever import BaseRetriever
 from rag.entity.indices.data_struct import EmptyIndexStruct
 from rag.entity.indices import BaseIndex
-from rag.entity.node import BaseNode
-from rag.entity.service_context import ServiceContext
-from rag.entity.storage.docstore import RefDocInfo
+
+if TYPE_CHECKING:
+    from rag.entity.retriever import BaseRetriever
+    from rag.entity.base_query_engine import BaseQueryEngine
+    from rag.entity.node import BaseNode
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.storage.docstore import RefDocInfo
 
 
 class EmptyIndex(BaseIndex[EmptyIndexStruct]):
@@ -32,7 +34,7 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
     def __init__(
         self,
         index_struct: Optional[EmptyIndexStruct] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         **kwargs: Any,
     ) -> None:
         """Initialize params."""
@@ -43,13 +45,13 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
             **kwargs,
         )
 
-    def as_retriever(self, **kwargs: Any) -> BaseRetriever:
+    def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
-        from llama_index.indices.empty.retrievers import EmptyIndexRetriever
+        from rag.entity.indices.empty import EmptyIndexRetriever
 
         return EmptyIndexRetriever(self)
 
-    def as_query_engine(self, **kwargs: Any) -> BaseQueryEngine:
+    def as_query_engine(self, **kwargs: Any) -> "BaseQueryEngine":
         if "response_mode" not in kwargs:
             kwargs["response_mode"] = "generation"
         else:
@@ -58,7 +60,7 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
 
         return super().as_query_engine(**kwargs)
 
-    def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> EmptyIndexStruct:
+    def _build_index_from_nodes(self, nodes: Sequence["BaseNode"]) -> EmptyIndexStruct:
         """Build the index from documents.
 
         Args:
@@ -70,7 +72,7 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
         del nodes  # Unused
         return EmptyIndexStruct()
 
-    def _insert(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
+    def _insert(self, nodes: Sequence["BaseNode"], **insert_kwargs: Any) -> None:
         """Insert a document."""
         del nodes  # Unused
         raise NotImplementedError("Cannot insert into an empty index.")
@@ -80,6 +82,6 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
         raise NotImplementedError("Cannot delete from an empty index.")
 
     @property
-    def ref_doc_info(self) -> Dict[str, RefDocInfo]:
+    def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         raise NotImplementedError("ref_doc_info not supported for an empty index.")
