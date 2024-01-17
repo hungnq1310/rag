@@ -1,12 +1,14 @@
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from rag.entity.indices.data_struct import IndexStruct
 from rag.entity.storage.index_store import BaseIndexStore
-from rag.components.storage.index_store.utils import (
+from rag.entity.storage.kv_store.base import BaseKVStore
+from .utils import (
     index_struct_to_json,
     json_to_index_struct,
 )
-from rag.entity.storage.kv_store.base import BaseKVStore
+
+if TYPE_CHECKING:
+    from rag.entity.indices.data_struct import IndexStruct
 
 DEFAULT_NAMESPACE = "index_store"
 
@@ -26,7 +28,7 @@ class KVIndexStore(BaseIndexStore):
         self._namespace = namespace or DEFAULT_NAMESPACE
         self._collection = f"{self._namespace}/data"
 
-    def add_index_struct(self, index_struct: IndexStruct) -> None:
+    def add_index_struct(self, index_struct: "IndexStruct") -> None:
         """Add an index struct.
 
         Args:
@@ -48,7 +50,7 @@ class KVIndexStore(BaseIndexStore):
 
     def get_index_struct(
         self, struct_id: Optional[str] = None
-    ) -> Optional[IndexStruct]:
+    ) -> Optional["IndexStruct"]:
         """Get an index struct.
 
         Args:
@@ -65,7 +67,7 @@ class KVIndexStore(BaseIndexStore):
                 return None
             return json_to_index_struct(json)
 
-    def index_structs(self) -> List[IndexStruct]:
+    def index_structs(self) -> List["IndexStruct"]:
         """Get all index structs.
 
         Returns:

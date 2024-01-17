@@ -9,15 +9,17 @@ Will support different modes, from 1) stuffing chunks into prompt,
 """
 import logging
 from abc import abstractmethod
-from typing import Any, Dict, Generator, List, Optional, Sequence, Union
+from typing import Any, Dict, Generator, List, Optional, Sequence, Union, TYPE_CHECKING
 
 from rag.entity.callbacks import CBEventType, EventPayload
-from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
 from rag.entity.retriever import QueryBundle
 from rag.entity.service_context import ServiceContext
 from rag.entity.prompt import PromptMixin
 from .types import *
+
+if TYPE_CHECKING:
+    from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +56,7 @@ class BaseSynthesizer(PromptMixin):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         """Get response."""
         ...
 
@@ -64,14 +66,14 @@ class BaseSynthesizer(PromptMixin):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         """Get response."""
         ...
 
     def _log_prompt_and_response(
         self,
         formatted_prompt: str,
-        response: RESPONSE_TEXT_TYPE,
+        response: "RESPONSE_TEXT_TYPE",
         log_prefix: str = "",
     ) -> None:
         """Log prompt and response from LLM."""
@@ -93,7 +95,7 @@ class BaseSynthesizer(PromptMixin):
 
     def _prepare_response_output(
         self,
-        response_str: Optional[RESPONSE_TEXT_TYPE],
+        response_str: Optional["RESPONSE_TEXT_TYPE"],
         source_nodes: List[NodeWithScore],
     ) -> RESPONSE_TYPE:
         """Prepare response object from response string."""

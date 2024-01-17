@@ -1,6 +1,6 @@
 """Token splitter."""
 import logging
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
@@ -9,10 +9,11 @@ from rag.entity.node_parser import (
     MetadataAwareTextSplitter, 
     default_id_func,
 )
-from rag.entity.node import Document
 from rag.utils.utils import get_tokenizer
-
 from .utils import split_by_char, split_by_sep
+
+if TYPE_CHECKING:
+    from rag.entity.node import Document
 
 _logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ class TokenTextSplitter(MetadataAwareTextSplitter):
         backup_separators: Optional[List[str]] = ["\n"],
         include_metadata: bool = True,
         include_prev_next_rel: bool = True,
-        id_func: Optional[Callable[[int, Document], str]] = None,
+        id_func: Optional[Callable[[int, "Document"], str]] = None,
     ):
         """Initialize with parameters."""
         if chunk_overlap > chunk_size:

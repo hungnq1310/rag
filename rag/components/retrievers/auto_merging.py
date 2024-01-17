@@ -2,15 +2,16 @@
 
 import logging
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple, cast
+from typing import Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.utils.utils import truncate_text
+from rag.entity.node import BaseNode, NodeWithScore
+from rag.entity.retriever import BaseRetriever, QueryBundle
 
-from rag.entity.node import BaseNode, NodeWithScore, QueryBundle
-from rag.entity.storage_context import StorageContext
-from rag.entity.indices.vector_store.retriver import VectorIndexRetriever
+if TYPE_CHECKING:
+    from rag.entity.indices.vector_store.retriver import VectorIndexRetriever
+    from rag.entity.storage_context import StorageContext
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +26,8 @@ class AutoMergingRetriever(BaseRetriever):
 
     def __init__(
         self,
-        vector_retriever: VectorIndexRetriever,
-        storage_context: StorageContext,
+        vector_retriever: "VectorIndexRetriever",
+        storage_context: "StorageContext",
         simple_ratio_thresh: float = 0.5,
         verbose: bool = False,
         callback_manager: Optional[CallbackManager] = None,

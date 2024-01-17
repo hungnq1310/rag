@@ -1,14 +1,8 @@
 from collections import ChainMap
-from typing import List, Protocol, Sequence, runtime_checkable, Any, Union
+from typing import List, Protocol, Sequence, runtime_checkable, Any, Union, TYPE_CHECKING
 
 from rag.bridge.pydantic import validator
 from rag.entity.callbacks import CBEventType, EventPayload
-from rag.entity.prompt.base_prompt import BasePromptTemplate
-from rag.entity.output_parser import (
-    BaseOutputParser,
-    TokenAsyncGen,
-    TokenGen,
-)
 
 from .interface import BaseLLM
 from .types import *
@@ -20,6 +14,9 @@ from .utils import (
     llm_completion_callback
 )
 
+if TYPE_CHECKING:
+    from rag.entity.prompt.base_prompt import BasePromptTemplate
+    from rag.entity.output_parser import BaseOutputParser, TokenAsyncGen, TokenGen
 
 # NOTE: These two protocols are needed to appease mypy
 @runtime_checkable
@@ -36,10 +33,10 @@ class CompletionToPromptType(Protocol):
 
 def stream_completion_response_to_tokens(
     completion_response_gen: CompletionResponseGen,
-) -> TokenGen:
+) -> "TokenGen":
     """Convert a stream completion response to a stream of tokens."""
 
-    def gen() -> TokenGen:
+    def gen() -> "TokenGen":
         for response in completion_response_gen:
             yield response.delta or ""
 
@@ -48,10 +45,10 @@ def stream_completion_response_to_tokens(
 
 def stream_chat_response_to_tokens(
     chat_response_gen: ChatResponseGen,
-) -> TokenGen:
+) -> "TokenGen":
     """Convert a stream completion response to a stream of tokens."""
 
-    def gen() -> TokenGen:
+    def gen() -> "TokenGen":
         for response in chat_response_gen:
             yield response.delta or ""
 
@@ -60,10 +57,10 @@ def stream_chat_response_to_tokens(
 
 async def astream_completion_response_to_tokens(
     completion_response_gen: CompletionResponseAsyncGen,
-) -> TokenAsyncGen:
+) -> "TokenAsyncGen":
     """Convert a stream completion response to a stream of tokens."""
 
-    async def gen() -> TokenAsyncGen:
+    async def gen() -> "TokenAsyncGen":
         async for response in completion_response_gen:
             yield response.delta or ""
 
@@ -72,10 +69,10 @@ async def astream_completion_response_to_tokens(
 
 async def astream_chat_response_to_tokens(
     chat_response_gen: ChatResponseAsyncGen,
-) -> TokenAsyncGen:
+) -> "TokenAsyncGen":
     """Convert a stream completion response to a stream of tokens."""
 
-    async def gen() -> TokenAsyncGen:
+    async def gen() -> "TokenAsyncGen":
         async for response in chat_response_gen:
             yield response.delta or ""
 
@@ -105,7 +102,7 @@ class LLM(BaseLLM):
         default=None,
         exclude=True,
     )
-    query_wrapper_prompt: Optional[BasePromptTemplate] = Field(
+    query_wrapper_prompt: Optional["BasePromptTemplate"] = Field(
         description="Query wrapper prompt for LLM calls.",
         default=None,
         exclude=True,
@@ -125,7 +122,7 @@ class LLM(BaseLLM):
         return completion_to_prompt or default_completion_to_prompt
 
     def _log_template_data(
-        self, prompt: BasePromptTemplate, **prompt_args: Any
+        self, prompt: "BasePromptTemplate", **prompt_args: Any
     ) -> None:
         template_vars = {
             k: v
@@ -142,7 +139,7 @@ class LLM(BaseLLM):
         ):
             pass
 
-    def _get_prompt(self, prompt: BasePromptTemplate, **prompt_args: Any) -> str:
+    def _get_prompt(self, prompt: "BasePromptTemplate", **prompt_args: Any) -> str:
         formatted_prompt = prompt.format(
             llm=self,
             messages_to_prompt=self.messages_to_prompt,
@@ -154,7 +151,7 @@ class LLM(BaseLLM):
         return self._extend_prompt(formatted_prompt)
 
     def _get_messages(
-        self, prompt: BasePromptTemplate, **prompt_args: Any
+        self, prompt: "BasePromptTemplate", **prompt_args: Any
     ) -> List[ChatMessage]:
         messages = prompt.format_messages(llm=self, **prompt_args)
         if self.output_parser is not None:
@@ -231,7 +228,7 @@ class LLM(BaseLLM):
 
     def predict(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
     ) -> str:
         """Predict."""
@@ -250,9 +247,9 @@ class LLM(BaseLLM):
 
     def stream(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
-    ) -> TokenGen:
+    ) -> "TokenGen":
         """Stream."""
         self._log_template_data(prompt, **prompt_args)
 
@@ -272,7 +269,7 @@ class LLM(BaseLLM):
 
     async def apredict(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
     ) -> str:
         """Async predict."""
@@ -291,9 +288,9 @@ class LLM(BaseLLM):
 
     async def astream(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
-    ) -> TokenAsyncGen:
+    ) -> "TokenAsyncGen":
         """Async stream."""
         self._log_template_data(prompt, **prompt_args)
 

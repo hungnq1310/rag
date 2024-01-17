@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from rag.bridge.pydantic import BaseModel
 # TODO: explore selectors
@@ -7,9 +7,6 @@ from rag.components.prompt.selector_template import (
     DEFAULT_TREE_SUMMARIZE_PROMPT_SEL,
 )
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.entity.callbacks import CallbackManager
-from rag.entity.prompt import BasePromptTemplate
-from rag.entity.synthesizer import BaseSynthesizer
 from rag.entity.service_context import ServiceContext
 from . import (
     Generation,
@@ -19,14 +16,19 @@ from . import (
     ResponseMode
 )
 
+if TYPE_CHECKING:
+    from rag.entity.callbacks import CallbackManager
+    from rag.entity.prompt import BasePromptTemplate
+    from rag.entity.synthesizer import BaseSynthesizer
+
 
 def get_response_synthesizer(
     service_context: Optional[ServiceContext] = None,
-    text_qa_template: Optional[BasePromptTemplate] = None,
-    summary_template: Optional[BasePromptTemplate] = None,
-    simple_template: Optional[BasePromptTemplate] = None,
+    text_qa_template: Optional["BasePromptTemplate"] = None,
+    summary_template: Optional["BasePromptTemplate"] = None,
+    simple_template: Optional["BasePromptTemplate"] = None,
     response_mode: ResponseMode = ResponseMode.SIMPLE_SUMMARIZE,
-    callback_manager: Optional[CallbackManager] = None,
+    callback_manager: Optional["CallbackManager"] = None,
     use_async: bool = False,
     streaming: bool = False,
     output_cls: Optional[BaseModel] = None,

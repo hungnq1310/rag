@@ -1,6 +1,6 @@
 """Sentence splitter."""
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
@@ -12,8 +12,10 @@ from rag.components.node_parser.text.utils import (
     split_by_sentence_tokenizer,
     split_by_sep,
 )
-from rag.entity.node import Document
 from rag.utils.utils import get_tokenizer
+
+if TYPE_CHECKING:
+    from rag.entity.node import Document
 
 SENTENCE_CHUNK_OVERLAP = 200
 CHUNKING_REGEX = "[^,.;。？！]+[,.;。？！]?"
@@ -71,7 +73,7 @@ class SentenceSplitter(MetadataAwareTextSplitter):
         callback_manager: Optional[CallbackManager] = None,
         include_metadata: bool = True,
         include_prev_next_rel: bool = True,
-        id_func: Optional[Callable[[int, Document], str]] = None,
+        id_func: Optional[Callable[[int, "Document"], str]] = None,
     ):
         """Initialize with parameters."""
         if chunk_overlap > chunk_size:

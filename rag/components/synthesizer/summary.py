@@ -1,28 +1,29 @@
-from typing import Any, Generator, Optional, Sequence, cast
+from typing import Any, Generator, Optional, Sequence, cast, TYPE_CHECKING
 
-from rag.entity.prompt import BasePromptTemplate
 from rag.components.prompt.selector_template import DEFAULT_TEXT_QA_PROMPT_SEL
-from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
-from rag.entity.service_context import ServiceContext
-from rag.entity.output_parser import RESPONSE_TEXT_TYPE
+
+if TYPE_CHECKING:
+    from rag.entity.prompt import BasePromptTemplate, PromptDictType
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 
 
 class SimpleSummarize(BaseSynthesizer):
     def __init__(
         self,
-        text_qa_template: Optional[BasePromptTemplate] = None,
-        service_context: Optional[ServiceContext] = None,
+        text_qa_template: Optional["BasePromptTemplate"] = None,
+        service_context: Optional["ServiceContext"] = None,
         streaming: bool = False,
     ) -> None:
         super().__init__(service_context=service_context, streaming=streaming)
         self._text_qa_template = text_qa_template or DEFAULT_TEXT_QA_PROMPT_SEL
 
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         return {"text_qa_template": self._text_qa_template}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
         if "text_qa_template" in prompts:
             self._text_qa_template = prompts["text_qa_template"]
@@ -32,7 +33,7 @@ class SimpleSummarize(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         text_qa_template = self._text_qa_template.partial_format(query_str=query_str)
         truncated_chunks = self._service_context.prompt_helper.truncate(
             prompt=text_qa_template,
@@ -40,7 +41,7 @@ class SimpleSummarize(BaseSynthesizer):
         )
         node_text = "\n".join(truncated_chunks)
 
-        response: RESPONSE_TEXT_TYPE
+        response: "RESPONSE_TEXT_TYPE"
         if not self._streaming:
             response = await self._service_context.llm.apredict(
                 text_qa_template,
@@ -66,7 +67,7 @@ class SimpleSummarize(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         text_qa_template = self._text_qa_template.partial_format(query_str=query_str)
         truncated_chunks = self._service_context.prompt_helper.truncate(
             prompt=text_qa_template,
@@ -74,7 +75,7 @@ class SimpleSummarize(BaseSynthesizer):
         )
         node_text = "\n".join(truncated_chunks)
 
-        response: RESPONSE_TEXT_TYPE
+        response: "RESPONSE_TEXT_TYPE"
         if not self._streaming:
             response = self._service_context.llm.predict(
                 text_qa_template,

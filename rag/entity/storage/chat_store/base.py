@@ -1,10 +1,11 @@
 """Base interface class for storing chat history per user."""
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from rag.entity.llm import ChatMessage
 from rag.entity.schema import BaseComponent
 
+if TYPE_CHECKING:
+    from rag.entity.llm import ChatMessage
 
 class BaseChatStore(BaseComponent):
     @classmethod
@@ -13,12 +14,12 @@ class BaseChatStore(BaseComponent):
         return "BaseChatStore"
 
     @abstractmethod
-    def set_messages(self, key: str, messages: List[ChatMessage]) -> None:
+    def set_messages(self, key: str, messages: List["ChatMessage"]) -> None:
         """Set messages for a key."""
         ...
 
     @abstractmethod
-    def get_messages(self, key: str) -> List[ChatMessage]:
+    def get_messages(self, key: str) -> List["ChatMessage"]:
         """Get messages for a key."""
         ...
 
@@ -28,17 +29,17 @@ class BaseChatStore(BaseComponent):
         ...
 
     @abstractmethod
-    def delete_messages(self, key: str) -> Optional[List[ChatMessage]]:
+    def delete_messages(self, key: str) -> Optional[List["ChatMessage"]]:
         """Delete messages for a key."""
         ...
 
     @abstractmethod
-    def delete_message(self, key: str, idx: int) -> Optional[ChatMessage]:
+    def delete_message(self, key: str, idx: int) -> Optional["ChatMessage"]:
         """Delete specific message for a key."""
         ...
 
     @abstractmethod
-    def delete_last_message(self, key: str) -> Optional[ChatMessage]:
+    def delete_last_message(self, key: str) -> Optional["ChatMessage"]:
         """Delete last message for a key."""
         ...
 

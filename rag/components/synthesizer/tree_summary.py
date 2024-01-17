@@ -1,13 +1,15 @@
 import asyncio
-from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence, TYPE_CHECKING
 
-from llama_index.async_utils import run_async_tasks
-from rag.entity.prompt import BasePromptTemplate
-from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
-from rag.entity.prompt.mixin import PromptDictType
+from rag.bridge.pydantic import BaseModel
 from rag.entity.synthesizer import BaseSynthesizer
-from rag.entity.service_context import ServiceContext
-from rag.entity.output_parser import RESPONSE_TEXT_TYPE, BaseModel
+from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
+from rag.utils.async_utils import run_async_tasks
+
+if TYPE_CHECKING:
+    from rag.entity.prompt import BasePromptTemplate, PromptDictType
+    from rag.entity.service_context import ServiceContext
+    from rag.entity.output_parser import RESPONSE_TEXT_TYPE
 
 
 class TreeSummarize(BaseSynthesizer):
@@ -25,9 +27,9 @@ class TreeSummarize(BaseSynthesizer):
 
     def __init__(
         self,
-        summary_template: Optional[BasePromptTemplate] = None,
-        service_context: Optional[ServiceContext] = None,
-        output_cls: Optional[BaseModel] = None,
+        summary_template: Optional["BasePromptTemplate"] = None,
+        service_context: Optional["ServiceContext"] = None,
+        output_cls: Optional["BaseModel"] = None,
         streaming: bool = False,
         use_async: bool = False,
         verbose: bool = False,
@@ -39,11 +41,11 @@ class TreeSummarize(BaseSynthesizer):
         self._use_async = use_async
         self._verbose = verbose
 
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         return {"summary_template": self._summary_template}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
         if "summary_template" in prompts:
             self._summary_template = prompts["summary_template"]
@@ -53,7 +55,7 @@ class TreeSummarize(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         """Get tree summarize response."""
         summary_template = self._summary_template.partial_format(query_str=query_str)
         # repack text_chunks so that each chunk fills the context window
@@ -66,7 +68,7 @@ class TreeSummarize(BaseSynthesizer):
 
         # give final response if there is only one chunk
         if len(text_chunks) == 1:
-            response: RESPONSE_TEXT_TYPE
+            response: "RESPONSE_TEXT_TYPE"
             if self._streaming:
                 response = self._service_context.llm.stream(
                     summary_template, context_str=text_chunks[0], **response_kwargs
@@ -129,7 +131,7 @@ class TreeSummarize(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         """Get tree summarize response."""
         summary_template = self._summary_template.partial_format(query_str=query_str)
         # repack text_chunks so that each chunk fills the context window
@@ -142,7 +144,7 @@ class TreeSummarize(BaseSynthesizer):
 
         # give final response if there is only one chunk
         if len(text_chunks) == 1:
-            response: RESPONSE_TEXT_TYPE
+            response: "RESPONSE_TEXT_TYPE"
             if self._streaming:
                 response = self._service_context.llm.stream(
                     summary_template, context_str=text_chunks[0], **response_kwargs

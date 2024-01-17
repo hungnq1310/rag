@@ -1,10 +1,10 @@
 from typing import Dict, Type
 
 from rag.entity.node_parser import NodeParser
-from rag.components.node_parser.relationship.hierarchical import HierarchicalNodeParser
-from rag.components.node_parser.text.sentence import SentenceSplitter
-from rag.components.node_parser.text.sentence_window import SentenceWindowNodeParser
-from rag.components.node_parser.text.token import TokenTextSplitter
+from .relationship.hierarchical import HierarchicalNodeParser
+from .text.sentence import SentenceSplitter
+from .text.sentence_window import SentenceWindowNodeParser
+from .text.token import TokenTextSplitter
 
 all_node_parsers: Dict[str, Type[NodeParser]] = {
     HierarchicalNodeParser.class_name(): HierarchicalNodeParser,

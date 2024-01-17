@@ -13,11 +13,13 @@ from typing import (
     TypeVar,
     Union,
     runtime_checkable,
-    Dict
+    TYPE_CHECKING
 )
 
 from rag.bridge.pydantic import BaseModel
-from .llm import ChatMessage, MessageRole
+
+if TYPE_CHECKING:
+    from .llm.types import ChatMessage, MessageRole
 
 
 Model = TypeVar("Model", bound=BaseModel)
@@ -41,7 +43,7 @@ class BaseOutputParser(Protocol):
     def format(self, query: str) -> str:
         """Format a query with structured output formatting instructions."""
 
-    def format_messages(self, messages: List[ChatMessage]) -> List[ChatMessage]:
+    def format_messages(self, messages: List["ChatMessage"]) -> List["ChatMessage"]:
         """Format a list of messages with structured output formatting instructions."""
         # NOTE: apply output parser to either the first message if it's a system message
         #       or the last message

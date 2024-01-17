@@ -12,7 +12,7 @@ from rag.entity.vector_store import (
     VectorStoreQueryMode,
     VectorStoreQueryResult,
 )
-from rag.entity.vector_store import (
+from rag.entity.vector_store.utils import (
     metadata_dict_to_node,
     node_to_metadata_dict,
 )

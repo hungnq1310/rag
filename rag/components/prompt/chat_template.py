@@ -1,14 +1,15 @@
 """Prompts."""
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 import logging
 
 from rag.entity.prompt import PromptType, BasePromptTemplate
-from rag.entity.output_parser import BaseOutputParser
-from entity.llm.base import LLM, ChatMessage
-from rag.entity.llm import ChatMessage, MessageRole
+from rag.entity.llm import ChatMessage, MessageRole, LLM, ChatMessage
 
 from .utils import get_template_vars, messages_to_prompt
+
+if TYPE_CHECKING:
+    from rag.entity.output_parser import BaseOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class ChatPromptTemplate(BasePromptTemplate):
         self,
         message_templates: List[ChatMessage],
         prompt_type: str = PromptType.CUSTOM,
-        output_parser: Optional[BaseOutputParser] = None,
+        output_parser: Optional["BaseOutputParser"] = None,
         metadata: Optional[Dict[str, Any]] = None,
         template_var_mappings: Optional[Dict[str, Any]] = None,
         function_mappings: Optional[Dict[str, Callable]] = None,

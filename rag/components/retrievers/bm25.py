@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, List, Optional, cast
+from typing import Callable, List, Optional, cast, TYPE_CHECKING
 
 from nltk.stem import PorterStemmer
 
@@ -9,7 +9,9 @@ from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.entity.node import BaseNode, NodeWithScore
 from rag.entity.indices.keyword_table.utils import simple_extract_keywords
 from rag.entity.indices.vector_store import VectorStoreIndex
-from rag.entity.storage.docstore import BaseDocumentStore
+
+if TYPE_CHECKING:
+    from rag.entity.storage.docstore import BaseDocumentStore
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +49,7 @@ class BM25Retriever(BaseRetriever):
         cls,
         index: Optional[VectorStoreIndex] = None,
         nodes: Optional[List[BaseNode]] = None,
-        docstore: Optional[BaseDocumentStore] = None,
+        docstore: Optional["BaseDocumentStore"] = None,
         tokenizer: Optional[Callable[[str], List[str]]] = None,
         similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
     ) -> "BM25Retriever":

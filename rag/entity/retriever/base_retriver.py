@@ -1,12 +1,14 @@
 """Base retriever."""
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.entity.node import NodeWithScore
-from rag.entity.service_context import ServiceContext
 from rag.entity.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
 from .types import *
+
+if TYPE_CHECKING:
+    from rag.entity.node import NodeWithScore
+    from rag.entity.service_context import ServiceContext
 
 class BaseRetriever(PromptMixin):
     """Base retriever."""
@@ -30,7 +32,7 @@ class BaseRetriever(PromptMixin):
     def _update_prompts(self, prompts: PromptDictType) -> None:
         """Update prompts."""
 
-    def retrieve(self, str_or_query_bundle: QueryType) -> List[NodeWithScore]:
+    def retrieve(self, str_or_query_bundle: QueryType) -> List["NodeWithScore"]:
         """Retrieve nodes given query.
 
         Args:
@@ -55,7 +57,7 @@ class BaseRetriever(PromptMixin):
                 )
         return nodes
 
-    async def aretrieve(self, str_or_query_bundle: QueryType) -> List[NodeWithScore]:
+    async def aretrieve(self, str_or_query_bundle: QueryType) -> List["NodeWithScore"]:
         self._check_callback_manager()
 
         if isinstance(str_or_query_bundle, str):
@@ -74,7 +76,7 @@ class BaseRetriever(PromptMixin):
         return nodes
 
     @abstractmethod
-    def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
+    def _retrieve(self, query_bundle: QueryBundle) -> List["NodeWithScore"]:
         """Retrieve nodes given query.
 
         Implemented by the user.
@@ -83,7 +85,7 @@ class BaseRetriever(PromptMixin):
 
     # TODO: make this abstract
     # @abstractmethod
-    async def _aretrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
+    async def _aretrieve(self, query_bundle: QueryBundle) -> List["NodeWithScore"]:
         """Asynchronously retrieve nodes given query.
 
         Implemented by the user.
@@ -91,7 +93,7 @@ class BaseRetriever(PromptMixin):
         """
         return self._retrieve(query_bundle)
 
-    def get_service_context(self) -> Optional[ServiceContext]:
+    def get_service_context(self) -> Optional["ServiceContext"]:
         """Attempts to resolve a service context.
         Short-circuits at self.service_context, self._service_context,
         or self._index.service_context.

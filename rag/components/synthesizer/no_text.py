@@ -1,16 +1,18 @@
-from typing import Any, Sequence
+from typing import Any, Sequence, TYPE_CHECKING
 
-from rag.entity.prompt.mixin import PromptDictType
 from rag.entity.synthesizer import BaseSynthesizer
-from rag.entity.output_parser import RESPONSE_TEXT_TYPE
+
+if TYPE_CHECKING:
+    from rag.entity.output_parser import RESPONSE_TEXT_TYPE
+    from rag.entity.prompt.mixin import PromptDictType
 
 
 class NoText(BaseSynthesizer):
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         return {}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
 
     def get_response(
@@ -18,7 +20,7 @@ class NoText(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         return ""
 
     async def aget_response(
@@ -26,5 +28,5 @@ class NoText(BaseSynthesizer):
         query_str: str,
         text_chunks: Sequence[str],
         **response_kwargs: Any,
-    ) -> RESPONSE_TEXT_TYPE:
+    ) -> "RESPONSE_TEXT_TYPE":
         return ""

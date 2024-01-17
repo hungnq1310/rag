@@ -1,12 +1,14 @@
 from abc import abstractmethod
-from typing import Any, Sequence
+from typing import Any, Sequence, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, validator
 from rag.entity.callbacks import CallbackManager
 from rag.entity.schema import BaseComponent
-from rag.entity.prompt import BasePromptTemplate
-from rag.entity.output_parser import TokenAsyncGen, TokenGen
 from .types import *
+
+if TYPE_CHECKING:
+    from rag.entity.output_parser import TokenAsyncGen, TokenGen
+    from rag.entity.prompt import BasePromptTemplate
 
 class BaseLLM(BaseComponent):
     """LLM interface."""
@@ -70,7 +72,7 @@ class BaseLLM(BaseComponent):
     @abstractmethod
     def predict(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
     ) -> str:
         """Calling complete process from prompt to response"""
@@ -78,16 +80,16 @@ class BaseLLM(BaseComponent):
     @abstractmethod
     def stream(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
-    ) -> TokenGen:
+    ) -> "TokenGen":
         """Streaming complete process from prompt to response"""
 
 
     @abstractmethod
     async def apredict(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
     ) -> str:
         """Async calling complete process from prompt to response"""
@@ -96,9 +98,9 @@ class BaseLLM(BaseComponent):
     @abstractmethod
     async def astream(
         self,
-        prompt: BasePromptTemplate,
+        prompt: "BasePromptTemplate",
         **prompt_args: Any,
-    ) -> TokenAsyncGen:
+    ) -> "TokenAsyncGen":
         """Async calling streaming process from prompt to response"""
 
 

@@ -1,12 +1,14 @@
 """Response schema."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 from rag.bridge.pydantic import BaseModel
-from rag.entity.node import NodeWithScore
-from rag.entity.output_parser import TokenGen
 from rag.utils.utils import truncate_text
+
+if TYPE_CHECKING:
+    from rag.entity.node import NodeWithScore
+    from rag.entity.output_parser import TokenGen
 
 @dataclass
 class Response:
@@ -20,7 +22,7 @@ class Response:
     """
 
     response: Optional[str]
-    source_nodes: List[NodeWithScore] = field(default_factory=list)
+    source_nodes: List["NodeWithScore"] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
 
     def __str__(self) -> str:
@@ -50,7 +52,7 @@ class PydanticResponse:
     """
 
     response: Optional[BaseModel]
-    source_nodes: List[NodeWithScore] = field(default_factory=list)
+    source_nodes: List["NodeWithScore"] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
 
     def __str__(self) -> str:
@@ -91,8 +93,8 @@ class StreamingResponse:
 
     """
 
-    response_gen: TokenGen
-    source_nodes: List[NodeWithScore] = field(default_factory=list)
+    response_gen: "TokenGen"
+    source_nodes: List["NodeWithScore"] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
     response_txt: Optional[str] = None
 
