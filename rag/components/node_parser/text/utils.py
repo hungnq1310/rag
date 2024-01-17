@@ -1,15 +1,7 @@
 import logging
-from typing import Callable, List, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from rag.entity.node_parser import TextSplitter
+from typing import Callable, List
 
 logger = logging.getLogger(__name__)
-
-def truncate_text(text: str, text_splitter: "TextSplitter") -> str:
-    """Truncate text to fit within the chunk size."""
-    chunks = text_splitter.split_text(text)
-    return chunks[0]
 
 
 def split_text_keep_separator(text: str, separator: str) -> List[str]:

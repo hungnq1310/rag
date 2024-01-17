@@ -3,9 +3,9 @@
 from typing import Any, Dict, List, Optional, Sequence
 
 from rag.bridge.pydantic import Field
-from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.entity.node_parser import NodeParser
-from rag.entity.node import BaseNode, Document, NodeRelationship
+from rag.entity.callbacks.callback_manager import CallbackManager, CBEventType, EventPayload
+from rag.entity.node_parser.base import NodeParser
+from rag.entity.node.base_node import BaseNode, Document, NodeRelationship
 from rag.components.node_parser.text.sentence import SentenceSplitter
 from rag.utils.utils import get_tqdm_iterable
 

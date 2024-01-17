@@ -5,10 +5,8 @@ from typing import Callable, List, Optional, TYPE_CHECKING
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.constants import DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE
-from rag.entity.node_parser import (
-    MetadataAwareTextSplitter, 
-    default_id_func,
-)
+from rag.entity.node_parser.base import MetadataAwareTextSplitter 
+from rag.entity.node_parser.utils import default_id_func 
 from rag.utils.utils import get_tokenizer
 from .utils import split_by_char, split_by_sep
 

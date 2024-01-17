@@ -3,10 +3,11 @@ from typing import Any, Callable, List, Optional, Sequence
 
 from rag.bridge.pydantic import Field
 from rag.entity.callbacks import CallbackManager
-from rag.entity.node_parser import NodeParser, build_nodes_from_splits
-from rag.entity.node import BaseNode, Document, MetadataMode
+from rag.entity.node_parser.base import NodeParser
+from rag.entity.node_parser.utils import build_nodes_from_splits
+from rag.entity.node.base_node import BaseNode, Document, MetadataMode
 from rag.utils.utils import get_tqdm_iterable
-from rag.components.node_parser.text.utils import split_by_sentence_tokenizer
+from .utils import split_by_sentence_tokenizer
 
 DEFAULT_WINDOW_SIZE = 3
 DEFAULT_WINDOW_METADATA_KEY = "window"
