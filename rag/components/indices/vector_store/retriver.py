@@ -1,20 +1,19 @@
 """Base vector store index query."""
 from typing import Any, Dict, List, Optional
 
-from rag.entity.callbacks import CallbackManager
+from rag.entity.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.entity.retriever import BaseRetriever, QueryBundle
-from rag.entity.node import NodeWithScore, ObjectType
-from rag.entity.vector_store import (
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.entity.node.base_node import NodeWithScore, ObjectType
+from rag.entity.vector_store.types import (
     MetadataFilters,
     VectorStoreQuery,
     VectorStoreQueryMode,
     VectorStoreQueryResult,
 )
-from .base import VectorStoreIndex
 from rag.entity.indices.data_struct import IndexDict
 from rag.entity.indices.utils import log_vector_store_query_result
-
+from .base import VectorStoreIndex
 
 class VectorIndexRetriever(BaseRetriever):
     """Vector index retriever.

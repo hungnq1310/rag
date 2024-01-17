@@ -2,12 +2,12 @@
 import logging
 from typing import Any, Callable, List, Optional, Tuple, TYPE_CHECKING
 
-from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever, QueryBundle
+from rag.entity.callbacks.callback_manager import CallbackManager
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
-from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
+from rag.entity.node.base_node import BaseNode, MetadataMode, NodeWithScore
 from .base import SummaryIndex
 from ..get_embeddings import get_top_k_embeddings
 from rag.entity.indices.utils import (

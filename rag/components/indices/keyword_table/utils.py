@@ -1,24 +1,7 @@
 """Utils for keyword table."""
+from typing import Set
 
-import re
-from typing import Optional, Set
-
-import pandas as pd
-
-from rag.utils.utils import globals_helper
 from rag.entity.indices.utils import expand_tokens_with_subtokens
-
-
-def simple_extract_keywords(
-    text_chunk: str, max_keywords: Optional[int] = None, filter_stopwords: bool = True
-) -> Set[str]:
-    """Extract keywords with simple algorithm."""
-    tokens = [t.strip().lower() for t in re.findall(r"\w+", text_chunk)]
-    if filter_stopwords:
-        tokens = [t for t in tokens if t not in globals_helper.stopwords]
-    value_counts = pd.Series(tokens).value_counts()
-    keywords = value_counts.index.tolist()[:max_keywords]
-    return set(keywords)
 
 
 def extract_keywords_given_response(

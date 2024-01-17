@@ -4,13 +4,13 @@ from abc import abstractmethod
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
-from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever, QueryBundle
+from rag.entity.callbacks.callback_manager import CallbackManager
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
 )
-from rag.entity.node import NodeWithScore
+from rag.entity.node.base_node import NodeWithScore
 from rag.utils.utils import truncate_text
 from .base import BaseKeywordTableIndex
 

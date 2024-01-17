@@ -1,8 +1,8 @@
 """Default query for EmptyIndex."""
 from typing import Any, List, Optional, TYPE_CHECKING
 
-from rag.entity.callbacks import CallbackManager
-from rag.entity.retriever import BaseRetriever, QueryBundle
+from rag.entity.callbacks.callback_manager import CallbackManager
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
 from .base import EmptyIndex
 

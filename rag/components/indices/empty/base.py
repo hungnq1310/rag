@@ -11,11 +11,11 @@ from rag.entity.indices.data_struct import EmptyIndexStruct
 from rag.entity.indices.base_index import BaseIndex 
 
 if TYPE_CHECKING:
-    from rag.entity.retriever import BaseRetriever
+    from rag.entity.retriever.base_retriver import BaseRetriever
     from rag.entity.base_query_engine import BaseQueryEngine
-    from rag.entity.node import BaseNode
+    from rag.entity.node.base_node import BaseNode
     from rag.entity.service_context import ServiceContext
-    from rag.entity.storage.docstore import RefDocInfo
+    from rag.entity.storage.docstore.base import RefDocInfo
 
 
 class EmptyIndex(BaseIndex[EmptyIndexStruct]):

@@ -13,7 +13,7 @@ from enum import Enum
 from typing import Any, Dict, Optional, Sequence, Set, Union, TYPE_CHECKING
 
 from rag.utils.async_utils import run_async_tasks
-from rag.entity.node import BaseNode, MetadataMode
+from rag.entity.node.base_node import BaseNode, MetadataMode
 from rag.utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import KeywordTable
 from rag.entity.indices.base_index import BaseIndex
@@ -25,8 +25,8 @@ from rag.constants.default_prompt import (
 )
 
 if TYPE_CHECKING:
-    from rag.entity.retriever import BaseRetriever
-    from rag.entity.prompt import BasePromptTemplate
+    from rag.entity.retriever.base_retriver import BaseRetriever
+    from rag.entity.prompt.base_prompt import BasePromptTemplate
     from rag.entity.service_context import ServiceContext
     from rag.entity.storage.docstore import RefDocInfo  
 
@@ -236,7 +236,3 @@ class KeywordTableIndex(BaseKeywordTableIndex):
             text=text,
         )
         return extract_keywords_given_response(response, start_token="KEYWORDS:")
-
-
-# legacy
-GPTKeywordTableIndex = KeywordTableIndex
