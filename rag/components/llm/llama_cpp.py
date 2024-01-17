@@ -5,7 +5,7 @@ import requests
 from tqdm import tqdm
 
 from rag.bridge.pydantic import Field, PrivateAttr
-from rag.entity.callbacks import CallbackManager
+from rag.entity.callbacks.callback_manager import CallbackManager
 from rag.constants import (
     DEFAULT_CONTEXT_WINDOW,
     DEFAULT_NUM_OUTPUTS,

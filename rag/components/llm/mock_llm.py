@@ -1,6 +1,6 @@
 from typing import Any, Callable, Optional, Sequence
 
-from rag.entity.callbacks import CallbackManager
+from rag.entity.callbacks.callback_manager import CallbackManager
 from rag.entity.llm import (
     LLM,
     ChatMessage,

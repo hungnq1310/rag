@@ -3,13 +3,14 @@ from threading import Thread
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union
 
 from rag.bridge.pydantic import Field, PrivateAttr
-from rag.entity.callbacks import CallbackManager
+from rag.entity.callbacks.callback_manager import CallbackManager
 from rag.constants import (
     DEFAULT_CONTEXT_WINDOW,
     DEFAULT_NUM_OUTPUTS,
 )
-from rag.entity.llm import (
-    LLM,
+from rag.entity.llm.base import LLM
+from rag.entity.llm.types import (
+    MessageRole,
     ChatMessage,
     ChatResponse,
     ChatResponseGen,
@@ -17,15 +18,17 @@ from rag.entity.llm import (
     CompletionResponse,
     CompletionResponseGen,
     CompletionResponseAsyncGen,
-    LLMMetadata,
-    MessageRole,
+    LLMMetadata
+)
+from rag.entity.llm.generic_utils import (
     llm_chat_callback,
     llm_completion_callback,
     completion_response_to_chat_response,
     stream_completion_response_to_chat_response,
     messages_to_prompt as generic_messages_to_prompt,
 )
-from rag.components.prompt import PromptTemplate
+from rag.components.prompt.prompt_template import PromptTemplate
+
 
 DEFAULT_HUGGINGFACE_MODEL = "StabilityAI/stablelm-tuned-alpha-3b"
 if TYPE_CHECKING:
