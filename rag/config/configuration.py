@@ -85,7 +85,6 @@ class ConfigurationManager:
             tokenizer_name=params.tokenizer_name,
             device_map=params.device_map,
             top_k=params.top_k,
-            top_k=params.top_k,
             temperature=params.temperature,
             length_penalty=params.length_penalty,
             repetition_penalty=params.repetition_penalty,
