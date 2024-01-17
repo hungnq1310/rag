@@ -25,7 +25,7 @@ from rag.entity.llm import (
     stream_completion_response_to_chat_response,
 )
 from rag.entity.output_parser import BaseOutputParser, PydanticProgramMode
-from llama_index.utils import get_cache_dir
+from rag.utils.utils import get_cache_dir
 
 DEFAULT_LLAMA_CPP_GGML_MODEL = (
     "https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/resolve"

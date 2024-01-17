@@ -1,6 +1,6 @@
 from typing import Optional
 
-from llama_index.bridge.pydantic import BaseModel
+from rag.bridge.pydantic import BaseModel
 # TODO: explore selectors
 from rag.components.prompt.selector_template import (
     DEFAULT_TEXT_QA_PROMPT_SEL,
