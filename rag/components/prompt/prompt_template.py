@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 import logging
 
 from rag.entity.prompt import PromptType, BasePromptTemplate 
-from entity.llm.base import LLM, ChatMessage
+from rag.entity.llm.base import LLM, ChatMessage
 
 from .utils import get_template_vars, prompt_to_messages
 
