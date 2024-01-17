@@ -1,8 +1,6 @@
 from typing import List, Optional, Sequence
 
-from rag.entity.llm import ChatMessage, MessageRole, LLMType, LLM
-from .llama_cpp import LlamaCPP
-from .mock_llm import MockLLM
+from rag.entity.llm import ChatMessage, MessageRole
 
 BOS, EOS = "<s>", "</s>"
 B_INST, E_INST = "[INST]", "[/INST]"
@@ -63,31 +61,4 @@ def completion_to_prompt(completion: str, system_prompt: Optional[str] = None) -
         f"{BOS} {B_INST} {B_SYS} {system_prompt_str.strip()} {E_SYS} "
         f"{completion.strip()} {E_INST}"
     )
-#################
-# get LLM utils #
-#################
-
-def resolve_llm(llm: Optional[LLMType] = None) -> LLM:
-    """Resolve LLM from string or LLM instance."""
-
-    if isinstance(llm, str) or llm == "default":
-        splits = llm.split(":", 1)
-        is_local = splits[0]
-        model_path = splits[1] if len(splits) > 1 else None
-        if is_local != "local":
-            raise ValueError(
-                "llm must start with str 'local' or of type LLM or BaseLanguageModel"
-            )
-        llm = LlamaCPP(
-            model_path=model_path,
-            messages_to_prompt=messages_to_prompt,
-            completion_to_prompt=completion_to_prompt,
-            model_kwargs={"n_gpu_layers": 1},
-        )
-
-    elif llm is None:
-        print("LLM is explicitly disabled. Using MockLLM.")
-        llm = MockLLM()
-
-    return llm
 
