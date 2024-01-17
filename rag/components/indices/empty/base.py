@@ -47,7 +47,7 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
 
     def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
-        from rag.entity.indices.empty import EmptyIndexRetriever
+        from rag.components.indices.empty import EmptyIndexRetriever
 
         return EmptyIndexRetriever(self)
 
