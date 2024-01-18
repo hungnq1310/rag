@@ -7,7 +7,7 @@ from .huggingface import HuggingFaceEmbedding
 from .mock import MockEmbedding
 
 if TYPE_CHECKING:
-    from rag.entity.embeddings import EmbedType, BaseEmbedding
+    from rag.entity.embeddings.base_embeddings import EmbedType, BaseEmbedding
 
 def resolve_embed_model(embed_model: Optional["EmbedType"] = None) -> "BaseEmbedding":
     """Resolve embed model."""

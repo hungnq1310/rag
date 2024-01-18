@@ -5,9 +5,9 @@ from rag.components.indices.vector_store import VectorStoreIndex
 from rag.components.indices.get_embeddings import get_top_k_embeddings
 
 __all__ = [
-    get_top_k_embeddings,
-    EmptyIndex,
-    KeywordTableIndex,
-    SummaryIndex,
-    VectorStoreIndex
+    "get_top_k_embeddings",
+    "EmptyIndex",
+    "KeywordTableIndex",
+    "SummaryIndex",
+    "VectorStoreIndex"
 ]

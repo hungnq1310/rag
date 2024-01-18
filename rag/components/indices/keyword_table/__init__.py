@@ -6,8 +6,8 @@ from rag.components.indices.keyword_table.base import (
 from rag.components.indices.keyword_table.retriever import BaseKeywordTableRetriever
 
 __all__ = [
-    BaseKeywordTableIndex,
-    KeywordTableIndex,
-    KeywordTableRetrieverMode,
-    BaseKeywordTableRetriever
+    "BaseKeywordTableIndex",
+    "KeywordTableIndex",
+    "KeywordTableRetrieverMode",
+    "BaseKeywordTableRetriever"
 ]

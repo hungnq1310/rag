@@ -7,16 +7,16 @@ import logging
 from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 
 from rag.entity.node.base_node import BaseNode, IndexNode, MetadataMode
-from rag.entity.storage_context import StorageContext
-from rag.utils.async_utils import run_async_tasks
-from rag.utils.utils import iter_batch
 from rag.entity.indices.data_struct import IndexDict
 from rag.entity.indices.base_index import BaseIndex
 from rag.entity.indices.utils import async_embed_nodes, embed_nodes
+from rag.utils.async_utils import run_async_tasks
+from rag.utils.utils import iter_batch
+from rag.components.storage_context import StorageContext
+from rag.components.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
-    from rag.entity.service_context import ServiceContext
     from rag.entity.vector_store.base_vector import VectorStore
     from rag.entity.storage.docstore import RefDocInfo
 
@@ -39,7 +39,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexDict] = None,
-        service_context: Optional["ServiceContext"] = None,
+        service_context: Optional[ServiceContext] = None,
         storage_context: Optional[StorageContext] = None,
         use_async: bool = False,
         store_nodes_override: bool = False,
@@ -64,7 +64,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
     def from_vector_store(
         cls,
         vector_store: "VectorStore",
-        service_context: Optional["ServiceContext"] = None,
+        service_context: Optional[ServiceContext] = None,
         **kwargs: Any,
     ) -> "VectorStoreIndex":
         if not vector_store.stores_text:

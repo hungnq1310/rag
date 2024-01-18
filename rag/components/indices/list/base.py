@@ -15,7 +15,7 @@ from rag.entity.indices.base_index import BaseIndex
 
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
-    from rag.entity.service_context import ServiceContext
+    from components.service_context import ServiceContext
     from rag.entity.storage.docstore import RefDocInfo
 
 

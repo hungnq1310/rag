@@ -27,7 +27,7 @@ from rag.constants.default_prompt import (
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
     from rag.entity.prompt.base_prompt import BasePromptTemplate
-    from rag.entity.service_context import ServiceContext
+    from components.service_context import ServiceContext
     from rag.entity.storage.docstore import RefDocInfo  
 
 
