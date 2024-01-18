@@ -8,16 +8,16 @@ from rag.entity.schema import TransformComponent
 from rag.entity.callbacks import CallbackManager
 from rag.components.llm.resolve_llm import resolve_llm
 from rag.components.embeddings.resovle_embed import resolve_embed_model
-from rag.components.node_parser import (
+from rag.components.node_parser.text.sentence import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
     SentenceSplitter,
 )
 
 if TYPE_CHECKING:
-    from rag.entity.embeddings import BaseEmbedding, EmbedType
-    from rag.entity.llm import LLM, LLMType, LLMMetadata
-    from rag.entity.node_parser import TextSplitter
+    from rag.entity.embeddings.base_embeddings import BaseEmbedding, EmbedType
+    from rag.entity.llm.base import LLM, LLMType, LLMMetadata
+    from rag.entity.node_parser.base import TextSplitter
 
 logger = logging.getLogger(__name__)
 
