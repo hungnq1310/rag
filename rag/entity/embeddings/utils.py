@@ -1,10 +1,5 @@
 """Embedding utils for LlamaIndex."""
-from typing import TYPE_CHECKING, List, Union
-
-from .base_embeddings import BaseEmbedding
-
-EmbedType = Union[BaseEmbedding, str]
-
+from typing import List, Union
 
 def save_embedding(embedding: List[float], file_path: str) -> None:
     """Save embedding to file."""

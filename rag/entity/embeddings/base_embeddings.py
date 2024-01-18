@@ -3,7 +3,7 @@
 import asyncio
 from abc import abstractmethod
 from enum import Enum
-from typing import Any, Callable, Coroutine, List, Optional, Tuple
+from typing import Any, Callable, Coroutine, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -351,3 +351,6 @@ class BaseEmbedding(TransformComponent):
             node.embedding = embedding
 
         return nodes
+
+
+EmbedType = Union[BaseEmbedding, str]
