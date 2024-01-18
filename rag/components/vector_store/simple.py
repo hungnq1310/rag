@@ -9,25 +9,25 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, cast
 import fsspec
 from dataclasses_json import DataClassJsonMixin
 
-from rag.components.indices.get_embeddings import (
-    get_top_k_embeddings,
-    get_top_k_embeddings_learner,
-    get_top_k_mmr_embeddings,
-)
-from rag.entity.node import BaseNode
-from rag.utils.utils import concat_dirs
-from rag.entity.vector_store.base_vector import (
+from rag.constants.default_storage import (
     DEFAULT_PERSIST_DIR,
-    DEFAULT_PERSIST_FNAME,
+    DEFAULT_PERSIST_FNAME
 )
-from rag.entity.vector_store.base_vector import (
+from rag.entity.node.base_node import BaseNode
+from rag.utils.utils import concat_dirs
+from rag.entity.vector_store.base_vector import VectorStore
+from rag.entity.vector_store.types import (
     MetadataFilters,
-    VectorStore,
     VectorStoreQuery,
     VectorStoreQueryMode,
     VectorStoreQueryResult,
 )
 from rag.entity.vector_store.utils import node_to_metadata_dict
+from rag.components.indices.get_embeddings import (
+    get_top_k_embeddings,
+    get_top_k_embeddings_learner,
+    get_top_k_mmr_embeddings,
+)
 
 logger = logging.getLogger(__name__)
 
