@@ -1,1 +1,5 @@
-from .base_reader import *
+from rag.entity.reader.base_reader import BaseReader
+
+__all__ = [
+    "BaseReader"
+]

@@ -1,5 +1,5 @@
-from .base import *
-from .generic_utils import *
+from rag.entity.llm.base import *
+from rag.entity.llm.generic_utils import *
 
 from rag.entity.llm.base import LLM, LLMType
 from rag.entity.llm.generic_utils import (

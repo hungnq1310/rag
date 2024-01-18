@@ -12,14 +12,14 @@ from abc import abstractmethod
 from typing import Any, Dict, Generator, List, Optional, Sequence, Union, TYPE_CHECKING
 
 from rag.entity.callbacks import CBEventType, EventPayload
-from rag.entity.node import BaseNode, MetadataMode, NodeWithScore
-from rag.entity.retriever import QueryBundle
-from rag.entity.service_context import ServiceContext
-from rag.entity.prompt import PromptMixin
+from rag.entity.node. base_node import BaseNode, MetadataMode, NodeWithScore
+from rag.entity.retriever.types import QueryBundle
+from rag.entity.prompt.mixin import PromptMixin
 from .types import *
 
 if TYPE_CHECKING:
     from rag.entity.output_parser import RESPONSE_TEXT_TYPE
+    from rag.components.service_context import ServiceContext
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class BaseSynthesizer(PromptMixin):
 
     def __init__(
         self,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         streaming: bool = False,
         output_cls: BaseModel = None,
     ) -> None:
@@ -47,7 +47,7 @@ class BaseSynthesizer(PromptMixin):
         return {}
 
     @property
-    def service_context(self) -> ServiceContext:
+    def service_context(self) -> "ServiceContext":
         return self._service_context
 
     @abstractmethod
