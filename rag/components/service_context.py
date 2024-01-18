@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 from typing import List, Optional, TYPE_CHECKING
 
-from llama_index.indices.prompt_helper import PromptHelper
+
 from rag.bridge.pydantic import BaseModel
 from rag.entity.schema import TransformComponent
 from rag.entity.callbacks import CallbackManager
@@ -13,11 +13,10 @@ from rag.components.node_parser.text.sentence import (
     SENTENCE_CHUNK_OVERLAP,
     SentenceSplitter,
 )
-
-if TYPE_CHECKING:
-    from rag.entity.embeddings.base_embeddings import BaseEmbedding, EmbedType
-    from rag.entity.llm.base import LLM, LLMType, LLMMetadata
-    from rag.entity.node_parser.base import TextSplitter
+from rag.entity.embeddings.base_embeddings import BaseEmbedding, EmbedType
+from rag.entity.llm.base import LLM, LLMType, LLMMetadata
+from rag.entity.node_parser.base import TextSplitter
+from .prompt_helper import PromptHelper
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +35,7 @@ def _get_default_node_parser(
 
 
 def _get_default_prompt_helper(
-    llm_metadata: "LLMMetadata",
+    llm_metadata: LLMMetadata = None,
     context_window: Optional[int] = None,
     num_output: Optional[int] = None,
 ) -> PromptHelper:
@@ -67,20 +66,20 @@ class ServiceContext:
     - callback_manager: CallbackManager
 
     """
-    llm: "LLM"
-    prompt_helper: PromptHelper
-    embed_model: "BaseEmbedding"
-    transformations: List[TransformComponent]
-    callback_manager: CallbackManager
+    llm: LLM = None
+    prompt_helper: PromptHelper = None
+    embed_model: BaseEmbedding = None
+    transformations: List[TransformComponent] = None
+    callback_manager: CallbackManager = None
 
     @classmethod
     def from_defaults(
         cls,
-        llm: Optional["LLMType"] = "default",
+        llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
-        embed_model: Optional["EmbedType"] = "default",
+        embed_model: Optional[EmbedType] = "default",
         node_parser: Optional[SentenceSplitter] = None,
-        text_splitter: Optional["TextSplitter"] = None,
+        text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
         # node parser kwargs
@@ -144,8 +143,8 @@ class ServiceContext:
 
         return cls(
             llm=llm,
-            embed_model=embed_model,
             prompt_helper=prompt_helper,
+            embed_model=embed_model,
             transformations=transformations,
             callback_manager=callback_manager,
         )
@@ -154,11 +153,11 @@ class ServiceContext:
     def from_service_context(
         cls,
         service_context: "ServiceContext",
-        llm: Optional["LLMType"] = "default",
+        llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
-        embed_model: Optional["EmbedType"] = "default",
+        embed_model: Optional[EmbedType] = "default",
         node_parser: Optional[SentenceSplitter] = None,
-        text_splitter: Optional["TextSplitter"] = None,
+        text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,
         callback_manager: Optional[CallbackManager] = None,
         # node parser kwargs
@@ -222,7 +221,7 @@ class ServiceContext:
         )
 
     @property
-    def llm(self) -> "LLM":
+    def llm(self) -> LLM:
         return self.llm
 
     @property
@@ -248,7 +247,7 @@ class ServiceContext:
             prompt_helper=prompt_helper_dict,
             embed_model=embed_model_dict,
             transformations=tranform_list_dict,
-        ).dict()
+        ).model_dump()
 
     @classmethod
     def from_dict(cls, data: dict) -> "ServiceContext":
