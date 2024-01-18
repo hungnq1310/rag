@@ -7,7 +7,7 @@ from rag.components.prompt.selector_template import (
     DEFAULT_TREE_SUMMARIZE_PROMPT_SEL,
 )
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.entity.service_context import ServiceContext
+from components.service_context import ServiceContext
 from . import (
     Generation,
     NoText,

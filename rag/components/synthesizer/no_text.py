@@ -1,6 +1,6 @@
 from typing import Any, Sequence, TYPE_CHECKING
 
-from rag.entity.synthesizer import BaseSynthesizer
+from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
 
 if TYPE_CHECKING:
     from rag.entity.output_parser import RESPONSE_TEXT_TYPE

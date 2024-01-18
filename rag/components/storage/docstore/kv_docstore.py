@@ -2,13 +2,13 @@
 
 from typing import Dict, Optional, Sequence
 
-from rag.entity.node import BaseNode, TextNode
-from rag.entity.storage.docstore import (
+from rag.entity.node.base_node import BaseNode, TextNode
+from rag.entity.storage.docstore.base import (
     DEFAULT_BATCH_SIZE,
     BaseDocumentStore,
     RefDocInfo,
 )
-from rag.entity.storage.kv_store import BaseKVStore
+from rag.entity.storage.kv_store.base import BaseKVStore
 from .utils import doc_to_json, json_to_doc
 
 

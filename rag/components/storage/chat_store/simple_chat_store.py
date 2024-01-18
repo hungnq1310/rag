@@ -6,9 +6,7 @@ import fsspec
 
 from rag.bridge.pydantic import Field
 from rag.entity.storage.chat_store import BaseChatStore
-
-if TYPE_CHECKING:
-    from rag.entity.llm import ChatMessage
+from rag.entity.llm.types import ChatMessage
 
 
 class SimpleChatStore(BaseChatStore):

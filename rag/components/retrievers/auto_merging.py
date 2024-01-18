@@ -6,12 +6,12 @@ from typing import Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
 from rag.utils.utils import truncate_text
-from rag.entity.node import BaseNode, NodeWithScore
-from rag.entity.retriever import BaseRetriever, QueryBundle
+from rag.entity.node.base_node import BaseNode, NodeWithScore
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 
 if TYPE_CHECKING:
-    from rag.entity.indices.vector_store.retriver import VectorIndexRetriever
-    from rag.entity.storage_context import StorageContext
+    from rag.components.indices.vector_store.retriver import VectorIndexRetriever
+    from components.storage_context import StorageContext
 
 logger = logging.getLogger(__name__)
 

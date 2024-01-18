@@ -1,11 +1,11 @@
 from typing import Any, Optional, Sequence, TYPE_CHECKING
 
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.entity.synthesizer import BaseSynthesizer
+from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
+from rag.components.service_context import ServiceContext
 
 if TYPE_CHECKING:
-    from rag.entity.prompt import BasePromptTemplate
-    from rag.entity.service_context import ServiceContext
+    from rag.entity.prompt.base_prompt import BasePromptTemplate
     from rag.entity.output_parser import RESPONSE_TEXT_TYPE
     from rag.entity.prompt.mixin import PromptDictType
 
@@ -14,7 +14,7 @@ class Generation(BaseSynthesizer):
     def __init__(
         self,
         simple_template: Optional["BasePromptTemplate"] = None,
-        service_context: Optional["ServiceContext"] = None,
+        service_context: Optional[ServiceContext] = None,
         streaming: bool = False,
     ) -> None:
         super().__init__(service_context=service_context, streaming=streaming)

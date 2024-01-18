@@ -4,14 +4,14 @@ from typing import Optional
 import fsspec
 
 from rag.components.storage.docstore.kv_docstore import KVDocumentStore
-from rag.entity.storage.docstore import (
+from rag.entity.storage.docstore.base import (
     DEFAULT_BATCH_SIZE,
     DEFAULT_PERSIST_DIR,
     DEFAULT_PERSIST_FNAME,
     DEFAULT_PERSIST_PATH,
 )
 from rag.components.storage.kv_store.simple_kvstore import SimpleKVStore
-from rag.entity.storage.kv_store import BaseInMemoryKVStore
+from rag.entity.storage.kv_store.base import BaseInMemoryKVStore
 from rag.utils.utils import concat_dirs
 
 

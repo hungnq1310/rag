@@ -1,6 +1,6 @@
 from typing import List, Optional, TYPE_CHECKING
 
-from rag.entity.storage.index_store import BaseIndexStore
+from rag.entity.storage.index_store.base import BaseIndexStore
 from rag.entity.storage.kv_store.base import BaseKVStore
 from .utils import (
     index_struct_to_json,

@@ -1,6 +1,6 @@
 from rag.constants import DATA_KEY, TYPE_KEY
 from rag.entity.indices.data_struct import IndexStruct
-from rag.entity.indices.registry import INDEX_STRUCT_TYPE_TO_INDEX_STRUCT_CLASS
+from entity.indices.registry import INDEX_STRUCT_TYPE_TO_INDEX_STRUCT_CLASS
 
 
 def index_struct_to_json(index_struct: IndexStruct) -> dict:

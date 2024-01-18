@@ -1,2 +1,6 @@
-from .pdf_extract_api import *
-from .pdf_reader import *
+from rag.components.reader.pdf_reader import  PDFMinerLoader, PyPDFReader
+
+__all__ = [
+    "PDFMinerLoader",
+    "PyPDFReader"
+]

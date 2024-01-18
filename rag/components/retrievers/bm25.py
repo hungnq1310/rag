@@ -1,19 +1,32 @@
+import re
 import logging
-from typing import Callable, List, Optional, cast, TYPE_CHECKING
+from typing import Callable, List, Optional, Set, cast, TYPE_CHECKING
 
+import pandas as pd
 from nltk.stem import PorterStemmer
 
 from rag.entity.callbacks import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.entity.retriever import BaseRetriever, QueryBundle
-from rag.entity.node import BaseNode, NodeWithScore
-from rag.entity.indices.keyword_table.utils import simple_extract_keywords
-from rag.entity.indices.vector_store import VectorStoreIndex
+from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.entity.node.base_node import BaseNode, NodeWithScore
+from rag.utils.utils import globals_helper
 
 if TYPE_CHECKING:
     from rag.entity.storage.docstore import BaseDocumentStore
+    from rag.components.indices.vector_store import VectorStoreIndex
 
 logger = logging.getLogger(__name__)
+
+def simple_extract_keywords(
+    text_chunk: str, max_keywords: Optional[int] = None, filter_stopwords: bool = True
+) -> Set[str]:
+    """Extract keywords with simple algorithm."""
+    tokens = [t.strip().lower() for t in re.findall(r"\w+", text_chunk)]
+    if filter_stopwords:
+        tokens = [t for t in tokens if t not in globals_helper.stopwords]
+    value_counts = pd.Series(tokens).value_counts()
+    keywords = value_counts.index.tolist()[:max_keywords]
+    return set(keywords)
 
 
 def tokenize_remove_stopwords(text: str) -> List[str]:
@@ -47,7 +60,7 @@ class BM25Retriever(BaseRetriever):
     @classmethod
     def from_defaults(
         cls,
-        index: Optional[VectorStoreIndex] = None,
+        index: Optional["VectorStoreIndex"] = None,
         nodes: Optional[List[BaseNode]] = None,
         docstore: Optional["BaseDocumentStore"] = None,
         tokenizer: Optional[Callable[[str], List[str]]] = None,

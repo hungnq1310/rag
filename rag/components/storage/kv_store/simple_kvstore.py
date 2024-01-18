@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple
 
 import fsspec
 
-from rag.entity.storage.kv_store import DEFAULT_COLLECTION, BaseInMemoryKVStore
+from rag.entity.storage.kv_store.base import DEFAULT_COLLECTION, BaseInMemoryKVStore
 
 logger = logging.getLogger(__name__)
 

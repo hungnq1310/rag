@@ -6,7 +6,7 @@ An index that is built within Milvus.
 import logging
 from typing import Any, List
 
-from rag.entity.vector_store import (
+from rag.entity.vector_store.types import (
     MetadataFilters,
     VectorStoreQuery,
     VectorStoreQueryMode,
@@ -17,7 +17,7 @@ from rag.entity.vector_store.utils import (
     node_to_metadata_dict,
 )
 
-from rag.entity.node import ( 
+from rag.entity.node.base_node import ( 
     BaseNode, 
     TextNode,
 )
@@ -25,7 +25,7 @@ from rag.config.schema import (
     MilvusConfig, 
     MilvusArguments,
 )
-from rag.entity.vector_store import VectorStore
+from rag.entity.vector_store.base_vector import VectorStore
 
 logger = logging.getLogger(__name__)
 
