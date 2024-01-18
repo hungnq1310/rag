@@ -1,14 +1,18 @@
 """Utilities for GPT indices."""
 import logging
 import re
-from typing import Dict, List, Optional, Sequence, Set, Tuple, TYPE_CHECKING
+from hashlib import sha256
+from typing import Dict, List, Optional, Sequence, Set, Tuple, Any, TYPE_CHECKING
 
 from rag.entity.node import BaseNode, MetadataMode
 from rag.utils.utils import globals_helper, truncate_text
 from rag.entity.vector_store import VectorStoreQueryResult
+from rag.entity.schema import TransformComponent
+
 
 if TYPE_CHECKING:
     from rag.entity.embeddings import BaseEmbedding
+    from rag.components.cache import IngestionCache
 
 _logger = logging.getLogger(__name__)
 
@@ -178,3 +182,62 @@ async def async_embed_nodes(
         id_to_embed_map[new_id] = text_embedding
 
     return id_to_embed_map
+
+def remove_unstable_values(s: str) -> str:
+    """Remove unstable key/value pairs.
+
+    Examples include:
+    - <__main__.Test object at 0x7fb9f3793f50>
+    - <function test_fn at 0x7fb9f37a8900>
+    """
+    pattern = r"<[\w\s_\. ]+ at 0x[a-z0-9]+>"
+    return re.sub(pattern, "", s)
+
+
+def get_transformation_hash(
+    nodes: List[BaseNode], transformation: TransformComponent
+) -> str:
+    """Get the hash of a transformation."""
+    nodes_str = "".join(
+        [str(node.get_content(metadata_mode=MetadataMode.ALL)) for node in nodes]
+    )
+
+    transformation_dict = transformation.to_dict()
+    transform_string = remove_unstable_values(str(transformation_dict))
+
+    return sha256((nodes_str + transform_string).encode("utf-8")).hexdigest()
+
+
+def run_transformations(
+    nodes: List[BaseNode],
+    transformations: Sequence[TransformComponent],
+    in_place: bool = True,
+    cache: Optional["IngestionCache"] = None,
+    cache_collection: Optional[str] = None,
+    **kwargs: Any,
+) -> List[BaseNode]:
+    """Run a series of transformations on a set of nodes.
+
+    Args:
+        nodes: The nodes to transform.
+        transformations: The transformations to apply to the nodes.
+
+    Returns:
+        The transformed nodes.
+    """
+    if not in_place:
+        nodes = list(nodes)
+
+    for transform in transformations:
+        if cache is not None:
+            hash = get_transformation_hash(nodes, transform)
+            cached_nodes = cache.get(hash, collection=cache_collection)
+            if cached_nodes is not None:
+                nodes = cached_nodes
+            else:
+                nodes = transform(nodes, **kwargs)
+                cache.put(hash, nodes, collection=cache_collection)
+        else:
+            nodes = transform(nodes, **kwargs)
+
+    return nodes

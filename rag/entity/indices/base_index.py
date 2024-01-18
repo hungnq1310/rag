@@ -5,14 +5,15 @@ from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, 
 
 from llama_index.ingestion import run_transformations
 from rag.entity.node import BaseNode, Document
-from rag.entity.service_context import ServiceContext
-from rag.entity.storage_context import StorageContext
+
 from .data_struct import IndexStruct
 
 if TYPE_CHECKING:
-    from rag.entity.base_query_engine import BaseQueryEngine
+    from entity.engine.base_query_engine import BaseQueryEngine
     from rag.entity.retriever import BaseRetriever
     from rag.entity.storage.docstore import BaseDocumentStore, RefDocInfo
+    from rag.components.service_context import ServiceContext
+    from rag.components.storage_context import StorageContext
 
 
 IS = TypeVar("IS", bound=IndexStruct)
@@ -38,8 +39,8 @@ class BaseIndex(Generic[IS], ABC):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IS] = None,
-        storage_context: Optional[StorageContext] = None,
-        service_context: Optional[ServiceContext] = None,
+        storage_context: Optional["StorageContext"] = None,
+        service_context: Optional["ServiceContext"] = None,
         show_progress: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -59,8 +60,8 @@ class BaseIndex(Generic[IS], ABC):
             else:
                 raise ValueError("nodes must be a list of Node objects.")
 
-        self._service_context = service_context or ServiceContext.from_defaults()
-        self._storage_context = storage_context or StorageContext.from_defaults()
+        self._service_context = service_context 
+        self._storage_context = storage_context
         self._docstore = self._storage_context.docstore
         self._show_progress = show_progress
         self._vector_store = self._storage_context.vector_store
@@ -77,8 +78,8 @@ class BaseIndex(Generic[IS], ABC):
     def from_documents(
         cls: Type[IndexType],
         documents: Sequence[Document],
-        storage_context: Optional[StorageContext] = None,
-        service_context: Optional[ServiceContext] = None,
+        storage_context: Optional["StorageContext"] = None,
+        service_context: Optional["ServiceContext"] = None,
         show_progress: bool = False,
         **kwargs: Any,
     ) -> IndexType:
@@ -89,8 +90,8 @@ class BaseIndex(Generic[IS], ABC):
                 build the index from.
 
         """
-        storage_context = storage_context or StorageContext.from_defaults()
-        service_context = service_context or ServiceContext.from_defaults()
+        storage_context = storage_context
+        service_context = service_context
         docstore = storage_context.docstore
 
         with service_context.callback_manager.as_trace("index_construction"):
@@ -150,11 +151,11 @@ class BaseIndex(Generic[IS], ABC):
         return self._docstore
 
     @property
-    def service_context(self) -> ServiceContext:
+    def service_context(self) -> "ServiceContext":
         return self._service_context
 
     @property
-    def storage_context(self) -> StorageContext:
+    def storage_context(self) -> "StorageContext":
         return self._storage_context
 
     @property
