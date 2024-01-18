@@ -4,7 +4,7 @@
 from typing import Any, Callable, Dict, List, Optional
 
 from rag.entity.llm.types import ChatMessage, MessageRole
-from llama_index.utils import get_tokenizer
+from rag.utils.utils import get_tokenizer
 
 
 class TokenCounter:

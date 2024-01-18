@@ -11,24 +11,24 @@ from rag.constants import (
     VECTOR_STORE_KEY,
 )
 
-from rag.components.storage.docstore import SimpleDocumentStore
+from rag.components.storage.docstore.simple_docstore import SimpleDocumentStore
 from rag.entity.storage.docstore.base import (
     DEFAULT_PERSIST_FNAME as DOCSTORE_FNAME,
     BaseDocumentStore
 )
-from rag.components.storage.index_store import SimpleIndexStore
+from rag.components.storage.index_store.simple_index_store import SimpleIndexStore
 from rag.entity.storage.index_store.base import (
     DEFAULT_PERSIST_FNAME as INDEX_STORE_FNAME,
     BaseIndexStore
 )
-from rag.components.vector_store.simple import (
+from rag.components.vector_stores.simple import (
     DEFAULT_PERSIST_FNAME as VECTOR_STORE_FNAME,
-    DEFAULT_VECTOR_STORE,
+    DEFAULT_VECTOR_STORE as DEFAULT_VECTOR_STORE_NAME,
     NAMESPACE_SEP,
     SimpleVectorStore,
 )
 from rag.utils.utils import concat_dirs
-from rag.entity.vector_store import VectorStore
+from rag.entity.vector_store.base_vector import VectorStore
 
 DEFAULT_PERSIST_DIR = "./storage"
 IMAGE_STORE_FNAME = "image_store.json"
@@ -80,10 +80,10 @@ class StorageContext:
             image_store = image_store or SimpleVectorStore()
 
             if vector_store:
-                vector_stores = {DEFAULT_VECTOR_STORE: vector_store}
+                vector_stores = {DEFAULT_VECTOR_STORE_NAME: vector_store}
             else:
                 vector_stores = vector_stores or {
-                    DEFAULT_VECTOR_STORE: SimpleVectorStore()
+                    DEFAULT_VECTOR_STORE_NAME: SimpleVectorStore()
                 }
             if image_store:
                 # append image store to vector stores
@@ -97,7 +97,7 @@ class StorageContext:
             )
 
             if vector_store:
-                vector_stores = {DEFAULT_VECTOR_STORE: vector_store}
+                vector_stores = {DEFAULT_VECTOR_STORE_NAME: vector_store}
             elif vector_stores:
                 vector_stores = vector_stores
             else:
@@ -200,7 +200,7 @@ class StorageContext:
     @property
     def vector_store(self) -> VectorStore:
         """Backwrds compatibility for vector_store property."""
-        return self.vector_stores[DEFAULT_VECTOR_STORE]
+        return self.vector_stores[DEFAULT_VECTOR_STORE_NAME]
 
     def add_vector_store(self, vector_store: VectorStore, namespace: str) -> None:
         """Add a vector store to the storage context."""
