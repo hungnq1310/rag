@@ -4,9 +4,9 @@ from rag.entity.storage.index_store import BaseIndexStore
 from rag.entity.storage.kv_store import BaseInMemoryKVStore, BaseKVStore
 
 __all__ = [
-    BaseChatStore,
-    BaseDocumentStore,
-    BaseIndexStore,
-    BaseInMemoryKVStore,
-    BaseKVStore,
+    "BaseChatStore",
+    "BaseDocumentStore",
+    "BaseIndexStore",
+    "BaseInMemoryKVStore",
+    "BaseKVStore",
 ]
