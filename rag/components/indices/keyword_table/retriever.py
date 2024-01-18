@@ -2,7 +2,7 @@
 import logging
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Dict, List, Optional
 
 from rag.entity.callbacks.callback_manager import CallbackManager
 from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
@@ -10,13 +10,11 @@ from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
 )
+from rag.entity.prompt.base_prompt import BasePromptTemplate
 from rag.entity.node.base_node import NodeWithScore
 from rag.utils.utils import truncate_text
 from .base import BaseKeywordTableIndex
 
-if TYPE_CHECKING:
-    from rag.entity.prompt import BasePromptTemplate
-    
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE
 
