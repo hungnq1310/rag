@@ -18,7 +18,7 @@ from rag.components.service_context import ServiceContext
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
     from rag.entity.vector_store.base_vector import VectorStore
-    from rag.entity.storage.docstore import RefDocInfo
+    from rag.entity.storage.docstore.base import RefDocInfo
 
 logger = logging.getLogger(__name__)
 

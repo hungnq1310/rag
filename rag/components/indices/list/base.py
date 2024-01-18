@@ -13,11 +13,9 @@ from rag.utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import IndexList
 from rag.entity.indices.base_index import BaseIndex
 from rag.components.service_context import ServiceContext
-
-if TYPE_CHECKING:
-    from rag.entity.retriever.base_retriver import BaseRetriever
-    from rag.entity.storage.docstore.base import RefDocInfo
-
+from rag.entity.retriever.base_retriver import BaseRetriever
+from rag.entity.storage.docstore.base import RefDocInfo
+  
 
 class ListRetrieverMode(str, Enum):
     DEFAULT = "default"

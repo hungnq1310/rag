@@ -15,7 +15,7 @@ __all__ = [
     "VectorStoreQueryResult",
     "MetadataFilters",
     "ExactMatchFilter",
-    metadata_dict_to_node,
-    node_to_metadata_dict,
-    legacy_metadata_dict_to_node
+    "metadata_dict_to_node",
+    "node_to_metadata_dict",
+    "legacy_metadata_dict_to_node"
 ]
