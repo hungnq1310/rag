@@ -3,8 +3,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, TYPE_CHECKING
 
-from llama_index.ingestion import run_transformations
-from rag.entity.node import BaseNode, Document
+from rag.entity.indices.utils import run_transformations
+from rag.entity.node.base_node import BaseNode, Document
 
 from .data_struct import IndexStruct
 
