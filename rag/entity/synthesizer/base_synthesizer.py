@@ -36,7 +36,7 @@ class BaseSynthesizer(PromptMixin):
         output_cls: BaseModel = None,
     ) -> None:
         """Init params."""
-        self._service_context = service_context or ServiceContext.from_defaults()
+        self._service_context = service_context 
         self._callback_manager = self._service_context.callback_manager
         self._streaming = streaming
         self._output_cls = output_cls
