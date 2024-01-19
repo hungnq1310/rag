@@ -11,7 +11,7 @@ from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 
 if TYPE_CHECKING:
     from rag.components.indices.vector_store.retriver import VectorIndexRetriever
-    from components.storage_context import StorageContext
+    from rag.core.storage_context import StorageContext
 
 logger = logging.getLogger(__name__)
 

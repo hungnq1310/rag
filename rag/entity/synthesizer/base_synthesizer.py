@@ -19,7 +19,7 @@ from .types import *
 
 if TYPE_CHECKING:
     from rag.entity.output_parser import RESPONSE_TEXT_TYPE
-    from rag.components.service_context import ServiceContext
+    from rag.core.service_context import ServiceContext
 
 logger = logging.getLogger(__name__)
 

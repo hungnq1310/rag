@@ -17,7 +17,7 @@ from rag.entity.indices.utils import (
 
 if TYPE_CHECKING:
     from rag.components.prompt.prompt_template import PromptTemplate
-    from components.service_context import ServiceContext
+    from rag.core.service_context import ServiceContext
 
 
 logger = logging.getLogger(__name__)

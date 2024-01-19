@@ -2,7 +2,7 @@ from typing import Any, Optional, Sequence, TYPE_CHECKING
 
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
-from rag.components.service_context import ServiceContext
+from rag.core.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.prompt.base_prompt import BasePromptTemplate
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 class Generation(BaseSynthesizer):
+    
     def __init__(
         self,
         simple_template: Optional["BasePromptTemplate"] = None,

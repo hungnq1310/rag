@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
     from entity.engine.base_query_engine import BaseQueryEngine
     from rag.entity.node.base_node import BaseNode
-    from components.service_context import ServiceContext
+    from rag.core.service_context import ServiceContext
     from rag.entity.storage.docstore.base import RefDocInfo
 
 

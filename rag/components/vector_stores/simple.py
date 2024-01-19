@@ -31,17 +31,6 @@ from rag.components.indices.get_embeddings import (
 
 logger = logging.getLogger(__name__)
 
-LEARNER_MODES = {
-    VectorStoreQueryMode.SVM,
-    VectorStoreQueryMode.LINEAR_REGRESSION,
-    VectorStoreQueryMode.LOGISTIC_REGRESSION,
-}
-
-MMR_MODE = VectorStoreQueryMode.MMR
-
-NAMESPACE_SEP = "__"
-DEFAULT_VECTOR_STORE = "default"
-
 
 def _build_metadata_filter_fn(
     metadata_lookup_fn: Callable[[str], Mapping[str, Any]],

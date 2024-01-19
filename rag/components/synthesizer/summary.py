@@ -2,7 +2,7 @@ from typing import Any, Generator, Optional, Sequence, cast, TYPE_CHECKING
 
 from rag.components.prompt.selector_template import DEFAULT_TEXT_QA_PROMPT_SEL
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
-from rag.components.service_context import ServiceContext
+from rag.core.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.prompt import BasePromptTemplate, PromptDictType
@@ -13,6 +13,8 @@ class SimpleSummarize(BaseSynthesizer):
     def __init__(
         self,
         text_qa_template: Optional["BasePromptTemplate"] = None,
+
+        
         service_context: Optional[ServiceContext] = None,
         streaming: bool = False,
     ) -> None:

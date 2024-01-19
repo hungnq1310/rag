@@ -8,7 +8,7 @@ from rag.entity.callbacks.types import CBEventType, EventPayload
 from entity.engine.base_query_engine import BaseQueryEngine
 from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 from rag.entity.node.base_node import NodeWithScore
-from components.service_context import ServiceContext
+from rag.core.service_context import ServiceContext
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE
 from rag.entity.prompt.mixin import PromptMixinType, BasePromptTemplate
 from rag.components.synthesizer.mode import ResponseMode

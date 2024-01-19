@@ -12,11 +12,11 @@ from rag.entity.indices.base_index import BaseIndex
 from rag.entity.indices.utils import async_embed_nodes, embed_nodes
 from rag.utils.async_utils import run_async_tasks
 from rag.utils.utils import iter_batch
+from rag.core.storage_context import StorageContext
+from rag.core.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
-    from rag.components.storage_context import StorageContext
-    from rag.components.service_context import ServiceContext
     from rag.entity.vector_store.base_vector import VectorStore
     from rag.entity.storage.docstore.base import RefDocInfo
 

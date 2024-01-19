@@ -10,7 +10,7 @@ from llama_index.core import BaseQueryEngine
 from llama_index.tools.query_engine import QueryEngineTool
 from llama_index.response_synthesizers import get_response_synthesizer
 
-from components.service_context import ServiceContext
+from components.core.service_context import ServiceContext
 from rag.entity.node.base_node import NodeWithScore, TextNode
 from rag.entity.retriever import QueryBundle
 from rag.entity.synthesizer import RESPONSE_TYPE

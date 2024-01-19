@@ -17,6 +17,7 @@ from rag.entity.node.base_node import BaseNode, MetadataMode
 from rag.utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import KeywordTable
 from rag.entity.indices.base_index import BaseIndex
+
 from .utils import extract_keywords_given_response
 
 from rag.constants.default_prompt import (
@@ -27,8 +28,8 @@ from rag.constants.default_prompt import (
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
     from rag.entity.prompt.base_prompt import BasePromptTemplate
-    from components.service_context import ServiceContext
-    from rag.entity.storage.docstore import RefDocInfo  
+    from rag.core.service_context import ServiceContext
+    from rag.entity.storage.docstore.base import RefDocInfo  
 
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE

@@ -8,7 +8,7 @@ from .types import *
 
 if TYPE_CHECKING:
     from rag.entity.node import NodeWithScore
-    from rag.components.service_context import ServiceContext
+    from rag.core.service_context import ServiceContext
 
 class BaseRetriever(PromptMixin):
     """Base retriever."""

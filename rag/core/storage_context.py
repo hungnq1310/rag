@@ -23,16 +23,12 @@ from rag.entity.storage.index_store.base import (
 )
 from rag.components.vector_stores.simple import (
     DEFAULT_PERSIST_FNAME as VECTOR_STORE_FNAME,
-    DEFAULT_VECTOR_STORE as DEFAULT_VECTOR_STORE_NAME,
-    NAMESPACE_SEP,
     SimpleVectorStore,
 )
 from rag.utils.utils import concat_dirs
 from rag.entity.vector_store.base_vector import VectorStore
 
 DEFAULT_PERSIST_DIR = "./storage"
-IMAGE_STORE_FNAME = "image_store.json"
-IMAGE_VECTOR_STORE_NAMESPACE = "image"
 
 
 @dataclass

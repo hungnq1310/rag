@@ -12,8 +12,8 @@ if TYPE_CHECKING:
     from entity.engine.base_query_engine import BaseQueryEngine
     from rag.entity.retriever import BaseRetriever
     from rag.entity.storage.docstore import BaseDocumentStore, RefDocInfo
-    from rag.components.service_context import ServiceContext
-    from rag.components.storage_context import StorageContext
+    from rag.core.service_context import ServiceContext
+    from rag.core.storage_context import StorageContext
 
 
 IS = TypeVar("IS", bound=IndexStruct)

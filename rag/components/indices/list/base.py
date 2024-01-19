@@ -12,7 +12,8 @@ from rag.entity.node.base_node import BaseNode
 from rag.utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import IndexList
 from rag.entity.indices.base_index import BaseIndex
-from rag.components.service_context import ServiceContext
+from rag.core.service_context import ServiceContext
+
 from rag.entity.retriever.base_retriver import BaseRetriever
 from rag.entity.storage.docstore.base import RefDocInfo
   
