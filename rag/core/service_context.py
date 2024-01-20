@@ -54,7 +54,6 @@ class ServiceContextData(BaseModel):
     transformations: List[dict]
 
 
-@dataclass
 class ServiceContext:
     """Service Context container.
 
@@ -72,9 +71,7 @@ class ServiceContext:
     transformations: List[TransformComponent] = None
     callback_manager: CallbackManager = None
 
-    @classmethod
-    def from_defaults(
-        cls,
+    def __init__(self,
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = "default",
@@ -88,14 +85,8 @@ class ServiceContext:
         # prompt helper kwargs
         context_window: Optional[int] = None,
         num_output: Optional[int] = None,
-    ) -> "ServiceContext":
-        """Create a ServiceContext from defaults.
-        If an argument is specified, then use the argument value provided for that
-        parameter. If an argument is not specified, then use the default value.
-
-        You can change the base defaults by setting llama_index.global_service_context
-        to a ServiceContext object with your desired settings.
-
+    ) -> None:
+        """
         Args:
             prompt_helper (Optional[PromptHelper]): PromptHelper
             embed_model (Optional[BaseEmbedding]): BaseEmbedding
@@ -105,11 +96,8 @@ class ServiceContext:
             callback_manager (Optional[CallbackManager]): CallbackManager
             system_prompt (Optional[str]): System-wide prompt to be prepended
                 to all input prompts, used to guide system "decision making"
-            query_wrapper_prompt (Optional[BasePromptTemplate]): A format to wrap
-                passed-in input queries.
 
         """
-
         callback_manager = callback_manager or CallbackManager([])
         if llm != "default":
             llm = resolve_llm(llm)
@@ -141,14 +129,14 @@ class ServiceContext:
 
         transformations = transformations or [node_parser]
 
-        return cls(
+        return ServiceContext(
             llm=llm,
             prompt_helper=prompt_helper,
             embed_model=embed_model,
             transformations=transformations,
             callback_manager=callback_manager,
         )
-
+        
     @classmethod
     def from_service_context(
         cls,
@@ -212,7 +200,7 @@ class ServiceContext:
 
         transformations = transformations or service_context.transformations
 
-        return cls(
+        return ServiceContext(
             llm=llm,
             embed_model=embed_model,
             prompt_helper=prompt_helper,
