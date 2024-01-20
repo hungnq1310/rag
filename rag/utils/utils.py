@@ -1,3 +1,4 @@
+
 from typing import List, Dict, Optional, Generator, cast
 from itertools import islice
 import sys
@@ -144,7 +145,7 @@ class Tokenizer(Protocol):
 
 
 def set_global_tokenizer(tokenizer: Union[Tokenizer, Callable[[str], list]]) -> None:
-
+    global global_tokenizer
     if isinstance(tokenizer, Tokenizer):
         global_tokenizer = tokenizer.encode
     else:
@@ -152,31 +153,20 @@ def set_global_tokenizer(tokenizer: Union[Tokenizer, Callable[[str], list]]) -> 
 
 
 def get_tokenizer() -> Callable[[str], List]:
-
+    global global_tokenizer
     if global_tokenizer is None:
-        tiktoken_import_err = (
-            "`tiktoken` package not found, please run `pip install tiktoken`"
+        transformer_import_err = (
+            "`sentence_transformers` package not found, please run `pip install sentence_transformers`"
         )
         try:
-            import tiktoken
+            from sentence_transformers import SentenceTransformer
         except ImportError:
-            raise ImportError(tiktoken_import_err)
+            raise ImportError(transformer_import_err)
 
-        # set tokenizer cache temporarily
-        should_revert = False
-        if "TIKTOKEN_CACHE_DIR" not in os.environ:
-            should_revert = True
-            os.environ["TIKTOKEN_CACHE_DIR"] = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "_static/tiktoken_cache",
-            )
-
-        enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        enc = SentenceTransformer("BAAI/bge-base-en-v1.5")
         tokenizer = partial(enc.encode, allowed_special="all")
+        print("Setting global tokenizer")
         set_global_tokenizer(tokenizer)
-
-        if should_revert:
-            del os.environ["TIKTOKEN_CACHE_DIR"]
 
     assert global_tokenizer is not None
     return global_tokenizer
