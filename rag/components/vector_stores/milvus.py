@@ -4,7 +4,7 @@ An index that is built within Milvus.
 
 """
 import logging
-from typing import Any, List
+from typing import Any, List, TYPE_CHECKING
 
 from rag.entity.vector_store.types import (
     MetadataFilters,
@@ -26,6 +26,9 @@ from rag.config.schema import (
     MilvusArguments,
 )
 from rag.entity.vector_store.base_vector import VectorStore
+
+if TYPE_CHECKING:
+    from pymilvus import MilvusClient
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +149,7 @@ class MilvusVectorStore(VectorStore):
         logger.debug(f"Successfully created a new collection: {self.collection_name}")
 
     
-    def connect_client(self) -> MilvusClient:
+    def connect_client(self) -> "MilvusClient":
         # Order of use is host/port, uri, address
         if self.config.uri is not None:
             return MilvusClient(self.config.uri)

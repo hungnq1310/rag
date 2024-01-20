@@ -11,7 +11,9 @@ from dataclasses_json import DataClassJsonMixin
 
 from rag.constants.default_storage import (
     DEFAULT_PERSIST_DIR,
-    DEFAULT_PERSIST_FNAME
+    DEFAULT_PERSIST_FNAME,
+    DEFAULT_VECTOR_STORE,
+    NAMESPACE_SEP
 )
 from rag.entity.node.base_node import BaseNode
 from rag.utils.utils import concat_dirs
