@@ -40,10 +40,13 @@ class HuggingFaceEmbedding(BaseEmbedding):
     cache_folder: Optional[str] = Field(
         description="Cache folder for huggingface files."
     )
+    device: str = Field(
+        default="cpu",
+        description="device to load model. Default to `cpu`"
+    )
 
     _model: Any = PrivateAttr()
     _tokenizer: Any = PrivateAttr()
-    _device: str = PrivateAttr()
 
     def __init__(
         self,
@@ -54,8 +57,6 @@ class HuggingFaceEmbedding(BaseEmbedding):
         query_instruction: Optional[str] = None,
         text_instruction: Optional[str] = None,
         normalize: bool = True,
-        model: Optional[Any] = None,
-        tokenizer: Optional[Any] = None,
         embed_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
         cache_folder: Optional[str] = None,
         trust_remote_code: bool = False,
@@ -70,33 +71,17 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 "Please install transformers with `pip install transformers`."
             )
 
-        self._device = device or infer_torch_device()
+        self.device = device or infer_torch_device()
 
         cache_folder = cache_folder or get_cache_dir()
 
-        if model is None:  # Use model_name with AutoModel
-            model_name = (
-                model_name
-                if model_name is not None
-                else DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
-            )
-            model = AutoModel.from_pretrained(
-                model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code
-            )
-        elif model_name is None:  # Extract model_name from model
-            model_name = model.name_or_path
-        self._model = model.to(self._device)
+        if model_name is None:  # Use model_name with AutoModel
+            model_name = DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
+            print(f"Using default model: {model_name}")
 
-        if tokenizer is None:  # Use tokenizer_name with AutoTokenizer
-            tokenizer_name = (
-                model_name or tokenizer_name or DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
-            )
-            tokenizer = AutoTokenizer.from_pretrained(
-                tokenizer_name, cache_dir=cache_folder
-            )
-        elif tokenizer_name is None:  # Extract tokenizer_name from model
-            tokenizer_name = tokenizer.name_or_path
-        self._tokenizer = tokenizer
+        if tokenizer_name is None:  # Use tokenizer_name with AutoTokenizer
+            tokenizer_name = model_name or DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
+            print(f"Using default tokenizer of model: {model_name}")
 
         if max_length is None:
             try:
@@ -126,6 +111,17 @@ class HuggingFaceEmbedding(BaseEmbedding):
             query_instruction=query_instruction,
             text_instruction=text_instruction,
         )
+        # set private attribute
+        model = AutoModel.from_pretrained(
+            model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code
+        )
+        self._model = model.to(self.device)
+
+        tokenizer = AutoTokenizer.from_pretrained(
+            tokenizer_name, cache_dir=cache_folder
+        )
+        self._tokenizer = tokenizer
+
 
     @classmethod
     def class_name(cls) -> str:
@@ -153,7 +149,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         # move tokenizer inputs to device
         encoded_input = {
-            key: val.to(self._device) for key, val in encoded_input.items()
+            key: val.to(self.device) for key, val in encoded_input.items()
         }
 
         model_output = self._model(**encoded_input)
