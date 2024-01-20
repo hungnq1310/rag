@@ -13,7 +13,16 @@ MilvusParams:
   consistency_level: doc_id
   overwrite: False
   search_params: 
+    metric_type: L2
+    offset: 0
+    ignore_growing: False
+    params: 
+      nprobe: 10
   index_params: 
+    metric_type: L2
+    index_type: IVF_FLAT
+    params: 
+      nlist: 1024
 
 NodeParserParams:
   model_name_tokenizer: VoVanPhuc/sup-SimCSE-VietNamese-phobert-base
@@ -22,7 +31,7 @@ NodeParserParams:
   separator: " "
   chunk_size: 1024
   chunk_overlap: 20
-  paragraph_separator: "\n\n\n"
+  paragraph_separator: \n\n\n
   secondary_chunking_regex: "[^,.;。？！]+[,.;。？！]?"
   # for token splitter
   backup_separators: null
@@ -30,9 +39,9 @@ NodeParserParams:
 LlmParams:
   context_window: 3900
   max_new_tokens: 256
-  model_name: "StabilityAI/stablelm-tuned-alpha-3b"
-  tokenizer_name: "StabilityAI/stablelm-tuned-alpha-3b"
-  device_map: "cuda"
+  model_name: StabilityAI/stablelm-tuned-alpha-3b
+  tokenizer_name: StabilityAI/stablelm-tuned-alpha-3b
+  device_map: cuda
   top_p: null
   top_k: null
   temperature: 0.1
@@ -54,7 +63,7 @@ embeddings_params:
   max_length: 512
   normalize: True
   embedding_batch_size: 10
-  cache_folder: "./"
+  cache_folder: ./
   trust_remote_code: True
 
 IndexRetrieveParams:
@@ -76,6 +85,6 @@ IndexRetrieveParams:
 
 ResponseParams:
   verbose: False
-  response_mode: tree_summary
+  response_mode: tree_summarize
   use_async: False
   streaming: False
