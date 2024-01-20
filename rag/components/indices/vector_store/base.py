@@ -12,13 +12,13 @@ from rag.entity.indices.base_index import BaseIndex
 from rag.entity.indices.utils import async_embed_nodes, embed_nodes
 from rag.utils.async_utils import run_async_tasks
 from rag.utils.utils import iter_batch
-from rag.core.storage_context import StorageContext
-from rag.core.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
     from rag.entity.vector_store.base_vector import VectorStore
     from rag.entity.storage.docstore.base import RefDocInfo
+    from rag.core.storage_context import StorageContext
+    from rag.core.service_context import ServiceContext 
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,8 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexDict] = None,
-        service_context: Optional[ServiceContext] = None,
-        storage_context: Optional[StorageContext] = None,
+        service_context: Optional["ServiceContext"] = None,
+        storage_context: Optional["StorageContext"] = None,
         use_async: bool = False,
         store_nodes_override: bool = False,
         insert_batch_size: int = 2048,
@@ -58,23 +58,6 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
             storage_context=storage_context,
             show_progress=show_progress,
             **kwargs,
-        )
-
-    @classmethod
-    def from_vector_store(
-        cls,
-        vector_store: "VectorStore",
-        service_context: Optional[ServiceContext] = None,
-        **kwargs: Any,
-    ) -> "VectorStoreIndex":
-        if not vector_store.stores_text:
-            raise ValueError(
-                "Cannot initialize from a vector store that does not store text."
-            )
-
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        return cls(
-            nodes=[], service_context=service_context, storage_context=storage_context
         )
 
     @property
@@ -329,7 +312,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         self._storage_context.index_store.add_index_struct(self._index_struct)
 
     @property
-    def ref_doc_info(self) -> Dict[str, RefDocInfo]:
+    def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         if not self._vector_store.stores_text or self._store_nodes_override:
             node_doc_ids = list(self.index_struct.nodes_dict.values())

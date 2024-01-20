@@ -12,10 +12,12 @@ from rag.entity.node.base_node import BaseNode
 from rag.utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import IndexList
 from rag.entity.indices.base_index import BaseIndex
-from rag.core.service_context import ServiceContext
 
 from rag.entity.retriever.base_retriver import BaseRetriever
 from rag.entity.storage.docstore.base import RefDocInfo
+
+if TYPE_CHECKING:
+    from rag.core.service_context import ServiceContext
   
 
 class ListRetrieverMode(str, Enum):
@@ -49,7 +51,7 @@ class SummaryIndex(BaseIndex[IndexList]):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexList] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         show_progress: bool = False,
         **kwargs: Any,
     ) -> None:
