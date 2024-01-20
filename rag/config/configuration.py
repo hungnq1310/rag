@@ -40,7 +40,7 @@ class ConfigurationManager:
         return milvus_config
     
     def get_milvus_params(self) -> MilvusArguments:
-        params = self.param.milvus_params
+        params = self.param.MilvusParams
         milvus_params = MilvusArguments(
             collection_name=params.collection_name,
             consistency_level=params.consistency_level,
@@ -85,6 +85,7 @@ class ConfigurationManager:
             tokenizer_name=params.tokenizer_name,
             device_map=params.device_map,
             top_k=params.top_k,
+            top_p=params.top_p,
             temperature=params.temperature,
             length_penalty=params.length_penalty,
             repetition_penalty=params.repetition_penalty,

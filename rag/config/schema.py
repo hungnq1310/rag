@@ -83,7 +83,7 @@ class IndexRetrieveParams:
     # list
     list_query_mode: str
     #keyword table
-    keyword_table_model: str
+    keyword_table_mode: str
     max_keywords_per_chunk: int
     max_keywords_per_query: int
     num_chunks_per_query: int
