@@ -53,8 +53,7 @@ from rag.components.synthesizer.generation import Generation
 from rag.components.synthesizer.no_text import NoText
 from rag.components.synthesizer.mode import ResponseMode
 
-from rag.components.vector_stores.simple import SimpleV
-ectorStore
+from rag.components.vector_stores.simple import SimpleVectorStore
 from rag.components.vector_stores.milvus import MilvusVectorStore
 
 __all__ = [

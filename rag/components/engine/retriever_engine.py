@@ -58,7 +58,7 @@ class RetrieverQueryEngine(BaseQueryEngine):
         service_context: Optional[ServiceContext] = None,
         node_postprocessors: Optional[List[BaseNodePostprocessor]] = None,
         # response synthesizer args
-        response_mode: ResponseMode = ResponseMode.COMPACT,
+        response_mode: ResponseMode = ResponseMode.SIMPLE_SUMMARIZE,
         text_qa_template: Optional[BasePromptTemplate] = None,
         refine_template: Optional[BasePromptTemplate] = None,
         summary_template: Optional[BasePromptTemplate] = None,
