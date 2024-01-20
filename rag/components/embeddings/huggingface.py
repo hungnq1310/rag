@@ -30,7 +30,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         default=DEFAULT_HUGGINGFACE_LENGTH, description="Maximum length of input.", gt=0
     )
     pooling: Pooling = Field(default=Pooling.CLS, description="Pooling strategy.")
-    normalize: str = Field(default=True, description="Normalize embeddings or not.")
+    normalize: bool = Field(default=True, description="Normalize embeddings or not.")
     query_instruction: Optional[str] = Field(
         description="Instruction to prepend to query text."
     )
@@ -41,7 +41,6 @@ class HuggingFaceEmbedding(BaseEmbedding):
         description="Cache folder for huggingface files."
     )
     device: str = Field(
-        default="cpu",
         description="device to load model. Default to `cpu`"
     )
 
@@ -70,9 +69,8 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 "HuggingFaceEmbedding requires transformers to be installed.\n"
                 "Please install transformers with `pip install transformers`."
             )
-
-        self.device = device or infer_torch_device()
-
+    
+        device = device or infer_torch_device()
         cache_folder = cache_folder or get_cache_dir()
 
         if model_name is None:  # Use model_name with AutoModel
@@ -108,8 +106,10 @@ class HuggingFaceEmbedding(BaseEmbedding):
             max_length=max_length,
             pooling=pooling,
             normalize=normalize,
+            device=device,
             query_instruction=query_instruction,
             text_instruction=text_instruction,
+            cache_folder=cache_folder
         )
         # set private attribute
         model = AutoModel.from_pretrained(
