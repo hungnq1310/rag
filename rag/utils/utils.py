@@ -313,7 +313,10 @@ def infer_torch_device() -> str:
 
         has_cuda = torch.cuda.is_available()
     if has_cuda:
+        print("Detech cuda tensor, automatically using!!")
         return "cuda"
     if torch.backends.mps.is_available():
+        print("Detech mps of MacOS, automatically using!!")
         return "mps"
+    print("No cuda device found, automatically using `cpu`.")
     return "cpu"
