@@ -23,6 +23,8 @@ from rag.entity.storage.index_store.base import (
 )
 from rag.components.vector_stores.simple import (
     DEFAULT_PERSIST_FNAME as VECTOR_STORE_FNAME,
+    DEFAULT_VECTOR_STORE as DEFAULT_VECTOR_STORE_NAME,
+    NAMESPACE_SEP,
     SimpleVectorStore,
 )
 from rag.utils.utils import concat_dirs
@@ -81,9 +83,7 @@ class StorageContext:
                 vector_stores = vector_stores or {
                     DEFAULT_VECTOR_STORE_NAME: SimpleVectorStore()
                 }
-            if image_store:
-                # append image store to vector stores
-                vector_stores[IMAGE_VECTOR_STORE_NAMESPACE] = image_store
+        
         else:
             docstore = docstore or SimpleDocumentStore.from_persist_dir(
                 persist_dir, fs=fs
@@ -100,9 +100,6 @@ class StorageContext:
                 vector_stores = SimpleVectorStore.from_namespaced_persist_dir(
                     persist_dir, fs=fs
                 )
-            if image_store:
-                # append image store to vector stores
-                vector_stores[IMAGE_VECTOR_STORE_NAMESPACE] = image_store
 
         return cls(
             docstore=docstore,
@@ -116,7 +113,6 @@ class StorageContext:
         docstore_fname: str = DOCSTORE_FNAME,
         index_store_fname: str = INDEX_STORE_FNAME,
         vector_store_fname: str = VECTOR_STORE_FNAME,
-        image_store_fname: str = IMAGE_STORE_FNAME,
         fs: Optional[fsspec.AbstractFileSystem] = None,
     ) -> None:
         """Persist the storage context.
