@@ -33,7 +33,7 @@ def get_response_synthesizer(
     streaming: bool = False,
     output_cls: Optional[BaseModel] = None,
     verbose: bool = False,
-) -> BaseSynthesizer:
+) -> "BaseSynthesizer":
     """Get a response synthesizer."""
     text_qa_template = text_qa_template or DEFAULT_TEXT_QA_PROMPT_SEL
     simple_template = simple_template or DEFAULT_SIMPLE_INPUT_PROMPT

@@ -5,11 +5,11 @@ from rag.bridge.pydantic import BaseModel
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
 from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
 from rag.utils.async_utils import run_async_tasks
-from rag.core.service_context import ServiceContext
 
 if TYPE_CHECKING:
     from rag.entity.prompt import BasePromptTemplate, PromptDictType
     from rag.entity.output_parser import RESPONSE_TEXT_TYPE
+    from rag.core.service_context import ServiceContext
 
 
 class TreeSummarize(BaseSynthesizer):
@@ -29,7 +29,7 @@ class TreeSummarize(BaseSynthesizer):
         
         self,
         summary_template: Optional["BasePromptTemplate"] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         output_cls: Optional["BaseModel"] = None,
         streaming: bool = False,
         use_async: bool = False,
