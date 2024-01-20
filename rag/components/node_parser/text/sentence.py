@@ -58,8 +58,11 @@ class SentenceSplitter(MetadataAwareTextSplitter):
         default=CHUNKING_REGEX, description="Backup regex for splitting into sentences."
     )
 
+    tokenizer: Callable = Field(
+        default_factory=get_tokenizer(), description="Default separator for splitting into words"
+    )
+
     _chunking_tokenizer_fn: Callable[[str], List[str]] = PrivateAttr()
-    _tokenizer: Callable = PrivateAttr()
     _split_fns: List[Callable] = PrivateAttr()
     _sub_sentence_split_fns: List[Callable] = PrivateAttr()
 
@@ -68,9 +71,8 @@ class SentenceSplitter(MetadataAwareTextSplitter):
         separator: str = " ",
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         chunk_overlap: int = SENTENCE_CHUNK_OVERLAP,
-        tokenizer: Optional[Callable] = None,
+        tokenizer: Callable = None,
         paragraph_separator: str = DEFAULT_PARAGRAPH_SEP,
-        chunking_tokenizer_fn: Optional[Callable[[str], List[str]]] = None,
         secondary_chunking_regex: str = CHUNKING_REGEX,
         callback_manager: Optional[CallbackManager] = None,
         include_metadata: bool = True,
@@ -84,29 +86,14 @@ class SentenceSplitter(MetadataAwareTextSplitter):
                 f"({chunk_size}), should be smaller."
             )
         id_func = id_func or default_id_func
-
         callback_manager = callback_manager or CallbackManager([])
-        self._chunking_tokenizer_fn = (
-            chunking_tokenizer_fn or split_by_sentence_tokenizer()
-        )
-        #TODO: get_tokenizer should eliminate
-        self._tokenizer = tokenizer or get_tokenizer()
 
-        self._split_fns = [
-            split_by_sep(paragraph_separator),
-            self._chunking_tokenizer_fn,
-        ]
-
-        self._sub_sentence_split_fns = [
-            split_by_regex(secondary_chunking_regex),
-            split_by_sep(separator),
-            split_by_char(),
-        ]
-
+        # call super before creating value for private attribute 
         super().__init__(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
             secondary_chunking_regex=secondary_chunking_regex,
+            tokenizer = tokenizer,
             separator=separator,
             paragraph_separator=paragraph_separator,
             callback_manager=callback_manager,
@@ -114,6 +101,19 @@ class SentenceSplitter(MetadataAwareTextSplitter):
             include_prev_next_rel=include_prev_next_rel,
             id_func=id_func,
         )
+
+        # Initilize private attribute
+        self._chunking_tokenizer_fn = split_by_sentence_tokenizer()
+        self._split_fns = [
+            split_by_sep(paragraph_separator),
+            self._chunking_tokenizer_fn,
+        ]
+        self._sub_sentence_split_fns = [
+            split_by_regex(secondary_chunking_regex),
+            split_by_sep(separator),
+            split_by_char(),
+        ]
+
 
     @classmethod
     def from_defaults(
