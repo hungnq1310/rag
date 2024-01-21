@@ -143,13 +143,13 @@ class MilvusVectorStore(VectorStore):
                 id_type="string",
                 metric_type=self.similarity_metric,
                 max_length=65_535,
-                consistency_level=self.consistency_level,
             )
 
         logger.debug(f"Successfully created a new collection: {self.collection_name}")
 
     
     def connect_client(self) -> "MilvusClient":
+        from pymilvus import MilvusClient
         # Order of use is host/port, uri, address
         if self.config.uri is not None:
             return MilvusClient(self.config.uri)
