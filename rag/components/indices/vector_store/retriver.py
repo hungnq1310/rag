@@ -52,7 +52,7 @@ class VectorIndexRetriever(BaseRetriever):
         self._docstore = self._index.docstore
 
         self._similarity_top_k = similarity_top_k
-        self._vector_store_query_mode = VectorStoreQueryMode(vector_store_query_mode)
+        self._vector_store_query_mode = vector_store_query_mode
         self._alpha = alpha
         self._node_ids = node_ids
         self._doc_ids = doc_ids
