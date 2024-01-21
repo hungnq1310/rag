@@ -7,10 +7,10 @@ ExtractPDFOptions:
 MilvusParams:
   collection_name: MilvusCollection
   embedding_dim: 128
-  embedding_field: null
-  primary_field: null
-  text_field: False
-  consistency_level: doc_id
+  embedding_field: embedding
+  primary_field: doc_id
+  text_field: text
+  consistency_level: null
   overwrite: False
   search_params: 
     metric_type: L2
