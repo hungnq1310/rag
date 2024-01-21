@@ -175,7 +175,10 @@ class MetadataAwareTextSplitter(TextSplitter):
                 metadata_str=metadata_str,
             )
             all_nodes.extend(
-                build_nodes_from_splits(splits, node, id_func=self.id_func)
+                build_nodes_from_splits(
+                    text_splits=splits, 
+                    document=node, 
+                    id_func=self.id_func)
             )
 
         return all_nodes
