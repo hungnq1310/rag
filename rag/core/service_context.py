@@ -98,17 +98,17 @@ class ServiceContext:
                 to all input prompts, used to guide system "decision making"
 
         """
-        callback_manager = callback_manager or CallbackManager([])
+        self.callback_manager = callback_manager or CallbackManager([])
         if llm != "default":
-            llm = resolve_llm(llm)
+            self.llm = resolve_llm(llm)
 
         # NOTE: the embed_model isn't used in all indices
         # NOTE: embed model should be a transformation, but the way the service
         # context works, we can't put in there yet.
-        embed_model = resolve_embed_model(embed_model)
-        embed_model.callback_manager = callback_manager
+        self.embed_model = resolve_embed_model(embed_model)
+        self.embed_model.callback_manager = self.callback_manager
 
-        prompt_helper = prompt_helper or _get_default_prompt_helper(
+        self.prompt_helper = prompt_helper or _get_default_prompt_helper(
             llm_metadata=llm.metadata,
             context_window=context_window,
             num_output=num_output,
@@ -117,25 +117,17 @@ class ServiceContext:
         if text_splitter is not None and node_parser is not None:
             raise ValueError("Cannot specify both text_splitter and node_parser")
 
-        node_parser = (
-            text_splitter  # text splitter extends node parser
-            or node_parser
+        # text splitter extends node parser
+        node_parser = text_splitter \
+            or node_parser \
             or _get_default_node_parser(
                 chunk_size=chunk_size or DEFAULT_CHUNK_SIZE,
                 chunk_overlap=chunk_overlap or SENTENCE_CHUNK_OVERLAP,
-                callback_manager=callback_manager,
+                callback_manager=self.callback_manager,
             )
-        )
 
-        transformations = transformations or [node_parser]
+        self.transformations = transformations or [node_parser]
 
-        return ServiceContext(
-            llm=llm,
-            prompt_helper=prompt_helper,
-            embed_model=embed_model,
-            transformations=transformations,
-            callback_manager=callback_manager,
-        )
         
     @classmethod
     def from_service_context(
