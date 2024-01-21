@@ -35,7 +35,7 @@ from rag.components.prompt.selector_template import (
 )
 
 from rag.components.reader.directory_reader import DirectoryReader
-from rag.components.reader.pdf_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
+from rag.components.reader.file_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
 
 from rag.components.retrievers.auto_merging import AutoMergingRetriever
 from rag.components.retrievers.recursive import RecursiveRetriever
@@ -84,7 +84,7 @@ __all__ = [
     "SelectorPromptTemplate",
     "DEFAULT_TEXT_QA_PROMPT_SEL",
     "DEFAULT_TREE_SUMMARIZE_PROMPT_SEL",
-    "DirectoryReader"
+    "DirectoryReader",
     "PDFMinerLoader",
     "PyPDFReader",
     "AutoMergingRetriever",
