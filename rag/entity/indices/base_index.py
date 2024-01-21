@@ -65,7 +65,6 @@ class BaseIndex(Generic[IS], ABC):
         self._docstore = self._storage_context.docstore
         self._show_progress = show_progress
         self._vector_store = self._storage_context.vector_store
-        self._graph_store = self._storage_context.graph_store
 
         with self._service_context.callback_manager.as_trace("index_construction"):
             if index_struct is None:
