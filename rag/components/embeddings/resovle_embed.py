@@ -14,16 +14,12 @@ def resolve_embed_model(embed_model: Optional["EmbedType"] = None) -> "BaseEmbed
 
     if isinstance(embed_model, str):
         splits = embed_model.split(":", 1)
-        is_local = splits[0]
-        model_name = splits[1] if len(splits) > 1 else None
-        if is_local != "local":
-            raise ValueError(
-                "embed_model must start with str 'local' or of type BaseEmbedding"
-            )
+        model_name = splits[1] if len(splits) > 1 else splits
 
         cache_folder = os.path.join(get_cache_dir(), "models")
         os.makedirs(cache_folder, exist_ok=True)
 
+        print("using mock embeddings!!")
         embed_model = HuggingFaceEmbedding(
             model_name=model_name, cache_folder=cache_folder
         )
