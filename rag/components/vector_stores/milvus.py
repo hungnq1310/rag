@@ -4,7 +4,7 @@ An index that is built within Milvus.
 
 """
 import logging
-from typing import Any, List, TYPE_CHECKING
+from typing import Any, List, Dict, Union, TYPE_CHECKING
 
 from rag.entity.vector_store.types import (
     MetadataFilters,
@@ -103,7 +103,7 @@ class MilvusVectorStore(VectorStore):
         except ImportError:
             raise ImportError(import_err_msg)
 
-        from pymilvus import MilvusClient
+        from pymilvus import Collection
 
         self.config = config
         self.params = params
@@ -118,11 +118,7 @@ class MilvusVectorStore(VectorStore):
         
 
         # Select the similarity metric
-        metric_type = self.params.search_params.get("metric_type", None)
-        if metric_type.lower() in ("ip"):
-            self.similarity_metric = "IP"
-        elif metric_type.lower() in ("l2", "euclidean"):
-            self.similarity_metric = "L2"
+        self.similarity_metric = self.params.search_params.get("metric_type", None)
 
         # Connect to Milvus instance
         self.milvusclient = self.connect_client()
@@ -144,7 +140,11 @@ class MilvusVectorStore(VectorStore):
                 metric_type=self.similarity_metric,
                 max_length=65_535,
             )
-
+        
+        self.collection = Collection(
+            self.collection_name, using=self.milvusclient._using
+        )
+        self._create_index_if_required(force=True)
         logger.debug(f"Successfully created a new collection: {self.collection_name}")
 
     
@@ -185,7 +185,7 @@ class MilvusVectorStore(VectorStore):
 
         # Insert the data into milvus
         self.milvusclient.insert(self.collection_name, insert_list)
-        logger.debug(
+        print(
             f"Successfully inserted embeddings into: {self.collection_name} "
             f"Num Inserted: {len(insert_list)}"
         )
@@ -258,6 +258,8 @@ class MilvusVectorStore(VectorStore):
         if len(expr) != 0:
             string_expr = " and ".join(expr)
 
+        print("self.params.search_params:", self.params.search_params)
+        base_params = self.params.search_params
         # Perform the search
         res = self.milvusclient.search(
             collection_name=self.collection_name,
@@ -265,6 +267,7 @@ class MilvusVectorStore(VectorStore):
             filter=string_expr,
             limit=query.similarity_top_k,
             output_fields=output_fields,
+            search_params=base_params
         )
 
         logger.debug(
@@ -298,3 +301,19 @@ class MilvusVectorStore(VectorStore):
             ids.append(hit["id"])
 
         return VectorStoreQueryResult(nodes=nodes, similarities=similarities, ids=ids)
+    
+    def _create_index_if_required(self, force: bool = False) -> None:
+        # This helper method is introduced to allow the index to be created
+        # both in the constructor and in the `add` method. The `force` flag is
+        # provided to ensure that the index is created in the constructor even
+        # if self.overwrite is false. In the `add` method, the index is
+        # recreated only if self.overwrite is true.
+        if (self.collection.has_index() and self.overwrite) or force:
+            self.collection.release()
+            self.collection.drop_index()
+            index_params: Dict[str, Union[str, Dict[str, Any]]] = self.params.index_params
+            print(index_params)
+            self.collection.create_index(
+                self.embedding_field, index_params=index_params
+            )
+            self.collection.load()
