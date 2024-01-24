@@ -10,8 +10,8 @@ from rag.entity.node.base_node import BaseNode, IndexNode, MetadataMode
 from rag.entity.indices.data_struct import IndexDict
 from rag.entity.indices.base_index import BaseIndex
 from rag.entity.indices.utils import async_embed_nodes, embed_nodes
-from rag.utils.async_utils import run_async_tasks
-from rag.utils.utils import iter_batch
+from rag.rag_utils.async_utils import run_async_tasks
+from rag.rag_utils.utils import iter_batch
 
 if TYPE_CHECKING:
     from rag.entity.retriever.base_retriver import BaseRetriever
@@ -67,7 +67,10 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
     def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
         from rag.components.indices.vector_store import VectorIndexRetriever
-
+        print("""
+        Initialize index retriever with default values
+        except `node_ids` and `callback_manager`
+        """)
         return VectorIndexRetriever(
             self,
             node_ids=list(self.index_struct.nodes_dict.values()),
@@ -175,6 +178,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
     ) -> None:
         """Add document to index."""
         if not nodes:
+            print("No nodes to add, return empty index")
             return
 
         for nodes_batch in iter_batch(nodes, self._insert_batch_size):
@@ -184,6 +188,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
             if not self._vector_store.stores_text or self._store_nodes_override:
                 # NOTE: if the vector store doesn't store text,
                 # we need to add the nodes to the index struct and document store
+                print("add the nodes to the index struct and document store")
                 for node, new_id in zip(nodes_batch, new_ids):
                     # NOTE: remove embedding from node to avoid duplication
                     node_without_embedding = node.copy()
@@ -225,6 +230,7 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
             ]
             run_async_tasks(tasks)
         else:
+            print("Add nodes to index")
             self._add_nodes_to_index(
                 index_struct,
                 nodes,
