@@ -5,7 +5,7 @@ from abc import abstractmethod
 from hashlib import sha256
 
 from .types import *
-from rag.utils.utils import SAMPLE_TEXT, truncate_text
+from rag.rag_utils.utils import SAMPLE_TEXT, truncate_text
 
 DEFAULT_TEXT_NODE_TMPL = "{metadata_str}\n\n{content}"
 DEFAULT_METADATA_TMPL = "{key}: {value}"
@@ -39,7 +39,6 @@ class BaseNode(BaseModel):
     metadata: Dict[str, Any] = Field(
         default_factory=dict,
         description="A flat dictionary of metadata fields",
-        alias="extra_info",
     )
     excluded_embed_metadata_keys: List[str] = Field(
         default_factory=list,
@@ -76,6 +75,14 @@ class BaseNode(BaseModel):
     @property
     def node_id(self):
         return self.id_
+    
+    @property
+    def ref_doc_id(self) -> Optional[str]:
+        """Deprecated: Get ref doc id."""
+        source_node = self.source_node
+        if source_node is None:
+            return None
+        return source_node.node_id
 
     @property
     def source_node(self) -> Optional[RelatedNodeInfo]:
@@ -365,8 +372,6 @@ class Document(TextNode):
         alias="doc_id",
     )
 
-    _compat_fields = {"doc_id": "id_", "extra_info": "metadata"}
-
     @classmethod
     def get_type(cls) -> str:
         """Get Document type."""
@@ -391,8 +396,6 @@ class Document(TextNode):
         return self.id_
 
     def __setattr__(self, name: str, value: object) -> None:
-        if name in self._compat_fields:
-            name = self._compat_fields[name]
         super().__setattr__(name, value)
 
     @classmethod
