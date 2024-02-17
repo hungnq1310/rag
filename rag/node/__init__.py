@@ -1,4 +1,4 @@
-from rag.entity.node.base_node import (
+from rag.node.base_node import (
     BaseNode,
     TextNode,
     IndexNode,
@@ -6,7 +6,7 @@ from rag.entity.node.base_node import (
     Document,
     NodeRelationship,
 )
-from rag.entity.node.types import (
+from rag.node.types import (
     ObjectType,
     MetadataMode,
     RelatedNodeInfo,
