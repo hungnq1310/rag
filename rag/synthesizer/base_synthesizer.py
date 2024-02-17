@@ -11,10 +11,10 @@ import logging
 from abc import abstractmethod
 from typing import Any, Dict, Generator, List, Optional, Sequence, Union, TYPE_CHECKING
 
-from rag.schema.callbacks import CBEventType, EventPayload
-from rag.schema.node. base_node import BaseNode, MetadataMode, NodeWithScore
-from rag.schema.retriever.types import QueryBundle
-from rag.schema.prompt.mixin import PromptMixin
+from rag.callbacks.callback_manager import CBEventType, EventPayload
+from rag.node. base_node import BaseNode, MetadataMode, NodeWithScore
+from rag.retriever.types import QueryBundle
+from rag.prompt.mixin import PromptMixin
 from .types import *
 
 if TYPE_CHECKING:

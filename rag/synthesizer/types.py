@@ -7,7 +7,7 @@ from rag.bridge.pydantic import BaseModel
 from rag.rag_utils.utils import truncate_text
 
 if TYPE_CHECKING:
-    from rag.schema.node import NodeWithScore
+    from rag.node import NodeWithScore
     from rag.schema.output_parser import TokenGen
 
 @dataclass
