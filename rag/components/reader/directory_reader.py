@@ -286,7 +286,7 @@ class DirectoryReader(BaseReader):
 
             # load data -- catch all errors except for ImportError
             try:
-                docs = reader.load_data(input_file, extra_info=metadata)
+                doc = reader.load_data(input_file, extra_info=metadata)
             except ImportError as e:
                 # ensure that ImportError is raised so user knows
                 # about missing dependencies
@@ -298,13 +298,7 @@ class DirectoryReader(BaseReader):
                     flush=True,
                 )
                 return []
-
-            # iterate over docs if needed
-            if filename_as_id:
-                for i, doc in enumerate(docs):
-                    doc.id_ = f"{input_file!s}_part_{i}"
-
-            documents.extend(docs)
+            documents.append(doc)
         else:
             # do standard read
             with open(input_file, errors=errors, encoding=encoding) as f:
@@ -358,6 +352,7 @@ class DirectoryReader(BaseReader):
                 files_to_process = tqdm(
                     self.input_files, desc="Loading files", unit="file"
                 )
+            #Reader each file in input files
             for input_file in files_to_process:
                 documents.extend(
                     DirectoryReader.load_file(
