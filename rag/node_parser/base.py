@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from typing import Any, List, Sequence
 
 from rag.bridge.pydantic import Field
-from rag.schema.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.schema.node import (
+from rag.callbacks.callback_manager import CallbackManager, CBEventType, EventPayload
+from rag.node import (
     BaseNode,
     Document,
     MetadataMode,
