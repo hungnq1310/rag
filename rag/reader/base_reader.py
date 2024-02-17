@@ -3,7 +3,7 @@ from abc import ABC
 from typing import Any, Iterable, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from rag.schema.node import Document
+    from rag.node import Document
 
 class BaseReader(ABC):
     """Utilities for loading data from a directory."""
