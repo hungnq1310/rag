@@ -4,13 +4,11 @@ import logging
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 
-from rag.schema.callbacks.callback_manager import CallbackManager
-from rag.schema.prompt.mixin import PromptDictType, PromptMixin
-from rag.schema.node.base_node import NodeWithScore
-from rag.schema.retriever.types import QueryBundle, QueryType
-
-if TYPE_CHECKING:
-    from rag.schema.synthesizer.types import RESPONSE_TYPE
+from rag.callbacks.callback_manager import CallbackManager
+from rag.prompt.mixin import PromptDictType, PromptMixin
+from rag.node.base_node import NodeWithScore
+from rag.retriever.types import QueryBundle, QueryType
+from rag.synthesizer.types import RESPONSE_TYPE
 
 logger = logging.getLogger(__name__)
 
@@ -28,13 +26,13 @@ class BaseQueryEngine(PromptMixin):
     def _update_prompts(self, prompts: PromptDictType) -> None:
         """Update prompts."""
 
-    def query(self, str_or_query_bundle: QueryType) -> "RESPONSE_TYPE":
+    def query(self, str_or_query_bundle: QueryType) -> RESPONSE_TYPE:
         with self.callback_manager.as_trace("query"):
             if isinstance(str_or_query_bundle, str):
                 str_or_query_bundle = QueryBundle(str_or_query_bundle)
             return self._query(str_or_query_bundle)
 
-    async def aquery(self, str_or_query_bundle: QueryType) -> "RESPONSE_TYPE":
+    async def aquery(self, str_or_query_bundle: QueryType) -> RESPONSE_TYPE:
         with self.callback_manager.as_trace("query"):
             if isinstance(str_or_query_bundle, str):
                 str_or_query_bundle = QueryBundle(str_or_query_bundle)
