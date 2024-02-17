@@ -10,8 +10,8 @@ from rag.rag_utils.utils import SAMPLE_TEXT, truncate_text
 DEFAULT_TEXT_NODE_TMPL = "{metadata_str}\n\n{content}"
 DEFAULT_METADATA_TMPL = "{key}: {value}"
 # NOTE: for pretty printing
-TRUNCATE_LENGTH = 350
-WRAP_WIDTH = 70
+TRUNCATE_LENGTH = 1000
+WRAP_WIDTH = 100
 
 
 # Node classes for indexes
@@ -383,13 +383,15 @@ class Document(TextNode):
         return self.id_
 
     def __str__(self) -> str:
+        #TODO: get metadata print
         source_text_truncated = truncate_text(
             self.get_content().strip(), TRUNCATE_LENGTH
         )
         source_text_wrapped = textwrap.fill(
             f"Text: {source_text_truncated}\n", width=WRAP_WIDTH
         )
-        return f"Doc ID: {self.doc_id}\n{source_text_wrapped}"
+        metadata_info = self.get_metadata_str()
+        return f"Doc ID: {self.doc_id}\nMETADATA:{metadata_info}\n{source_text_wrapped}"
 
     def get_doc_id(self) -> str:
         """TODO: Deprecated: Get document ID."""
