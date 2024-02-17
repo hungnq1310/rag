@@ -2,12 +2,12 @@
 from abc import abstractmethod
 from typing import List, Optional, TYPE_CHECKING
 
-from rag.schema.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.schema.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
+from rag.callbacks import CallbackManager, CBEventType, EventPayload
+from rag.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
 from .types import *
 
 if TYPE_CHECKING:
-    from rag.schema.node import NodeWithScore
+    from rag.node import NodeWithScore
     from rag.core.service_context import ServiceContext
 
 class BaseRetriever(PromptMixin):

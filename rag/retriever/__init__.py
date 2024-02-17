@@ -1,8 +1,9 @@
-from rag.schema.retriever.base_retriver import BaseRetriever
-from rag.schema.retriever.types import QueryBundle, QueryType
+from rag.components.retrievers.auto_merging import AutoMergingRetriever
+from rag.components.retrievers.recursive import RecursiveRetriever
+from rag.components.retrievers.bm25 import BM25Retriever
 
 __all__ = [
-    "BaseRetriever",
-    "QueryBundle",
-    "QueryType"
+    "AutoMergingRetriever",
+    "RecursiveRetriever",
+    "BM25Retriever",
 ]
