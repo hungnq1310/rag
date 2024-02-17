@@ -3,12 +3,12 @@ from typing import List, Optional
 import fsspec
 
 from rag.bridge.pydantic import BaseModel, Field
-from rag.entity.node.base_node import BaseNode
+from rag.schema.node.base_node import BaseNode
 from rag.components.storage.docstore.utils import doc_to_json, json_to_doc
 from rag.components.storage.kv_store.simple_kvstore import (
     SimpleKVStore as SimpleCache,
 )
-from rag.entity.storage.kv_store.base import (
+from rag.schema.storage.kv_store.base import (
     BaseKVStore as BaseCache,
 )
 

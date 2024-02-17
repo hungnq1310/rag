@@ -11,15 +11,15 @@ from llama_index.question_gen.prompts import (
 )
 from llama_index.tools.types import ToolMetadata
 
-from rag.entity.prompt import PromptType
-from rag.entity.retriever.base_retriver import QueryBundle
-from components.core.service_context import ServiceContext
-from rag.entity.schema import BaseOutputParser
-from rag.entity.prompt.base_prompt import BasePromptTemplate
-from rag.components.sub_quetion import BaseQuestionGenerator, SubQuestion
-from rag.components.sub_quetion.output_parser import SubQuestionOutputParser
-from rag.entity.prompt.mixin import PromptDictType
-from rag.components.prompt.prompt_template import PromptTemplate
+from rag.prompt import PromptType
+from rag.retriever.base_retriver import QueryBundle
+from rag.core.service_context import ServiceContext
+from rag.schema.component import BaseOutputParser
+from rag.prompt.base_prompt import BasePromptTemplate
+from rag.sub_quetion import BaseQuestionGenerator, SubQuestion
+from rag.sub_quetion.output_parser import SubQuestionOutputParser
+from rag.prompt.mixin import PromptDictType
+from rag.prompt.prompt_template import PromptTemplate
 
 
 

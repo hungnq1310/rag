@@ -4,8 +4,8 @@ from typing import List, Sequence
 from llama_index.tools.types import ToolMetadata
 from llama_index.bridge.pydantic import BaseModel
 
-from rag.entity.prompt.mixin import PromptMixin, PromptMixinType
-from rag.entity.retriever import QueryBundle
+from rag.schema.prompt.mixin import PromptMixin, PromptMixinType
+from rag.schema.retriever import QueryBundle
 
 
 
