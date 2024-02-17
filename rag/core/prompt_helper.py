@@ -15,16 +15,14 @@ from typing import Callable, List, Optional, Sequence
 
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
-from rag.entity.schema import BaseComponent
-from rag.entity.llm.types import ChatMessage, LLMMetadata
-from rag.entity.llm.base import LLM
-from rag.entity.node_parser.utils import truncate_text
-from rag.components.node_parser.text.token import TokenTextSplitter
-from rag.entity.prompt.base_prompt import BasePromptTemplate
-from rag.components.prompt import (
-    ChatPromptTemplate,
-    SelectorPromptTemplate,
-)
+from rag.schema.component import BaseComponent
+from rag.llm.types import ChatMessage, LLMMetadata
+from rag.llm.base import LLM
+from rag.node_parser.utils import truncate_text
+from rag.node_parser.text.token import TokenTextSplitter
+from rag.prompt.base_prompt import BasePromptTemplate
+from rag.prompt.chat_template import ChatPromptTemplate
+from rag.prompt.selector_template import SelectorPromptTemplate
 from .utils import get_empty_prompt_txt
 from .token_counter import TokenCounter
 

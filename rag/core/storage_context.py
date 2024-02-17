@@ -11,24 +11,24 @@ from rag.constants import (
     VECTOR_STORE_KEY,
 )
 
-from rag.components.storage.docstore.simple_docstore import SimpleDocumentStore
-from rag.entity.storage.docstore.base import (
+from rag.storage.docstore.simple_docstore import SimpleDocumentStore
+from rag.storage.docstore.base import (
     DEFAULT_PERSIST_FNAME as DOCSTORE_FNAME,
     BaseDocumentStore
 )
-from rag.components.storage.index_store.simple_index_store import SimpleIndexStore
-from rag.entity.storage.index_store.base import (
+from rag.storage.index_store.simple_index_store import SimpleIndexStore
+from rag.storage.index_store.base import (
     DEFAULT_PERSIST_FNAME as INDEX_STORE_FNAME,
     BaseIndexStore
 )
-from rag.components.vector_stores.simple import (
+from rag.vector_store.simple import (
     DEFAULT_PERSIST_FNAME as VECTOR_STORE_FNAME,
     DEFAULT_VECTOR_STORE as DEFAULT_VECTOR_STORE_NAME,
     NAMESPACE_SEP,
     SimpleVectorStore,
 )
 from rag.rag_utils.utils import concat_dirs
-from rag.entity.vector_store.base_vector import VectorStore
+from rag.vector_store.base_vector import VectorStore
 
 DEFAULT_PERSIST_DIR = "./storage"
 

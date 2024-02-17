@@ -4,18 +4,18 @@ from typing import List, Optional, TYPE_CHECKING
 
 
 from rag.bridge.pydantic import BaseModel
-from rag.entity.schema import TransformComponent
-from rag.entity.callbacks import CallbackManager
-from rag.components.llm.resolve_llm import resolve_llm
-from rag.components.embeddings.resovle_embed import resolve_embed_model
-from rag.components.node_parser.text.sentence import (
+from rag.schema.component import TransformComponent
+from rag.callbacks.callback_manager import CallbackManager
+from rag.llm.resolve_llm import resolve_llm
+from rag.embeddings.resovle_embed import resolve_embed_model
+from rag.node_parser.text.sentence import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
     SentenceSplitter,
 )
-from rag.entity.embeddings.base_embeddings import BaseEmbedding, EmbedType
-from rag.entity.llm.base import LLM, LLMType, LLMMetadata
-from rag.entity.node_parser.base import TextSplitter
+from rag.embeddings.base_embeddings import BaseEmbedding, EmbedType
+from rag.llm.base import LLM, LLMType, LLMMetadata
+from rag.node_parser.base import TextSplitter
 from .prompt_helper import PromptHelper
 
 logger = logging.getLogger(__name__)

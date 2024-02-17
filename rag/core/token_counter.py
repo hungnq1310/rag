@@ -3,7 +3,7 @@
 
 from typing import Any, Callable, Dict, List, Optional
 
-from rag.entity.llm.types import ChatMessage, MessageRole
+from rag.llm.types import ChatMessage, MessageRole
 from rag.rag_utils.utils import get_tokenizer
 
 

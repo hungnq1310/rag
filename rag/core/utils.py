@@ -1,6 +1,6 @@
 from typing import List
 
-from rag.entity.prompt.base_prompt import BasePromptTemplate
+from rag.prompt.base_prompt import BasePromptTemplate
 
 
 def get_empty_prompt_txt(prompt: BasePromptTemplate) -> str:
