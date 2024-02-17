@@ -7,7 +7,7 @@ from rag.entity.callbacks.callback_manager import CallbackManager, CBEventType, 
 from rag.constants import DEFAULT_CHUNK_SIZE
 from rag.entity.node_parser.base import MetadataAwareTextSplitter
 from rag.entity.node_parser.utils import default_id_func
-from rag.utils.utils import get_tokenizer
+from rag.rag_utils.utils import get_tokenizer
 from .utils import (
     split_by_char,
     split_by_regex,

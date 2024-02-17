@@ -12,7 +12,7 @@ from rag.constants.default_prompt import (
 )
 from rag.entity.prompt.base_prompt import BasePromptTemplate
 from rag.entity.node.base_node import NodeWithScore
-from rag.utils.utils import truncate_text
+from rag.rag_utils.utils import truncate_text
 from .base import BaseKeywordTableIndex
 
 

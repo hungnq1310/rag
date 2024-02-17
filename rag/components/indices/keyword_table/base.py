@@ -12,9 +12,9 @@ from abc import abstractmethod
 from enum import Enum
 from typing import Any, Dict, Optional, Sequence, Set, Union, TYPE_CHECKING
 
-from rag.utils.async_utils import run_async_tasks
+from rag.rag_utils.async_utils import run_async_tasks
 from rag.entity.node.base_node import BaseNode, MetadataMode
-from rag.utils.utils import get_tqdm_iterable
+from rag.rag_utils.utils import get_tqdm_iterable
 from rag.entity.indices.data_struct import KeywordTable
 from rag.entity.indices.base_index import BaseIndex
 

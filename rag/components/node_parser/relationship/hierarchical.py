@@ -7,7 +7,7 @@ from rag.entity.callbacks.callback_manager import CallbackManager, CBEventType, 
 from rag.entity.node_parser.base import NodeParser
 from rag.entity.node.base_node import BaseNode, Document, NodeRelationship
 from rag.components.node_parser.text.sentence import SentenceSplitter
-from rag.utils.utils import get_tqdm_iterable
+from rag.rag_utils.utils import get_tqdm_iterable
 
 
 def _add_parent_child_relationship(parent_node: BaseNode, child_node: BaseNode) -> None:

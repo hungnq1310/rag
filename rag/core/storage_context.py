@@ -27,7 +27,7 @@ from rag.components.vector_stores.simple import (
     NAMESPACE_SEP,
     SimpleVectorStore,
 )
-from rag.utils.utils import concat_dirs
+from rag.rag_utils.utils import concat_dirs
 from rag.entity.vector_store.base_vector import VectorStore
 
 DEFAULT_PERSIST_DIR = "./storage"

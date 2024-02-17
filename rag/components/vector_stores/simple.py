@@ -16,7 +16,7 @@ from rag.constants.default_storage import (
     NAMESPACE_SEP
 )
 from rag.entity.node.base_node import BaseNode
-from rag.utils.utils import concat_dirs
+from rag.rag_utils.utils import concat_dirs
 from rag.entity.vector_store.base_vector import VectorStore
 from rag.entity.vector_store.types import (
     MetadataFilters,

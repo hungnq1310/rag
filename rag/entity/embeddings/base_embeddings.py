@@ -11,7 +11,7 @@ from rag.bridge.pydantic import Field, validator
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.entity.schema import TransformComponent
 from rag.entity.node import MetadataMode, BaseNode
-from rag.utils.utils import get_tqdm_iterable
+from rag.rag_utils.utils import get_tqdm_iterable
 
 # TODO: change to numpy array
 Embedding = List[float]

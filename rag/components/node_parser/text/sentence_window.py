@@ -6,7 +6,7 @@ from rag.entity.callbacks import CallbackManager
 from rag.entity.node_parser.base import NodeParser
 from rag.entity.node_parser.utils import build_nodes_from_splits
 from rag.entity.node.base_node import BaseNode, Document, MetadataMode
-from rag.utils.utils import get_tqdm_iterable
+from rag.rag_utils.utils import get_tqdm_iterable
 from .utils import split_by_sentence_tokenizer
 
 DEFAULT_WINDOW_SIZE = 3

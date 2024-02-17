@@ -11,7 +11,7 @@ from rag.entity.node import (
     NodeRelationship
 )
 from rag.entity.schema import TransformComponent
-from rag.utils.utils import get_tqdm_iterable
+from rag.rag_utils.utils import get_tqdm_iterable
 from .utils import (
     IdFuncCallable,
     build_nodes_from_splits,

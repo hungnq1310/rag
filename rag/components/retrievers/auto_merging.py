@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 
 from rag.entity.callbacks import CallbackManager
-from rag.utils.utils import truncate_text
+from rag.rag_utils.utils import truncate_text
 from rag.entity.node.base_node import BaseNode, NodeWithScore
 from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 

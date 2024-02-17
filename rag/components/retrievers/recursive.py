@@ -4,7 +4,7 @@ from rag.entity.engine.base_query_engine import BaseQueryEngine
 from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.entity.retriever import BaseRetriever, QueryBundle
 from rag.entity.node import BaseNode, IndexNode, NodeWithScore, TextNode
-from rag.utils.utils import print_text
+from rag.rag_utils.utils import print_text
 
 DEFAULT_QUERY_RESPONSE_TMPL = "Query: {query_str}\nResponse: {response}"
 

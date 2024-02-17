@@ -5,7 +5,7 @@ from hashlib import sha256
 from typing import Dict, List, Optional, Sequence, Set, Tuple, Any, TYPE_CHECKING
 
 from rag.entity.node import BaseNode, MetadataMode
-from rag.utils.utils import globals_helper, truncate_text
+from rag.rag_utils.utils import globals_helper, truncate_text
 from rag.entity.vector_store import VectorStoreQueryResult
 from rag.entity.schema import TransformComponent
 

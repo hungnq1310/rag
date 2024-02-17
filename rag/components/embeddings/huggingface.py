@@ -12,7 +12,7 @@ from rag.entity.embeddings.pooling import Pooling
 from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
 
 from rag.components.llm import HuggingFaceInferenceAPI
-from rag.utils.utils import get_cache_dir, infer_torch_device
+from rag.rag_utils.utils import get_cache_dir, infer_torch_device
 from .utils import (
     format_query,
     format_text,

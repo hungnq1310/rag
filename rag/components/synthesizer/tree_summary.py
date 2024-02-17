@@ -4,7 +4,7 @@ from typing import Any, Optional, Sequence, TYPE_CHECKING
 from rag.bridge.pydantic import BaseModel
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
 from rag.components.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
-from rag.utils.async_utils import run_async_tasks
+from rag.rag_utils.async_utils import run_async_tasks
 
 if TYPE_CHECKING:
     from rag.entity.prompt import BasePromptTemplate, PromptDictType

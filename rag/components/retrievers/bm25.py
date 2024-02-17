@@ -9,7 +9,7 @@ from rag.entity.callbacks import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
 from rag.entity.retriever.base_retriver import BaseRetriever, QueryBundle
 from rag.entity.node.base_node import BaseNode, NodeWithScore
-from rag.utils.utils import globals_helper
+from rag.rag_utils.utils import globals_helper
 
 if TYPE_CHECKING:
     from rag.entity.storage.docstore import BaseDocumentStore

@@ -10,15 +10,15 @@ from llama_index.core import BaseQueryEngine
 from llama_index.tools.query_engine import QueryEngineTool
 from llama_index.response_synthesizers import get_response_synthesizer
 
-from components.core.service_context import ServiceContext
+from rag.core.service_context import ServiceContext
 from rag.entity.node.base_node import NodeWithScore, TextNode
 from rag.entity.retriever import QueryBundle
-from rag.entity.synthesizer import RESPONSE_TYPE
+from rag.entity.synthesizer.types import RESPONSE_TYPE
 from rag.entity.synthesizer.base_synthesizer import BaseSynthesizer
 from rag.entity.prompt.mixin import PromptMixinType
 from rag.components.sub_quetion import BaseQuestionGenerator, SubQuestion
 from rag.components.sub_quetion.question_generator import LLMQuestionGenerator
-from rag.utils.utils import get_color_mapping, print_text
+from rag.rag_utils.utils import get_color_mapping, print_text
 
 logger = logging.getLogger(__name__)
 

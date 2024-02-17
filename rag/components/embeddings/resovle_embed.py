@@ -1,7 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 import os
 
-from rag.utils.utils import get_cache_dir
+from rag.rag_utils.utils import get_cache_dir
 
 from .huggingface import HuggingFaceEmbedding
 from .mock import MockEmbedding

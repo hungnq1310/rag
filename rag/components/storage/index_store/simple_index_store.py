@@ -11,7 +11,7 @@ from rag.entity.storage.index_store.base import (
 
 from rag.entity.storage.kv_store.base import BaseInMemoryKVStore
 from rag.components.storage.kv_store.simple_kvstore import SimpleKVStore
-from rag.utils.utils import concat_dirs
+from rag.rag_utils.utils import concat_dirs
 from .kv_index_store import KVIndexStore
 
 

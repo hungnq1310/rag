@@ -11,7 +11,7 @@ from rag.entity.node import (
     NodeRelationship,
     TextNode,
 )
-from rag.utils.utils import truncate_text
+from rag.rag_utils.utils import truncate_text
 
 logger = logging.getLogger(__name__)
 

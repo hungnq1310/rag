@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 from rag.bridge.pydantic import BaseModel
-from rag.utils.utils import truncate_text
+from rag.rag_utils.utils import truncate_text
 
 if TYPE_CHECKING:
     from rag.entity.node import NodeWithScore
