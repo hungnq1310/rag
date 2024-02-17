@@ -2,7 +2,7 @@ from collections import ChainMap
 from typing import List, Protocol, Sequence, runtime_checkable, Any, Union, TYPE_CHECKING
 
 from rag.bridge.pydantic import validator
-from rag.schema.callbacks import CBEventType, EventPayload
+from rag.callbacks.callback_manager import CBEventType, EventPayload
 
 from .interface import BaseLLM
 from .types import *
@@ -15,7 +15,7 @@ from .generic_utils import (
 )
 
 if TYPE_CHECKING:
-    from rag.schema.prompt.base_prompt import BasePromptTemplate
+    from rag.prompt.base_prompt import BasePromptTemplate
     from rag.schema.output_parser import BaseOutputParser, TokenAsyncGen, TokenGen
 
 # NOTE: These two protocols are needed to appease mypy

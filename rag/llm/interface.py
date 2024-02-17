@@ -2,13 +2,13 @@ from abc import abstractmethod
 from typing import Any, Sequence, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, validator
-from rag.schema.callbacks import CallbackManager
+from rag.callbacks.callback_manager import CallbackManager
 from schema.component import BaseComponent
 from .types import *
 
 if TYPE_CHECKING:
     from rag.schema.output_parser import TokenAsyncGen, TokenGen
-    from rag.schema.prompt import BasePromptTemplate
+    from rag.prompt.base_prompt import BasePromptTemplate
 
 class BaseLLM(BaseComponent):
     """LLM interface."""
