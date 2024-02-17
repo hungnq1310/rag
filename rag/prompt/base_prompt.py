@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional
 
 from rag.bridge.pydantic import BaseModel, Field
-from rag.schema.llm import BaseLLM, ChatMessage
+from rag.llm import BaseLLM, ChatMessage
 from rag.schema.output_parser import BaseOutputParser
 
 class BasePromptTemplate(BaseModel, ABC):
