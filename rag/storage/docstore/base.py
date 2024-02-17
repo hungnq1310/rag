@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Sequence
 import fsspec
 from dataclasses_json import DataClassJsonMixin
 
-from rag.schema.node import BaseNode
+from rag.node import BaseNode
 
 DEFAULT_PERSIST_FNAME = "docstore.json"
 DEFAULT_PERSIST_DIR = "./storage"

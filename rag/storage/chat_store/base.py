@@ -2,8 +2,8 @@
 from abc import abstractmethod
 from typing import List, Optional
 
-from schema.component import BaseComponent
-from rag.schema.llm import ChatMessage
+from rag.schema.component import BaseComponent
+from rag.llm import ChatMessage
 
 class BaseChatStore(BaseComponent):
     @classmethod

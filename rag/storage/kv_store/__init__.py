@@ -1,6 +1,5 @@
-from rag.schema.storage.kv_store.base import BaseKVStore, BaseInMemoryKVStore
+from rag.storage.kv_store.simple_kvstore import SimpleKVStore
 
 __all__ = [
-    "BaseKVStore",
-    "BaseInMemoryKVStore"
+    "SimpleKVStore"
 ]

@@ -4,8 +4,8 @@ from typing import List, Optional, TYPE_CHECKING
 
 import fsspec
 
-if TYPE_CHECKING:
-    from rag.schema.indices.data_struct import IndexStruct
+from rag.indices.data_struct import IndexStruct
+
 
 DEFAULT_PERSIST_DIR = "./storage"
 DEFAULT_PERSIST_FNAME = "index_store.json"
@@ -14,11 +14,11 @@ DEFAULT_PERSIST_PATH = os.path.join(DEFAULT_PERSIST_DIR, DEFAULT_PERSIST_FNAME)
 
 class BaseIndexStore(ABC):
     @abstractmethod
-    def index_structs(self) -> List["IndexStruct"]:
+    def index_structs(self) -> List[IndexStruct]:
         pass
 
     @abstractmethod
-    def add_index_struct(self, index_struct: "IndexStruct") -> None:
+    def add_index_struct(self, index_struct: IndexStruct) -> None:
         pass
 
     @abstractmethod
@@ -28,7 +28,7 @@ class BaseIndexStore(ABC):
     @abstractmethod
     def get_index_struct(
         self, struct_id: Optional[str] = None
-    ) -> Optional["IndexStruct"]:
+    ) -> Optional[IndexStruct]:
         pass
 
     def persist(
