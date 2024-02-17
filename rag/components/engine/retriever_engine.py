@@ -123,11 +123,13 @@ class RetrieverQueryEngine(BaseQueryEngine):
 
     def retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         nodes = self._retriever.retrieve(query_bundle)
-        return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
+        # return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
+        return nodes
 
     async def aretrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         nodes = await self._retriever.aretrieve(query_bundle)
-        return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
+        return nodes
+        # return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
 
     def with_retriever(self, retriever: BaseRetriever) -> "RetrieverQueryEngine":
         return RetrieverQueryEngine(
