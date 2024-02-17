@@ -8,7 +8,7 @@ from typing import (
     Dict
 )
 
-from rag.schema.node.base_node import BaseNode
+from rag.node.base_node import BaseNode
 from rag.bridge.pydantic import BaseModel, StrictInt, StrictFloat, StrictStr
 
 

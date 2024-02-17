@@ -6,7 +6,7 @@ from typing import (
 )
 import fsspec
 
-from rag.schema.node.base_node import BaseNode
+from rag.node.base_node import BaseNode
 from .types import *
 
 @runtime_checkable

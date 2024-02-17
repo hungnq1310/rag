@@ -1,7 +1,7 @@
 import json
 from typing import Any, Dict, Tuple
 
-from rag.schema.node.base_node import (
+from rag.node.base_node import (
     BaseNode,
     IndexNode,
     NodeRelationship,
