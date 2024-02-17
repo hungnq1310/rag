@@ -3,13 +3,12 @@ import os
 
 from rag.rag_utils.utils import get_cache_dir
 
+from .base_embeddings import EmbedType, BaseEmbedding
 from .huggingface import HuggingFaceEmbedding
 from .mock import MockEmbedding
 
-if TYPE_CHECKING:
-    from rag.entity.embeddings.base_embeddings import EmbedType, BaseEmbedding
 
-def resolve_embed_model(embed_model: Optional["EmbedType"] = None) -> "BaseEmbedding":
+def resolve_embed_model(embed_model: Optional[EmbedType] = None) -> BaseEmbedding:
     """Resolve embed model."""
 
     if isinstance(embed_model, str):

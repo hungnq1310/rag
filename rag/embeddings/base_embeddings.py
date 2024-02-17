@@ -8,9 +8,9 @@ from typing import Any, Callable, Coroutine, List, Optional, Tuple, Union
 import numpy as np
 
 from rag.bridge.pydantic import Field, validator
-from rag.entity.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.entity.schema import TransformComponent
-from rag.entity.node import MetadataMode, BaseNode
+from rag.callbacks import CallbackManager, CBEventType, EventPayload
+from schema.component import TransformComponent
+from rag.node import MetadataMode, BaseNode
 from rag.rag_utils.utils import get_tqdm_iterable
 
 # TODO: change to numpy array

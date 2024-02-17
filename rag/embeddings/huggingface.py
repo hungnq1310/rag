@@ -2,17 +2,17 @@ import asyncio
 from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Union
 
 from rag.bridge.pydantic import Field, PrivateAttr
-from rag.entity.callbacks import CallbackManager
-from rag.entity.embeddings.base_embeddings import (
+from rag.callbacks import CallbackManager
+from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
+from rag.components.llm import HuggingFaceInferenceAPI
+from rag.rag_utils.utils import get_cache_dir, infer_torch_device
+
+from .base_embeddings import (
     DEFAULT_EMBED_BATCH_SIZE,
     BaseEmbedding,
     Embedding
 )
-from rag.entity.embeddings.pooling import Pooling
-from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
-
-from rag.components.llm import HuggingFaceInferenceAPI
-from rag.rag_utils.utils import get_cache_dir, infer_torch_device
+from .pooling import Pooling
 from .utils import (
     format_query,
     format_text,
