@@ -3,15 +3,15 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, TYPE_CHECKING
 
-from rag.schema.indices.utils import run_transformations
-from rag.schema.node.base_node import BaseNode, Document
+from rag.indices.utils import run_transformations
+from rag.node.base_node import BaseNode, Document
 
 from .data_struct import IndexStruct
 
 if TYPE_CHECKING:
-    from schema.engine.base_query_engine import BaseQueryEngine
-    from rag.schema.retriever import BaseRetriever
-    from rag.schema.storage.docstore import BaseDocumentStore, RefDocInfo
+    from rag.engine.base_query_engine import BaseQueryEngine
+    from rag.retriever.base_retriver import BaseRetriever
+    from rag.storage.docstore.base import BaseDocumentStore, RefDocInfo
     from rag.core.service_context import ServiceContext
     from rag.core.storage_context import StorageContext
 

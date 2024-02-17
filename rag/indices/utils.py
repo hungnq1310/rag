@@ -4,14 +4,14 @@ import re
 from hashlib import sha256
 from typing import Dict, List, Optional, Sequence, Set, Tuple, Any, TYPE_CHECKING
 
-from rag.schema.node import BaseNode, MetadataMode
+from rag.node.base_node import BaseNode, MetadataMode
 from rag.rag_utils.utils import globals_helper, truncate_text
-from rag.schema.vector_store import VectorStoreQueryResult
+from rag.vector_store.base_vector import VectorStoreQueryResult
 from schema.component import TransformComponent
 
 
 if TYPE_CHECKING:
-    from rag.schema.embeddings import BaseEmbedding
+    from rag.embeddings.base_embeddings import BaseEmbedding
     from rag.components.cache import IngestionCache
 
 _logger = logging.getLogger(__name__)

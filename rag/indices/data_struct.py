@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Set
 from dataclasses_json import DataClassJsonMixin
 
 from .types import IndexStructType
-from rag.schema.node import BaseNode, TextNode
+from rag.node.base_node import BaseNode, TextNode
 
 # TODO: legacy backport of old Node class
 Node = TextNode
