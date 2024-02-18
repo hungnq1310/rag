@@ -8,9 +8,9 @@ from rag.config.schema import (
     NodeParserArguments as NodeParserParams,
     NodeParserConfig
 )                               
-from rag.components.node_parser.text import TokenTextSplitter
-from rag.components.node_parser.text import SentenceSplitter
-from rag.entity.node.base_node import (
+from rag.node_parser.text import TokenTextSplitter
+from rag.node_parser.text import SentenceSplitter
+from rag.node.base_node import (
     BaseNode,
     Document,
 )
@@ -22,7 +22,7 @@ class SplitterMode:
     SENTENCE = "SentenceSplitter"
     TOKEN = "TokenTextSplitter"
 
-class TextNodesParser:
+class ParsingPipeline:
     """Define node parser.
 
     Splits a document into Nodes using a TextSplitter.
