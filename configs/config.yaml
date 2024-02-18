@@ -1,7 +1,13 @@
 artifacts_root: artifacts
 
 reader_config: 
-  file_path: ./data/
+  file_path: rag/data/
+  only_suffixs: .pdf
+  encoding: null
+  recursive: False
+  num_files_limit: null
+  show_progress: False
+  num_workers: null
   
 milvus_config: 
   host: localhost
@@ -10,5 +16,14 @@ milvus_config:
   uri: null
   user: null
 
-node_parser_config: 
-  name: null
+split_config: 
+  splitter_mode: sentence
+  model_name_tokenizer: BAAI/bge-small-en
+  separator: " "
+  chunk_size: 256
+  chunk_overlap: 20
+  # for sentence splitter 
+  paragraph_separator: null
+  secondary_chunking_regex: null
+  # for token splitter
+  backup_separators: null
