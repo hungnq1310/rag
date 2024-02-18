@@ -9,7 +9,7 @@ from rag.constants import (
     DEFAULT_NUM_OUTPUTS,
 )
 from rag.llm.base import LLM
-from rag.llm.schema import (
+from rag.llm.llm_type import (
     MessageRole,
     ChatMessage,
     ChatResponse,

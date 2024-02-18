@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, TYPE_CHECKING
 import fsspec
 
 from rag.bridge.pydantic import Field
-from rag.llm.types import ChatMessage
+from llm.llm_type import ChatMessage
 from .base import BaseChatStore
 
 class SimpleChatStore(BaseChatStore):
