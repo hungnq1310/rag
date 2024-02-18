@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional, Sequence
 from rag.callbacks.callback_manager import CallbackManager
 from rag.schema.output_parser import PydanticProgramMode
 
-from .types import (
+from .llm_type import (
     ChatMessage,
     CompletionResponse,
     CompletionResponseGen,

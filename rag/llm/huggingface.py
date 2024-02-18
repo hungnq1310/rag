@@ -9,7 +9,7 @@ from rag.constants import (
     DEFAULT_NUM_OUTPUTS,
 )
 from rag.llm.base import LLM
-from rag.llm.types import (
+from rag.llm.schema import (
     MessageRole,
     ChatMessage,
     ChatResponse,
@@ -27,7 +27,7 @@ from rag.llm.generic_utils import (
     stream_completion_response_to_chat_response,
     messages_to_prompt as generic_messages_to_prompt,
 )
-from rag.components.prompt.prompt_template import PromptTemplate
+from rag.prompt.prompt_template import PromptTemplate
 
 
 DEFAULT_HUGGINGFACE_MODEL = "StabilityAI/stablelm-tuned-alpha-3b"

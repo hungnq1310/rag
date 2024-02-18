@@ -5,7 +5,7 @@ from rag.bridge.pydantic import validator
 from rag.callbacks.callback_manager import CBEventType, EventPayload
 
 from .interface import BaseLLM
-from .types import *
+from .llm_type import *
 from .generic_utils import (
     messages_to_prompt as generic_messages_to_prompt,
     completion_response_to_chat_response,

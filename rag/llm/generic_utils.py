@@ -4,7 +4,7 @@ from typing import Callable, cast, Any, Awaitable, List, Optional, Sequence
 import os
 
 from rag.callbacks.callback_manager import CBEventType, EventPayload, CallbackManager
-from .types import *
+from .llm_type import *
 
 def llm_chat_callback() -> Callable:
     def wrap(f: Callable) -> Callable:

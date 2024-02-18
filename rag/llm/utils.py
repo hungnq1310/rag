@@ -1,6 +1,6 @@
 from typing import List, Optional, Sequence
 
-from rag.llm.types import ChatMessage, MessageRole
+from llm.llm_type import ChatMessage, MessageRole
 
 BOS, EOS = "<s>", "</s>"
 B_INST, E_INST = "[INST]", "[/INST]"

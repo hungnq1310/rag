@@ -9,7 +9,7 @@ from typing import (
 
 from rag.bridge.pydantic import BaseModel
 from typing_extensions import Self
-from .node import BaseNode
+from rag.node.base_node import BaseNode
 
 class BaseComponent(BaseModel):
     """Base component object to capture class names."""

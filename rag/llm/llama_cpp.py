@@ -14,7 +14,7 @@ from rag.constants import (
 from rag.schema.output_parser import BaseOutputParser, PydanticProgramMode
 from rag.rag_utils.utils import get_cache_dir
 
-from .types import (
+from .llm_type import (
     ChatMessage,
     ChatResponse,
     ChatResponseGen,
