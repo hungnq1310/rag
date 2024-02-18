@@ -21,14 +21,14 @@ from rag.storage.index_store.base import (
     DEFAULT_PERSIST_FNAME as INDEX_STORE_FNAME,
     BaseIndexStore
 )
-from rag.vector_store.simple import (
+from rag.vector_stores.simple import (
     DEFAULT_PERSIST_FNAME as VECTOR_STORE_FNAME,
     DEFAULT_VECTOR_STORE as DEFAULT_VECTOR_STORE_NAME,
     NAMESPACE_SEP,
     SimpleVectorStore,
 )
 from rag.rag_utils.utils import concat_dirs
-from rag.vector_store.base_vector import VectorStore
+from rag.vector_stores.base_vector import VectorStore
 
 DEFAULT_PERSIST_DIR = "./storage"
 

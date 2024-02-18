@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 from rag.callbacks import CallbackManager
 from rag.rag_utils.utils import truncate_text
 from rag.node.base_node import BaseNode, NodeWithScore
-from rag.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 
 if TYPE_CHECKING:
     from rag.indices.vector_store.retriver import VectorIndexRetriever

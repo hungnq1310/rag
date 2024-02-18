@@ -1,5 +1,5 @@
-from rag.components.reader.file_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
-from rag.components.reader.directory_reader import DirectoryReader
+from rag.reader.file_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
+from rag.reader.directory_reader import DirectoryReader
 
 __all__ = [
     "DirectoryReader",

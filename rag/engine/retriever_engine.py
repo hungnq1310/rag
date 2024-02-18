@@ -5,7 +5,7 @@ from llama_index.postprocessor.types import BaseNodePostprocessor
 from rag.bridge.pydantic import BaseModel
 from rag.callbacks.callback_manager import CallbackManager
 from rag.callbacks.types import CBEventType, EventPayload
-from rag.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 from rag.node.base_node import NodeWithScore
 from rag.core.service_context import ServiceContext
 from rag.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE

@@ -13,7 +13,7 @@ from rag.rag_utils.utils import get_tqdm_iterable
 from rag.indices.data_struct import IndexList
 from rag.indices.base_index import BaseIndex
 
-from rag.retriever.base_retriver import BaseRetriever
+from rag.retrievers.base_retriver import BaseRetriever
 from rag.storage.docstore.base import RefDocInfo
 
 if TYPE_CHECKING:

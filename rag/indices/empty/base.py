@@ -11,7 +11,7 @@ from rag.indices.data_struct import EmptyIndexStruct
 from rag.indices.base_index import BaseIndex 
 
 if TYPE_CHECKING:
-    from rag.retriever.base_retriver import BaseRetriever
+    from rag.retrievers.base_retriver import BaseRetriever
     from rag.engine.base_query_engine import BaseQueryEngine
     from rag.node.base_node import BaseNode
     from rag.core.service_context import ServiceContext

@@ -26,7 +26,7 @@ from rag.constants.default_prompt import (
 )
 
 if TYPE_CHECKING:
-    from rag.retriever.base_retriver import BaseRetriever
+    from rag.retrievers.base_retriver import BaseRetriever
     from rag.prompt.base_prompt import BasePromptTemplate
     from rag.core.service_context import ServiceContext
     from rag.storage.docstore.base import RefDocInfo  

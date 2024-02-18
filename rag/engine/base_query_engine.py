@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 from rag.callbacks.callback_manager import CallbackManager
 from rag.prompt.mixin import PromptDictType, PromptMixin
 from rag.node.base_node import NodeWithScore
-from rag.retriever.types import QueryBundle, QueryType
+from rag.retrievers.types import QueryBundle, QueryType
 from rag.synthesizer.types import RESPONSE_TYPE
 
 logger = logging.getLogger(__name__)

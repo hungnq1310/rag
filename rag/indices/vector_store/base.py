@@ -14,8 +14,8 @@ from rag.rag_utils.async_utils import run_async_tasks
 from rag.rag_utils.utils import iter_batch
 
 if TYPE_CHECKING:
-    from rag.retriever.base_retriver import BaseRetriever
-    from rag.vector_store.base_vector import VectorStore
+    from rag.retrievers.base_retriver import BaseRetriever
+    from rag.vector_stores.base_vector import VectorStore
     from rag.storage.docstore.base import RefDocInfo
     from rag.core.storage_context import StorageContext
     from rag.core.service_context import ServiceContext 

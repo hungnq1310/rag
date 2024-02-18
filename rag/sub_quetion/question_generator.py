@@ -12,7 +12,7 @@ from llama_index.question_gen.prompts import (
 from llama_index.tools.types import ToolMetadata
 
 from rag.prompt import PromptType
-from rag.retriever.base_retriver import QueryBundle
+from rag.retrievers.base_retriver import QueryBundle
 from rag.core.service_context import ServiceContext
 from rag.schema.component import BaseOutputParser
 from rag.prompt.base_prompt import BasePromptTemplate

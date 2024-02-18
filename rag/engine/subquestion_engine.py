@@ -12,7 +12,7 @@ from llama_index.response_synthesizers import get_response_synthesizer
 
 from rag.core.service_context import ServiceContext
 from rag.node.base_node import NodeWithScore, TextNode
-from rag.retriever.types import QueryBundle
+from rag.retrievers.types import QueryBundle
 from rag.synthesizer.types import RESPONSE_TYPE
 from rag.synthesizer.base_synthesizer import BaseSynthesizer
 from rag.prompt.mixin import PromptMixinType

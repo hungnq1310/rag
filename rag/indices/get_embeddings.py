@@ -6,7 +6,7 @@ from typing import Any, Callable, List, Optional, Tuple
 import numpy as np
 
 from rag.embeddings.base_embeddings import similarity as default_similarity_fn
-from rag.vector_store.types import VectorStoreQueryMode
+from rag.vector_stores.types import VectorStoreQueryMode
 
 
 def get_top_k_embeddings(

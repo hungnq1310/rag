@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Union
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.callbacks import CallbackManager
 from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
-from rag.components.llm import HuggingFaceInferenceAPI
+from rag.llm.huggingface import HuggingFaceInferenceAPI
 from rag.rag_utils.utils import get_cache_dir, infer_torch_device
 
 from .base_embeddings import (

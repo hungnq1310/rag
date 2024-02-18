@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Sequence, Set, Tuple, Any, TYPE_CHECKIN
 
 from rag.node.base_node import BaseNode, MetadataMode
 from rag.rag_utils.utils import globals_helper, truncate_text
-from rag.vector_store.base_vector import VectorStoreQueryResult
+from rag.vector_stores.base_vector import VectorStoreQueryResult
 from schema.component import TransformComponent
 
 

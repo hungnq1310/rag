@@ -7,7 +7,7 @@ from nltk.stem import PorterStemmer
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 from rag.node.base_node import BaseNode, NodeWithScore
 from rag.rag_utils.utils import globals_helper
 

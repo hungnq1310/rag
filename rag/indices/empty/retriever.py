@@ -2,7 +2,7 @@
 from typing import Any, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
 from .base import EmptyIndex
 

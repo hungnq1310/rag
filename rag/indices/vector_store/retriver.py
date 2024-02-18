@@ -3,9 +3,9 @@ from typing import Any, Dict, List, Optional
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.retriever.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 from rag.node.base_node import NodeWithScore, ObjectType
-from rag.vector_store.types import (
+from rag.vector_stores.types import (
     MetadataFilters,
     VectorStoreQuery,
     VectorStoreQueryMode,
