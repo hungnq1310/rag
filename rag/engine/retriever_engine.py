@@ -10,8 +10,8 @@ from rag.node.base_node import NodeWithScore
 from rag.core.service_context import ServiceContext
 from rag.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE
 from rag.prompt.mixin import PromptMixinType, BasePromptTemplate
-from rag.components.synthesizer.mode import ResponseMode
-from rag.components.synthesizer.utils import get_response_synthesizer
+from rag.synthesizer.mode import ResponseMode
+from rag.synthesizer.utils import get_response_synthesizer
 
 from .base_query_engine import BaseQueryEngine
 
