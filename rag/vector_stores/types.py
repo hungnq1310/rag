@@ -1,4 +1,5 @@
 """Vector store index types."""
+from enum import Enum
 from dataclasses import dataclass
 from typing import (
     Union,
@@ -93,3 +94,17 @@ class VectorStoreQuery:
 
     # NOTE: currently only used by postgres hybrid search
     sparse_top_k: Optional[int] = None
+
+class FilterOperator(str, Enum):
+    """Vector store filter operator."""
+
+    # TODO add more operators
+    EQ = "=="  # default operator (string, int, float)
+    GT = ">"  # greater than (int, float)
+    LT = "<"  # less than (int, float)
+    NE = "!="  # not equal to (string, int, float)
+    GTE = ">="  # greater than or equal to (int, float)
+    LTE = "<="  # less than or equal to (int, float)
+    IN = "in"  # In array (string or number)
+    NIN = "nin"  # Not in array (string or number)
+    TEXT_MATCH = "text_match"  # full text match (allows you to search for a specific substring, token or phrase within the text field)
