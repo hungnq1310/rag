@@ -8,7 +8,7 @@ from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
 from rag.node.base_node import BaseNode, MetadataMode, NodeWithScore
-from .base import SummaryIndex
+from rag.indices.list.base import SummaryIndex
 from rag.indices.get_embeddings import get_top_k_embeddings
 from rag.indices.utils import (
     default_format_node_batch_fn,
@@ -16,7 +16,7 @@ from rag.indices.utils import (
 )
 
 if TYPE_CHECKING:
-    from rag.components.prompt.prompt_template import PromptTemplate
+    from rag.prompt.prompt_template import PromptTemplate
     from rag.core.service_context import ServiceContext
 
 

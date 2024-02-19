@@ -13,7 +13,7 @@ from rag.vector_stores.types import (
 )
 from rag.indices.data_struct import IndexDict
 from rag.indices.utils import log_vector_store_query_result
-from .base import VectorStoreIndex
+from rag.indices.vector_store.base import VectorStoreIndex
 
 class VectorIndexRetriever(BaseRetriever):
     """Vector index retriever.

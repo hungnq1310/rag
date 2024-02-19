@@ -10,7 +10,7 @@ from rag.node.base_node import BaseNode, NodeWithScore
 from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 
 if TYPE_CHECKING:
-    from rag.indices.vector_store.retriver import VectorIndexRetriever
+    from retrievers.dense.vector_retriver import VectorIndexRetriever
     from rag.core.storage_context import StorageContext
 
 logger = logging.getLogger(__name__)

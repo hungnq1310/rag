@@ -13,7 +13,7 @@ from rag.constants.default_prompt import (
 from rag.prompt.base_prompt import BasePromptTemplate
 from rag.node.base_node import NodeWithScore
 from rag.rag_utils.utils import truncate_text
-from .base import BaseKeywordTableIndex
+from rag.indices.keyword_table.base import BaseKeywordTableIndex
 
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE

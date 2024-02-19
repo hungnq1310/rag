@@ -3,11 +3,9 @@ from rag.indices.keyword_table.base import (
     KeywordTableIndex,
     KeywordTableRetrieverMode,
     )
-from rag.indices.keyword_table.retriever import BaseKeywordTableRetriever
 
 __all__ = [
     "BaseKeywordTableIndex",
     "KeywordTableIndex",
     "KeywordTableRetrieverMode",
-    "BaseKeywordTableRetriever"
 ]

@@ -1,6 +1,6 @@
-from rag.retrievers.auto_merging import AutoMergingRetriever
-from rag.retrievers.recursive import RecursiveRetriever
-from rag.retrievers.bm25 import BM25Retriever
+from retrievers.sparse.auto_merging import AutoMergingRetriever
+from retrievers.sparse.recursive import RecursiveRetriever
+from retrievers.sparse.bm25 import BM25Retriever
 
 __all__ = [
     "AutoMergingRetriever",
