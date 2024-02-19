@@ -2,7 +2,7 @@
 import logging
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
@@ -13,7 +13,13 @@ from rag.constants.default_prompt import (
 from rag.prompt.base_prompt import BasePromptTemplate
 from rag.node.base_node import NodeWithScore
 from rag.rag_utils.utils import truncate_text
+from rag.llm.base import LLM
 from rag.indices.keyword_table.base import BaseKeywordTableIndex
+from rag.indices.keyword_table.utils import (
+    rake_extract_keywords, 
+    simple_extract_keywords, 
+    extract_keywords_given_response
+)
 
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE
@@ -101,3 +107,84 @@ class BaseKeywordTableRetriever(BaseRetriever):
                     f"{truncate_text(node.get_content(), 50)}"
                 )
         return [NodeWithScore(node=node) for node in sorted_nodes]
+
+
+class KeywordTableRetriever(BaseKeywordTableRetriever):
+    """Keyword Table Index GPT Retriever.
+
+    Extracts keywords using GPT. Set when using `retriever_mode="default"`.
+
+    See BaseGPTKeywordTableQuery for arguments.
+
+    """
+
+    def __init__(
+        self,
+        index: BaseKeywordTableIndex,
+        keyword_extract_template: Optional[BasePromptTemplate] = None,
+        query_keyword_extract_template: Optional[BasePromptTemplate] = None,
+        max_keywords_per_query: int = 10,
+        num_chunks_per_query: int = 10,
+        llm: Optional[LLM] = None,
+        callback_manager: Optional[CallbackManager] = None,
+        object_map: Optional[dict] = None,
+        verbose: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize params."""
+        self._llm = llm
+
+        super().__init__(
+            index=index,
+            keyword_extract_template=keyword_extract_template,
+            query_keyword_extract_template=query_keyword_extract_template,
+            max_keywords_per_query=max_keywords_per_query,
+            num_chunks_per_query=num_chunks_per_query,
+            callback_manager=callback_manager,
+            object_map=object_map,
+            verbose=verbose,
+        )
+
+    def _get_keywords(self, query_str: str) -> List[str]:
+        """Extract keywords."""
+        response = self._llm.predict(
+            self.query_keyword_extract_template,
+            max_keywords=self.max_keywords_per_query,
+            question=query_str,
+        )
+        keywords = extract_keywords_given_response(response, start_token="KEYWORDS:")
+        return list(keywords)
+
+
+class KeywordTableSimpleRetriever(BaseKeywordTableRetriever):
+    """Keyword Table Index Simple Retriever.
+
+    Extracts keywords using simple regex-based keyword extractor.
+    Set when `retriever_mode="simple"`.
+
+    See BaseGPTKeywordTableQuery for arguments.
+
+    """
+
+    def _get_keywords(self, query_str: str) -> List[str]:
+        """Extract keywords."""
+        return list(
+            simple_extract_keywords(query_str, max_keywords=self.max_keywords_per_query)
+        )
+
+
+class KeywordTableRAKERetriever(BaseKeywordTableRetriever):
+    """Keyword Table Index RAKE Retriever.
+
+    Extracts keywords using RAKE keyword extractor.
+    Set when `retriever_mode="rake"`.
+
+    See BaseGPTKeywordTableQuery for arguments.
+
+    """
+
+    def _get_keywords(self, query_str: str) -> List[str]:
+        """Extract keywords."""
+        return list(
+            rake_extract_keywords(query_str, max_keywords=self.max_keywords_per_query)
+        )

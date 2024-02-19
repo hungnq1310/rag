@@ -41,7 +41,7 @@ class KeywordTableRetrieverMode(str, Enum):
     RAKE = "rake"
 
 
-class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
+class BaseKeywordTableIndex(BaseIndex):
     """Base Keyword Table Index.
 
     This index extracts keywords from the text, and maps each
@@ -61,8 +61,6 @@ class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
         show_progress (bool): Whether to show tqdm progress bars. Defaults to False.
 
     """
-
-    index_struct_cls = KeywordTable
 
     def __init__(
         self,
@@ -102,14 +100,14 @@ class BaseKeywordTableIndex(BaseIndex[KeywordTable]):
         **kwargs: Any,
     ) -> "BaseRetriever":
         # NOTE: lazy import
-        from llama_index.indices.keyword_table.retrievers import (
-            KeywordTableGPTRetriever,
+        from rag.retrievers.dense.keyword_retriever import (
+            KeywordTableRetriever,
             KeywordTableRAKERetriever,
             KeywordTableSimpleRetriever,
         )
 
         if retriever_mode == KeywordTableRetrieverMode.DEFAULT:
-            return KeywordTableGPTRetriever(self, **kwargs)
+            return KeywordTableRetriever(self, **kwargs)
         elif retriever_mode == KeywordTableRetrieverMode.SIMPLE:
             return KeywordTableSimpleRetriever(self, **kwargs)
         elif retriever_mode == KeywordTableRetrieverMode.RAKE:
