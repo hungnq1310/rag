@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class VectorStoreIndex(BaseIndex[IndexDict]):
+class VectorStoreIndex(BaseIndex):
     """Vector Store Index.
 
     Args:
@@ -32,8 +32,6 @@ class VectorStoreIndex(BaseIndex[IndexDict]):
         store_nodes_override (bool): set to True to always store Node objects in index
             store and document store even if vector store keeps text. Defaults to False
     """
-
-    index_struct_cls = IndexDict
 
     def __init__(
         self,

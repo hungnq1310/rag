@@ -17,12 +17,11 @@ if TYPE_CHECKING:
 
 
 IS = TypeVar("IS", bound=IndexStruct)
-IndexType = TypeVar("IndexType", bound="BaseIndex")
 
 logger = logging.getLogger(__name__)
 
 
-class BaseIndex(Generic[IS], ABC):
+class BaseIndex(ABC):
     """Base LlamaIndex.
 
     Args:
@@ -32,8 +31,6 @@ class BaseIndex(Generic[IS], ABC):
             components like LLM, Embeddings, etc.).
 
     """
-
-    index_struct_cls: Type[IS]
 
     def __init__(
         self,
@@ -73,45 +70,6 @@ class BaseIndex(Generic[IS], ABC):
             self._index_struct = index_struct
             self._storage_context.index_store.add_index_struct(self._index_struct)
 
-    @classmethod
-    def from_documents(
-        cls: Type[IndexType],
-        documents: Sequence[Document],
-        storage_context: Optional["StorageContext"] = None,
-        service_context: Optional["ServiceContext"] = None,
-        show_progress: bool = False,
-        **kwargs: Any,
-    ) -> IndexType:
-        """Create index from documents.
-
-        Args:
-            documents (Optional[Sequence[BaseDocument]]): List of documents to
-                build the index from.
-
-        """
-        storage_context = storage_context
-        service_context = service_context
-        docstore = storage_context.docstore
-
-        with service_context.callback_manager.as_trace("index_construction"):
-            for doc in documents:
-                docstore.set_document_hash(doc.get_doc_id(), doc.hash)
-
-            nodes = run_transformations(
-                documents,  # type: ignore
-                service_context.transformations,
-                show_progress=show_progress,
-                **kwargs,
-            )
-
-            return cls(
-                nodes=nodes,
-                storage_context=storage_context,
-                service_context=service_context,
-                show_progress=show_progress,
-                **kwargs,
-            )
-
     @property
     def index_struct(self) -> IS:
         """Get the index struct."""
@@ -121,28 +79,6 @@ class BaseIndex(Generic[IS], ABC):
     def index_id(self) -> str:
         """Get the index struct."""
         return self._index_struct.index_id
-
-    def set_index_id(self, index_id: str) -> None:
-        """Set the index id.
-
-        NOTE: if you decide to set the index_id on the index_struct manually,
-        you will need to explicitly call `add_index_struct` on the `index_store`
-        to update the index store.
-
-        .. code-block:: python
-            index.index_struct.index_id = index_id
-            index.storage_context.index_store.add_index_struct(index.index_struct)
-
-        Args:
-            index_id (str): Index id to set.
-
-        """
-        # delete the old index struct
-        old_id = self._index_struct.index_id
-        self._storage_context.index_store.delete_index_struct(old_id)
-        # add the new index struct
-        self._index_struct.index_id = index_id
-        self._storage_context.index_store.add_index_struct(self._index_struct)
 
     @property
     def docstore(self) -> "BaseDocumentStore":
@@ -157,14 +93,6 @@ class BaseIndex(Generic[IS], ABC):
     def storage_context(self) -> "StorageContext":
         return self._storage_context
 
-    @property
-    def summary(self) -> str:
-        return str(self._index_struct.summary)
-
-    @summary.setter
-    def summary(self, new_summary: str) -> None:
-        self._index_struct.summary = new_summary
-        self._storage_context.index_store.add_index_struct(self._index_struct)
 
     @abstractmethod
     def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IS:
@@ -342,7 +270,7 @@ class BaseIndex(Generic[IS], ABC):
 
     def as_query_engine(self, **kwargs: Any) -> "BaseQueryEngine":
         # NOTE: lazy import
-        from llama_index.query_engine.retriever_query_engine import RetrieverQueryEngine
+        from rag.engine.retriever_engine import RetrieverQueryEngine
 
         retriever = self.as_retriever(**kwargs)
 

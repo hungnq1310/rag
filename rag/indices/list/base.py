@@ -26,7 +26,7 @@ class ListRetrieverMode(str, Enum):
     LLM = "llm"
 
 
-class SummaryIndex(BaseIndex[IndexList]):
+class SummaryIndex(BaseIndex):
     """Summary Index.
 
     The summary index is a simple data structure where nodes are stored in
@@ -44,8 +44,6 @@ class SummaryIndex(BaseIndex[IndexList]):
         show_progress (bool): Whether to show tqdm progress bars. Defaults to False.
 
     """
-
-    index_struct_cls = IndexList
 
     def __init__(
         self,
@@ -69,7 +67,7 @@ class SummaryIndex(BaseIndex[IndexList]):
         retriever_mode: Union[str, ListRetrieverMode] = ListRetrieverMode.DEFAULT,
         **kwargs: Any,
     ) -> BaseRetriever:
-        from llama_index.indices.list.retrievers import (
+        from rag.retrievers.dense.list_retriever import (
             SummaryIndexEmbeddingRetriever,
             SummaryIndexLLMRetriever,
             SummaryIndexRetriever,
