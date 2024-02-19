@@ -51,7 +51,7 @@ class CallbackManager(BaseCallbackHandler, ABC):
 
     def __init__(self, handlers: Optional[List[BaseCallbackHandler]] = None):
         """Initialize the manager with a list of handlers."""
-        from llama_index import global_handler
+        from . import global_handler
 
         handlers = handlers or []
 
