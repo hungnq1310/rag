@@ -9,8 +9,6 @@ from rag.llm.generic_utils import (
     llm_completion_callback,
     
 )
-from rag.indices.types import IndexStructType
-
 __all__ = [
     "LLM",
     "LLMType",
@@ -18,5 +16,4 @@ __all__ = [
     "prompt_to_messages",
     "llm_chat_callback",
     "llm_completion_callback",
-    "IndexStructType"
 ]
