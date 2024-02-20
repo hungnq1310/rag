@@ -37,9 +37,9 @@ from rag.prompt.selector_template import (
 from rag.reader.directory_reader import DirectoryReader
 from rag.reader.file_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
 
-from rag.retrievers.auto_merging import AutoMergingRetriever
-from rag.retrievers.recursive import RecursiveRetriever
-from rag.retrievers.bm25 import BM25Retriever
+from rag.retrievers.sparse.auto_merging import AutoMergingRetriever
+from rag.retrievers.sparse.recursive import RecursiveRetriever
+from rag.retrievers.sparse.bm25 import BM25Retriever
 
 from rag.storage.chat_store.simple_chat_store import SimpleChatStore
 from rag.storage.docstore.kv_docstore import KVDocumentStore
