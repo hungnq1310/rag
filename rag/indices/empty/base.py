@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from rag.storage.docstore.base import RefDocInfo
 
 
-class EmptyIndex(BaseIndex[EmptyIndexStruct]):
+class EmptyIndex(BaseIndex):
     """Empty Index.
 
     An index that doesn't contain any documents. Used for
@@ -28,8 +28,6 @@ class EmptyIndex(BaseIndex[EmptyIndexStruct]):
     counting + others.
 
     """
-
-    index_struct_cls = EmptyIndexStruct
 
     def __init__(
         self,

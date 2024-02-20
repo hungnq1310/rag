@@ -3,7 +3,7 @@
 import logging
 from typing import Dict, List, Optional, cast
 
-from rag.bridge.pydantic import Field, 
+from rag.bridge.pydantic import Field
 from rag.node.base_node import NodeWithScore
 from rag.retrievers.types import QueryBundle
 
