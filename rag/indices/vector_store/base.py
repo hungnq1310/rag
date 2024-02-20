@@ -64,7 +64,7 @@ class VectorStoreIndex(BaseIndex):
 
     def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         # NOTE: lazy import
-        from rag.indices.vector_store import VectorIndexRetriever
+        from rag.retrievers.dense.vector_retriver import VectorIndexRetriever
         print("""
         Initialize index retriever with default values
         except `node_ids` and `callback_manager`
