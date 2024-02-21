@@ -52,7 +52,7 @@ class RetrieverPipeline:
             tokenizer= tokenizer.encode,
             paragraph_separator= self.splitter_config.paragraph_separator,
             secondary_chunking_regex= self.splitter_config.secondary_chunking_regex,
-            callback_manager= self.service_context.callback_manager,
+            callback_manager= callback_manager,
         )
 
         #embed model
@@ -83,8 +83,18 @@ class RetrieverPipeline:
             vector_store= milvus_vector_store
         )
 
-        index = VectorStoreIndex.from_documents(
-            documents= documents,
+        nodes = []
+
+        for each_parser in self.service_context.transformations: 
+            parsing_nodes = each_parser.get_nodes_from_documents(
+                documents=documents,
+                show_progress=True,
+            )
+            nodes.extend(parsing_nodes)
+
+
+        index = VectorStoreIndex(
+            nodes=nodes,
             storage_context= storage_context,
             service_context= self.service_context,
             store_nodes_override= self.index_retriver_config.store_nodes_override,
