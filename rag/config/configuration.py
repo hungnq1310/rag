@@ -26,6 +26,7 @@ class ConfigurationManager:
         configs = self.config.vector_store_config
 
         milvus_config = MilvusConfig(
+            vectorstore_name=configs.vector_name,
             host= configs.host,
             port= configs.port,
             address= configs.address,
@@ -33,8 +34,8 @@ class ConfigurationManager:
             user= configs.user,
             collection_name=configs.collection_name,
             consistency_level=configs.consistency_level,
-            index_config=configs.index_config,
-            search_config=configs.search_config,
+            index_params=configs.index_params,
+            search_params=configs.search_params,
             overwrite=configs.overwrite,
             primary_field=configs.primary_field,
             text_field=configs.text_field,
