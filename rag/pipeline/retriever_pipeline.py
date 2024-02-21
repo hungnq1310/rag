@@ -32,6 +32,7 @@ class RetrieverPipeline:
         splitter_config: SpiltterConfig,
         milvus_config: MilvusConfig,
         index_retriver_config: IndexRetrieverConfig,
+        embed_config: EmbeddingConfig,
         response_config: ResponseConfig,
     ) -> None:
         self.splitter_config = splitter_config
@@ -55,7 +56,7 @@ class RetrieverPipeline:
         )
 
         #embed model
-        embed_model = self.get_embed_mode(self.index_retriver_config.embedding_config)
+        embed_model = self.get_embed_mode(embed_config)
 
         # prompt helper - tong hop 3 cai params cua llm, emb, node parser
         prompt_helper = PromptHelper()
