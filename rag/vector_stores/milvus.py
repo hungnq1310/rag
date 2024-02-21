@@ -23,7 +23,6 @@ from rag.node.base_node import (
 )
 from rag.config.schema import (
     MilvusConfig, 
-    MilvusArguments,
 )
 from .base_vector import VectorStore
 
@@ -92,9 +91,8 @@ class MilvusVectorStore(VectorStore):
     def __init__(
         self,
         config: MilvusConfig,
-        params: MilvusArguments,
     ) -> None:
-        """Init params."""
+        """Init config."""
         import_err_msg = (
             "`pymilvus` package not found, please run `pip install pymilvus`"
         )
@@ -106,19 +104,18 @@ class MilvusVectorStore(VectorStore):
         from pymilvus import Collection
 
         self.config = config
-        self.params = params
 
-        self.collection_name = params.collection_name
-        self.dim = params.embedding_dim
-        self.embedding_field = params.embedding_field
-        self.doc_id_field = params.primary_field
-        self.text_field = params.text_field
-        self.consistency_level = params.consistency_level
-        self.overwrite = params.overwrite
+        self.collection_name = config.collection_name
+        self.dim = config.embedding_dim
+        self.embedding_field = config.embedding_field
+        self.doc_id_field = config.primary_field
+        self.text_field = config.text_field
+        self.consistency_level = config.consistency_level
+        self.overwrite = config.overwrite
         
 
         # Select the similarity metric
-        self.similarity_metric = self.params.search_params.get("metric_type", None)
+        self.similarity_metric = self.config.search_params.get("metric_type", None)
 
         # Connect to Milvus instance
         self.milvusclient = self.connect_client()
@@ -258,8 +255,8 @@ class MilvusVectorStore(VectorStore):
         if len(expr) != 0:
             string_expr = " and ".join(expr)
 
-        print("self.params.search_params:", self.params.search_params)
-        base_params = self.params.search_params
+        print("self.config.search_config:", self.config.search_params)
+        base_config = self.config.search_params
         # Perform the search
         res = self.milvusclient.search(
             collection_name=self.collection_name,
@@ -267,7 +264,7 @@ class MilvusVectorStore(VectorStore):
             filter=string_expr,
             limit=query.similarity_top_k,
             output_fields=output_fields,
-            search_params=base_params
+            search_config=base_config
         )
 
         logger.debug(
@@ -311,9 +308,9 @@ class MilvusVectorStore(VectorStore):
         if (self.collection.has_index() and self.overwrite) or force:
             self.collection.release()
             self.collection.drop_index()
-            index_params: Dict[str, Union[str, Dict[str, Any]]] = self.params.index_params
-            print(index_params)
+            index_config: Dict[str, Union[str, Dict[str, Any]]] = self.config.index_params
+            print(index_config)
             self.collection.create_index(
-                self.embedding_field, index_params=index_params
+                self.embedding_field, index_config=index_config
             )
             self.collection.load()
