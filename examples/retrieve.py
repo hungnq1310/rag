@@ -32,7 +32,6 @@ if pdf_documents:
 
 manager = ConfigurationManager(
     config_filepath=Path("/home/hungnq/hungnq_2/rag_pdf/rag_pdf_services/configs/config.yaml"),
-    param_filepath=Path("/home/hungnq/hungnq_2/rag_pdf/rag_pdf_services/configs/params.yaml")
 )
 node_parser_config = manager.get_splitter_config()
 milvus_config = manager.get_milvus_config()
