@@ -5,8 +5,7 @@ from dataclasses import dataclass
 from transformers import AutoTokenizer
 
 from rag.config.schema import (
-    NodeParserArguments as NodeParserParams,
-    NodeParserConfig
+    SpiltterConfig
 )                               
 from rag.node_parser.text import TokenTextSplitter
 from rag.node_parser.text import SentenceSplitter
@@ -35,11 +34,9 @@ class ParsingPipeline:
     """
 
     def __init__(self,
-                 config: NodeParserConfig,
-                 params: NodeParserParams, 
+                 config: SpiltterConfig,
                  ) -> None:
         self.config = config
-        self.params = params
         self.text_splitter = self.load_text_splitter()
         self.parser = self.load_node_parser()
 
@@ -47,27 +44,27 @@ class ParsingPipeline:
         self,
     ) -> Union[SentenceSplitter, TokenTextSplitter, None]:
         text_splitter = None
-        if self.params.splitter_mode == SplitterMode.SENTENCE:
+        if self.config.splitter_mode == SplitterMode.SENTENCE:
             text_splitter = SentenceSplitter(
                 # separator=" ", 
-                separator=self.params.separator, 
-                chunk_size=self.params.chunk_size, 
-                chunk_overlap=self.params.chunk_overlap,
+                separator=self.config.separator, 
+                chunk_size=self.config.chunk_size, 
+                chunk_overlap=self.config.chunk_overlap,
                 # paragraph_separator="\n\n\n", secondary_chunking_regex="[^,.;。]+[,.;。]?",
-                paragraph_separator=self.params.paragraph_separator, 
-                secondary_chunking_regex=self.params.secondary_chunking_regex,
+                paragraph_separator=self.config.paragraph_separator, 
+                secondary_chunking_regex=self.config.secondary_chunking_regex,
                 # tokenizer=tiktoken.encoding_for_model("gpt-3.5-turbo").encode
-                tokenizer=AutoTokenizer.from_pretrained(self.params.model_name_tokenizer).encode
+                tokenizer=AutoTokenizer.from_pretrained(self.config.model_name_tokenizer).encode
             )
             logger.info("Using SentenceSplitter")
-        elif self.params.splitter_mode == SplitterMode.TOKEN:
+        elif self.config.splitter_mode == SplitterMode.TOKEN:
             text_splitter = TokenTextSplitter(
-                separator=self.params.separator, 
-                chunk_size=self.params.chunk_size, 
-                chunk_overlap=self.params.chunk_overlap,
+                separator=self.config.separator, 
+                chunk_size=self.config.chunk_size, 
+                chunk_overlap=self.config.chunk_overlap,
                 # backup_separators=["\n"],
-                backup_separators=self.params.backup_separators,
-                tokenizer=AutoTokenizer.from_pretrained(self.params.model_name_tokenizer).encode
+                backup_separators=self.config.backup_separators,
+                tokenizer=AutoTokenizer.from_pretrained(self.config.model_name_tokenizer).encode
             )
             logger.info("Using TokenTextSplitter")
         return text_splitter
@@ -75,8 +72,8 @@ class ParsingPipeline:
     def load_node_parser(self):
         if not self.text_splitter:
             return SentenceSplitter.from_defaults(
-                chunk_size=self.params.chunk_size, 
-                chunk_overlap=self.params.chunk_overlap
+                chunk_size=self.config.chunk_size, 
+                chunk_overlap=self.config.chunk_overlap
             )
         return SentenceSplitter.from_defaults(
             text_splitter=self.text_splitter
