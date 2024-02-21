@@ -6,31 +6,25 @@ from dataclasses import dataclass
 
 @dataclass
 class MilvusConfig:
+    vectorstore_name: str
+    embedding_dim: int
     host: str
     port: str
     address: str
     uri: str
     user: str
-
-@dataclass
-class MilvusArguments:
-    collection_name: str
-    consistency_level: str
-    index_params: Dict[str, Any]
-    search_params: Dict[str, Any]
-    overwrite: False
+    embedding_field: str
     primary_field: str
     text_field: str
-    embedding_field: str
-    embedding_dim: int
+    consistency_level: str
+    collection_name: str
+    index_params: Dict[str, Any]
+    search_params: Dict[str, Any]
+    overwrite: bool
+
 
 @dataclass
-class NodeParserConfig:
-    name: str
-
-
-@dataclass
-class NodeParserArguments:
+class SpiltterConfig:
   model_name_tokenizer: str
   # fpr sentence splitter 
   splitter_mode: str
@@ -43,7 +37,7 @@ class NodeParserArguments:
   backup_separators: str
 
 @dataclass
-class LlmParams:
+class LlmConfig:
     context_window: int
     max_new_tokens: int
     model_name: str
@@ -64,7 +58,7 @@ class LlmParams:
     eos_token_id: str
 
 @dataclass
-class EmbeddingsParams:
+class EmbeddingConfig:
     model_name: str
     tokenizer_name: str
     pooling: str
@@ -75,7 +69,7 @@ class EmbeddingsParams:
     trust_remote_code: bool
 
 @dataclass
-class IndexRetrieveParams:
+class IndexRetrieverConfig:
     index_type: str
     similarity_top_k: int
     alpha: float
@@ -95,7 +89,7 @@ class IndexRetrieveParams:
     show_progress: bool
 
 @dataclass
-class ResponseParams:
+class ResponseConfig:
     verbose: bool
     response_mode: str
     use_async: bool
