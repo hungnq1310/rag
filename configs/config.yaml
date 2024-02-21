@@ -1,7 +1,7 @@
 artifacts_root: artifacts
 
 reader_config: 
-  file_path: rag/data/
+  file_path: data/
   only_suffixs: .pdf
   encoding: null
   recursive: False
@@ -9,7 +9,9 @@ reader_config:
   show_progress: False
   num_workers: null
   
-milvus_config: 
+vector_store_config: 
+  vector_name: milvus
+  # milvus config
   host: localhost
   port: 19530
   address: null
@@ -34,7 +36,7 @@ milvus_config:
     params: 
       nlist: 1024
 
-split_config: 
+splitter_config: 
   splitter_mode: sentence
   model_name_tokenizer: BAAI/bge-small-en
   separator: " "
@@ -45,3 +47,61 @@ split_config:
   secondary_chunking_regex: null
   # for token splitter
   backup_separators: null
+
+llm_config:
+  context_window: 3900
+  max_new_tokens: 256
+  model_name: StabilityAI/stablelm-tuned-alpha-3b
+  tokenizer_name: StabilityAI/stablelm-tuned-alpha-3b
+  device_map: cuda
+  top_p: null
+  top_k: null
+  temperature: 0.1
+  length_penalty: null
+  repetition_penalty: null
+  num_beams: 3
+  do_sample : null
+  pelnaty_alpha: null
+  use_cache: True
+  num_return_sequences: 1
+  pad_token_id: null
+  bos_token_id: null
+  eos_token_id: null
+
+embeddings_config:
+  model_name: BAAI/bge-small-en
+  tokenizer_name: BAAI/bge-small-en
+  pooling: cls
+  max_length: 512
+  normalize: True
+  embedding_batch_size: 10
+  cache_folder: null
+  trust_remote_code: True
+
+index_retriever_config:
+  index_type: vector_store
+  similarity_top_k: 5
+  sparse_top_k: null 
+  alpha: null
+  list_query_mode: null
+  keyword_table_mode: null
+  max_keywords_per_chunk: null
+  max_keywords_per_query: null
+  num_chunks_per_query: null
+  vector_store_query_mode: default
+  store_nodes_override: True
+  insert_batch_size: 2048
+  use_async: False
+  show_progress: False
+
+response_config:
+  verbose: False
+  response_mode: tree_summarize
+  use_async: False
+  streaming: False
+
+extract_pdf_options:
+  only_extract_text: True
+  only_render_image: True
+  with_get_char_info: False
+  include_styling_info: False
