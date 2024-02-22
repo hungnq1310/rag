@@ -1,7 +1,5 @@
 from typing import Any, List, Optional, Sequence
 
-from llama_index.postprocessor.types import BaseNodePostprocessor
-
 from rag.bridge.pydantic import BaseModel
 from rag.callbacks.callback_manager import CallbackManager
 from rag.callbacks.types import CBEventType, EventPayload
@@ -12,6 +10,8 @@ from rag.synthesizer.base_synthesizer import BaseSynthesizer, RESPONSE_TYPE
 from rag.prompt.mixin import PromptMixinType, BasePromptTemplate
 from rag.synthesizer.mode import ResponseMode
 from rag.synthesizer.utils import get_response_synthesizer
+from rag.rerank.base import BaseNodePostprocessor
+
 
 from .base_query_engine import BaseQueryEngine
 
