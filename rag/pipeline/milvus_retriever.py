@@ -26,7 +26,7 @@ from rag.embeddings.huggingface import HuggingFaceEmbedding
 
 logger = logging.getLogger(__name__)
 
-class RetrieverPipeline:
+class MilvusRetrieverPipeline:
     def __init__(
         self,
         splitter_config: SpiltterConfig,
