@@ -16,8 +16,8 @@ from rag.retrievers.types import QueryBundle
 from rag.synthesizer.types import RESPONSE_TYPE
 from rag.synthesizer.base_synthesizer import BaseSynthesizer
 from rag.prompt.mixin import PromptMixinType
-from rag.components.sub_quetion import BaseQuestionGenerator, SubQuestion
-from rag.components.sub_quetion.question_generator import LLMQuestionGenerator
+from rag.question_gen.base import BaseQuestionGenerator, SubQuestion
+from rag.question_gen import LLMQuestionGenerator
 from rag.rag_utils.utils import get_color_mapping, print_text
 
 from .base_query_engine import BaseQueryEngine
