@@ -114,11 +114,6 @@ class MilvusRetrieverPipeline:
             similarity_top_k= self.index_retriver_config.similarity_top_k,
             sparse_top_k= self.index_retriver_config.sparse_top_k,
             alpha= self.index_retriver_config.alpha,
-            list_query_mode= self.index_retriver_config.list_query_mode,
-            keyword_table_mode= self.index_retriver_config.keyword_table_mode,
-            max_keywords_per_chunk= self.index_retriver_config.keyword_table_mode,
-            max_keywords_per_query= self.index_retriver_config.max_keywords_per_query,
-            num_chunks_per_query= self.index_retriver_config.num_chunks_per_query,
             vector_store_query_mode= self.index_retriver_config.vector_store_query_mode,
         )
 
