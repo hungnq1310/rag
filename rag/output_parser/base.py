@@ -55,7 +55,6 @@ class BaseOutputParser(Protocol):
 
         return messages
 
-
 class BasePydanticProgram(ABC, Generic[Model]):
     """A base class for LLM-powered function that return a pydantic model.
 
