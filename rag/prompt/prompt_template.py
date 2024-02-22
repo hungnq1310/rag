@@ -5,7 +5,7 @@ import logging
 
 from rag.prompt import PromptType, BasePromptTemplate 
 from rag.llm.base import LLM, ChatMessage
-from rag.schema.output_parser import BaseOutputParser
+from rag.output_parser.base import BaseOutputParser
 from .utils import get_template_vars, prompt_to_messages
 
 

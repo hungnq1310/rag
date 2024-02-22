@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from rag.bridge.pydantic import BaseModel, Field
 from rag.llm import BaseLLM, ChatMessage
-from rag.schema.output_parser import BaseOutputParser
+from rag.output_parser.base import BaseOutputParser
 
 class BasePromptTemplate(BaseModel, ABC):
     metadata: Dict[str, Any]
