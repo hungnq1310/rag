@@ -1,11 +1,15 @@
-from rag.indices.keyword_table.base import (
+from .base import (
     BaseKeywordTableIndex,
     KeywordTableIndex,
     KeywordTableRetrieverMode,
     )
+from .rake import RAKEKeywordTableIndex
+from .simple import SimpleKeywordTableIndex
 
 __all__ = [
     "BaseKeywordTableIndex",
     "KeywordTableIndex",
     "KeywordTableRetrieverMode",
+    "RAKEKeywordTableIndex",
+    "SimpleKeywordTableIndex",
 ]
