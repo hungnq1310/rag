@@ -18,7 +18,7 @@ from rag.indices.keyword_table.simple import SimpleKeywordTableIndex
 
 logger = logging.getLogger(__name__)
 
-class RetrieverPipeline:
+class SimplKeywordeTablePipeline:
     def __init__(
         self,
         splitter_config: SpiltterConfig,
