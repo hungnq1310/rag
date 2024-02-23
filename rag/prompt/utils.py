@@ -29,7 +29,7 @@ def get_template_vars(template_str: str) -> List[str]:
     return variables
 
 
-def is_chat_model(llm: LLM) -> bool:
+def is_chat_model(llm: "LLM") -> bool:
     return llm.metadata.is_chat_model
 
 

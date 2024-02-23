@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from rag.engine.base_query_engine import BaseQueryEngine
-
 from .base import AsyncBaseTool
 from .types import ToolMetadata, ToolOutput
+
+if TYPE_CHECKING:
+    from rag.engine.base_query_engine import BaseQueryEngine
 
 DEFAULT_NAME = "query_engine_tool"
 DEFAULT_DESCRIPTION = """Useful for running a natural language query
@@ -23,7 +24,7 @@ class QueryEngineTool(AsyncBaseTool):
 
     def __init__(
         self,
-        query_engine: BaseQueryEngine,
+        query_engine: "BaseQueryEngine",
         metadata: ToolMetadata,
         resolve_input_errors: bool = True,
     ) -> None:
@@ -34,7 +35,7 @@ class QueryEngineTool(AsyncBaseTool):
     @classmethod
     def from_defaults(
         cls,
-        query_engine: BaseQueryEngine,
+        query_engine: "BaseQueryEngine",
         name: Optional[str] = None,
         description: Optional[str] = None,
         resolve_input_errors: bool = True,
@@ -50,7 +51,7 @@ class QueryEngineTool(AsyncBaseTool):
         )
 
     @property
-    def query_engine(self) -> BaseQueryEngine:
+    def query_engine(self) -> "BaseQueryEngine":
         return self._query_engine
 
     @property

@@ -1,5 +1,5 @@
 from rag.constants import DATA_KEY, TYPE_KEY
-from rag.node import (
+from rag.node.base_node import (
     BaseNode,
     Document,
     IndexNode,

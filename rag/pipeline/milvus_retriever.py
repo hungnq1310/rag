@@ -15,7 +15,8 @@ from rag.node_parser import SentenceSplitter
 from rag.callbacks import CallbackManager
 from rag.core.storage_context import StorageContext
 from rag.core.service_context import ServiceContext
-from rag.retrievers.dense.vector_retriver import VectorStoreIndex, VectorIndexRetriever
+from rag.indices.vector_store import VectorStoreIndex
+from rag.retrievers.dense.vector_retriver import VectorIndexRetriever
 from rag.engine.retriever_engine import RetrieverQueryEngine
 from rag.vector_stores.milvus import MilvusVectorStore
 from rag.core.prompt_helper import PromptHelper

@@ -1,11 +1,9 @@
 from typing import List, Optional, Sequence, cast, TYPE_CHECKING
 
-from rag.prompt import PromptType
-from rag.core.service_context import ServiceContext
-from rag.prompt.prompt_template import PromptTemplate
-from rag.output_parser.output_parser import SubQuestionOutputParser
-from rag.output_parser.types import StructuredOutput
+from rag.prompt.types import PromptType
 
+from rag.prompt.prompt_template import PromptTemplate
+from rag.output_parser.types import StructuredOutput
 from .base import BaseQuestionGenerator, SubQuestion
 from .prompt_gen import (
     DEFAULT_SUB_QUESTION_PROMPT_TMPL,
@@ -15,6 +13,7 @@ from .prompt_gen import (
 if TYPE_CHECKING:
     from rag.llm.base import LLM
     from rag.tools.types import ToolMetadata
+    from rag.core.service_context import ServiceContext
     from rag.retrievers.base_retriver import QueryBundle
     from rag.prompt.base_prompt import BasePromptTemplate
     from rag.output_parser.base import BaseOutputParser
@@ -36,14 +35,14 @@ class LLMQuestionGenerator(BaseQuestionGenerator):
     @classmethod
     def from_defaults(
         cls,
-        service_context: Optional[ServiceContext] = None,
+        service_context: "ServiceContext" = None,
         prompt_template_str: Optional[str] = None,
-        output_parser: Optional[BaseOutputParser] = None,
+        output_parser: "BaseOutputParser" = None,
     ) -> "LLMQuestionGenerator":
         # optionally initialize defaults
-        service_context = service_context or ServiceContext()
+        service_context = service_context
         prompt_template_str = prompt_template_str or DEFAULT_SUB_QUESTION_PROMPT_TMPL
-        output_parser = output_parser or SubQuestionOutputParser()
+        output_parser = output_parser
 
         # construct prompt
         prompt = PromptTemplate(
@@ -53,11 +52,11 @@ class LLMQuestionGenerator(BaseQuestionGenerator):
         )
         return cls(service_context.llm, prompt)
 
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         return {"question_gen_prompt": self._prompt}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
         if "question_gen_prompt" in prompts:
             self._prompt = prompts["question_gen_prompt"]

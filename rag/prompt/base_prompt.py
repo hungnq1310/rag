@@ -2,16 +2,16 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 
 from rag.bridge.pydantic import BaseModel, Field
+from rag.output_parser.base import BaseOutputParser
 
 if TYPE_CHECKING:
     from rag.llm.base import LLM, ChatMessage
-    from rag.output_parser.base import BaseOutputParser
 
 class BasePromptTemplate(BaseModel, ABC):
     metadata: Dict[str, Any]
     template_vars: List[str]
     kwargs: Dict[str, str]
-    output_parser: Optional["BaseOutputParser"]
+    output_parser: Optional[BaseOutputParser]
     template_var_mappings: Optional[Dict[str, Any]] = Field(
         default_factory=dict, description="Template variable mappings (Optional)."
     )

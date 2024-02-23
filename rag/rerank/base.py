@@ -20,7 +20,7 @@ class BaseNodePostprocessor(BaseComponent, ABC):
     class Config:
         arbitrary_types_allowed = True
 
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         # set by default since most postprocessors don't require prompts
         return {}

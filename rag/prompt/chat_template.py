@@ -8,10 +8,10 @@ from rag.llm.llm_type import ChatMessage, MessageRole, ChatMessage
 from .base_prompt import BasePromptTemplate
 from .types import PromptType
 from .utils import get_template_vars, messages_to_prompt
+from rag.output_parser.base import BaseOutputParser
 
 if TYPE_CHECKING:
     from rag.llm.base import LLM
-    from rag.output_parser.base import BaseOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class ChatPromptTemplate(BasePromptTemplate):
         self,
         message_templates: List[ChatMessage],
         prompt_type: str = PromptType.CUSTOM,
-        output_parser: Optional["BaseOutputParser"] = None,
+        output_parser: Optional[BaseOutputParser] = None,
         metadata: Optional[Dict[str, Any]] = None,
         template_var_mappings: Optional[Dict[str, Any]] = None,
         function_mappings: Optional[Dict[str, Callable]] = None,

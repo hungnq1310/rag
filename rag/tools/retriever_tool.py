@@ -2,11 +2,13 @@
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from rag.retrievers.base_retriver import BaseRetriever
 from rag.node.base_node import MetadataMode
 
 from .base import AsyncBaseTool
 from .types import ToolMetadata, ToolOutput
+
+if TYPE_CHECKING:
+    from rag.retrievers.base_retriver import BaseRetriever
 
 DEFAULT_NAME = "retriever_tool"
 DEFAULT_DESCRIPTION = """Useful for running a natural language query
@@ -26,7 +28,7 @@ class RetrieverTool(AsyncBaseTool):
 
     def __init__(
         self,
-        retriever: BaseRetriever,
+        retriever: "BaseRetriever",
         metadata: ToolMetadata,
     ) -> None:
         self._retriever = retriever
@@ -35,7 +37,7 @@ class RetrieverTool(AsyncBaseTool):
     @classmethod
     def from_defaults(
         cls,
-        retriever: BaseRetriever,
+        retriever: "BaseRetriever",
         name: Optional[str] = None,
         description: Optional[str] = None,
     ) -> "RetrieverTool":
@@ -46,7 +48,7 @@ class RetrieverTool(AsyncBaseTool):
         return cls(retriever=retriever, metadata=metadata)
 
     @property
-    def retriever(self) -> BaseRetriever:
+    def retriever(self) -> "BaseRetriever":
         return self._retriever
 
     @property

@@ -10,7 +10,7 @@ import numpy as np
 from rag.bridge.pydantic import Field, validator
 from rag.callbacks import CallbackManager, CBEventType, EventPayload
 from rag.schema.component import TransformComponent
-from rag.node import MetadataMode, BaseNode
+from rag.node.base_node import MetadataMode, BaseNode
 from rag.rag_utils.utils import get_tqdm_iterable
 
 # TODO: change to numpy array
