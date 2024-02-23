@@ -62,13 +62,15 @@ class BaseIndex(ABC):
         self._docstore = self._storage_context.docstore
         self._show_progress = show_progress
         self._vector_store = self._storage_context.vector_store
+        self._index_struct = index_struct
 
         with self._service_context.callback_manager.as_trace("index_construction"):
-            if index_struct is None:
+            if self._index_struct is None:
                 assert nodes is not None
-                index_struct = self.build_index_from_nodes(nodes)
-            self._index_struct = index_struct
-            self._storage_context.index_store.add_index_struct(self._index_struct)
+                self._index_struct = self.build_index_from_nodes(nodes)
+                
+        self._storage_context.index_store.add_index_struct(self._index_struct)
+            
 
     @property
     def index_struct(self) -> IS:

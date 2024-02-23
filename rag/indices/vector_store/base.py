@@ -216,7 +216,7 @@ class VectorStoreIndex(BaseIndex):
         **insert_kwargs: Any,
     ) -> IndexDict:
         """Build index from nodes."""
-        index_struct = self.index_struct
+        index_struct = IndexDict()
         if self._use_async:
             tasks = [
                 self._async_add_nodes_to_index(
