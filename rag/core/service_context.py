@@ -108,7 +108,7 @@ class ServiceContext:
         self.embed_model.callback_manager = self.callback_manager
 
         self.prompt_helper = prompt_helper or _get_default_prompt_helper(
-            llm_metadata=llm.metadata,
+            llm_metadata=self.llm.metadata,
             context_window=context_window,
             num_output=num_output,
         )
@@ -199,9 +199,6 @@ class ServiceContext:
             callback_manager=callback_manager,
         )
 
-    @property
-    def llm(self) -> LLM:
-        return self.llm
 
     @property
     def node_parser(self) -> SentenceSplitter:
