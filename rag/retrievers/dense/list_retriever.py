@@ -8,7 +8,6 @@ from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
 from rag.node.base_node import BaseNode, MetadataMode, NodeWithScore
-from rag.indices.list.base import SummaryIndex
 from rag.indices.get_embeddings import get_top_k_embeddings
 from rag.indices.utils import (
     default_format_node_batch_fn,
@@ -16,6 +15,7 @@ from rag.indices.utils import (
 )
 
 if TYPE_CHECKING:
+    from rag.indices.list.base import SummaryIndex
     from rag.prompt.prompt_template import PromptTemplate
     from rag.core.service_context import ServiceContext
 
@@ -33,7 +33,7 @@ class SummaryIndexRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: SummaryIndex,
+        index: "SummaryIndex",
         callback_manager: Optional[CallbackManager] = None,
         **kwargs: Any,
     ) -> None:
@@ -66,7 +66,7 @@ class SummaryIndexEmbeddingRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: SummaryIndex,
+        index: "SummaryIndex",
         similarity_top_k: Optional[int] = 1,
         callback_manager: Optional[CallbackManager] = None,
         **kwargs: Any,
@@ -147,7 +147,7 @@ class SummaryIndexLLMRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: SummaryIndex,
+        index: "SummaryIndex",
         choice_select_prompt: Optional["PromptTemplate"] = None,
         choice_batch_size: int = 10,
         format_node_batch_fn: Optional[Callable] = None,

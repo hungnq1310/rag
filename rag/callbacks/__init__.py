@@ -9,5 +9,5 @@ __all__ = [
 
 
 from  typing import Optional
-from rag.callbacks.callback_manager import BaseCallbackHandler
+from rag.callbacks.base_handler import BaseCallbackHandler
 global_handler: Optional[BaseCallbackHandler] = None

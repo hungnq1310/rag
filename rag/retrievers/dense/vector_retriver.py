@@ -1,5 +1,5 @@
 """Base vector store index query."""
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
@@ -13,7 +13,10 @@ from rag.vector_stores.types import (
 )
 from rag.indices.data_struct import IndexDict
 from rag.indices.utils import log_vector_store_query_result
-from rag.indices.vector_store.base import VectorStoreIndex
+
+if TYPE_CHECKING:   
+    from rag.indices.vector_store.base import VectorStoreIndex
+
 
 class VectorIndexRetriever(BaseRetriever):
     """Vector index retriever.
@@ -34,7 +37,7 @@ class VectorIndexRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: VectorStoreIndex,
+        index: "VectorStoreIndex",
         similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
         vector_store_query_mode: VectorStoreQueryMode = VectorStoreQueryMode.DEFAULT,
         filters: Optional[MetadataFilters] = None,

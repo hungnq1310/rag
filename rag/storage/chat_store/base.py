@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import List, Optional
 
 from rag.schema.component import BaseComponent
-from rag.llm import ChatMessage
+from rag.llm.llm_type import ChatMessage
 
 class BaseChatStore(BaseComponent):
     @classmethod

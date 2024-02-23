@@ -1,42 +1,44 @@
 """LLM reranker."""
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.indices.utils import (
     default_format_node_batch_fn,
     default_parse_choice_select_answer_fn,
 )
-from rag.llm.base import LLM
-from rag.prompt.base_prompt import BasePromptTemplate
 from rag.constants.default_prompt import DEFAULT_CHOICE_SELECT_PROMPT
-from rag.prompt.mixin import PromptDictType
 from rag.node.base_node import NodeWithScore
 from rag.retrievers.types import QueryBundle
-from rag.core.service_context import ServiceContext
 
 from .base import BaseNodePostprocessor
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM
+    from rag.core.service_context import ServiceContext
+    from rag.prompt.base_prompt import BasePromptTemplate
+    from rag.prompt.mixin import PromptDictType
 
 class LLMRerank(BaseNodePostprocessor):
     """LLM-based reranker."""
 
     top_n: int = Field(description="Top N nodes to return.")
-    choice_select_prompt: BasePromptTemplate = Field(
+    choice_select_prompt: "BasePromptTemplate" = Field(
         description="Choice select prompt."
     )
     choice_batch_size: int = Field(description="Batch size for choice select.")
-    llm: LLM = Field(description="The LLM to rerank with.")
+    llm: "LLM" = Field(description="The LLM to rerank with.")
 
     _format_node_batch_fn: Callable = PrivateAttr()
     _parse_choice_select_answer_fn: Callable = PrivateAttr()
 
     def __init__(
         self,
-        llm: Optional[LLM] = None,
-        choice_select_prompt: Optional[BasePromptTemplate] = None,
+        llm: Optional["LLM"] = None,
+        choice_select_prompt: Optional["BasePromptTemplate"] = None,
         choice_batch_size: int = 10,
         format_node_batch_fn: Optional[Callable] = None,
         parse_choice_select_answer_fn: Optional[Callable] = None,
-        service_context: Optional[ServiceContext] = None,
+        service_context: Optional["ServiceContext"] = None,
         top_n: int = 10,
     ) -> None:
         choice_select_prompt = choice_select_prompt or DEFAULT_CHOICE_SELECT_PROMPT
@@ -58,11 +60,11 @@ class LLMRerank(BaseNodePostprocessor):
             top_n=top_n,
         )
 
-    def _get_prompts(self) -> PromptDictType:
+    def _get_prompts(self) -> "PromptDictType":
         """Get prompts."""
         return {"choice_select_prompt": self.choice_select_prompt}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
         if "choice_select_prompt" in prompts:
             self.choice_select_prompt = prompts["choice_select_prompt"]

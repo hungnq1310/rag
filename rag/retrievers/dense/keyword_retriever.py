@@ -2,7 +2,7 @@
 import logging
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
@@ -10,16 +10,19 @@ from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
 )
-from rag.prompt.base_prompt import BasePromptTemplate
+
 from rag.node.base_node import NodeWithScore
 from rag.rag_utils.utils import truncate_text
-from rag.llm.base import LLM
-from rag.indices.keyword_table.base import BaseKeywordTableIndex
 from rag.indices.keyword_table.utils import (
     rake_extract_keywords, 
     simple_extract_keywords, 
     extract_keywords_given_response
 )
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM
+    from rag.indices.keyword_table.base import BaseKeywordTableIndex
+    from rag.prompt.base_prompt import BasePromptTemplate
 
 
 DQKET = DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE
@@ -50,9 +53,9 @@ class BaseKeywordTableRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: BaseKeywordTableIndex,
-        keyword_extract_template: Optional[BasePromptTemplate] = None,
-        query_keyword_extract_template: Optional[BasePromptTemplate] = None,
+        index: "BaseKeywordTableIndex",
+        keyword_extract_template: Optional["BasePromptTemplate"] = None,
+        query_keyword_extract_template: Optional["BasePromptTemplate"] = None,
         max_keywords_per_query: int = 10,
         num_chunks_per_query: int = 10,
         callback_manager: Optional[CallbackManager] = None,
@@ -120,12 +123,12 @@ class KeywordTableRetriever(BaseKeywordTableRetriever):
 
     def __init__(
         self,
-        index: BaseKeywordTableIndex,
-        keyword_extract_template: Optional[BasePromptTemplate] = None,
-        query_keyword_extract_template: Optional[BasePromptTemplate] = None,
+        index: "BaseKeywordTableIndex",
+        keyword_extract_template: Optional["BasePromptTemplate"] = None,
+        query_keyword_extract_template: Optional["BasePromptTemplate"] = None,
         max_keywords_per_query: int = 10,
         num_chunks_per_query: int = 10,
-        llm: Optional[LLM] = None,
+        llm: Optional["LLM"] = None,
         callback_manager: Optional[CallbackManager] = None,
         object_map: Optional[dict] = None,
         verbose: bool = False,

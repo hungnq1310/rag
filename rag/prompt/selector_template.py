@@ -1,25 +1,26 @@
 """Prompts."""
-from typing import Any, Callable, Tuple, List, Optional
+from typing import Any, Callable, Tuple, List, Optional, TYPE_CHECKING
 import logging
 
-from rag.prompt import BasePromptTemplate 
-from rag.llm import BaseLLM, ChatMessage, ChatMessage
-
+from .base_prompt import BasePromptTemplate 
 from .utils import is_chat_model
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM, ChatMessage
 
 logger = logging.getLogger(__name__)
 
 class SelectorPromptTemplate(BasePromptTemplate):
     default_template: BasePromptTemplate
     conditionals: Optional[
-        List[Tuple[Callable[[BaseLLM], bool], BasePromptTemplate]]
+        List[Tuple[Callable[["LLM"], bool], BasePromptTemplate]]
     ] = None
 
     def __init__(
         self,
         default_template: BasePromptTemplate,
         conditionals: Optional[
-            List[Tuple[Callable[[BaseLLM], bool], BasePromptTemplate]]
+            List[Tuple[Callable[["LLM"], bool], BasePromptTemplate]]
         ] = None,
     ):
         metadata = default_template.metadata
@@ -35,7 +36,7 @@ class SelectorPromptTemplate(BasePromptTemplate):
             output_parser=output_parser,
         )
 
-    def select(self, llm: Optional[BaseLLM] = None) -> BasePromptTemplate:
+    def select(self, llm: Optional["LLM"] = None) -> BasePromptTemplate:
         # ensure output parser is up to date
         self.default_template.output_parser = self.output_parser
 
@@ -64,19 +65,19 @@ class SelectorPromptTemplate(BasePromptTemplate):
             default_template=default_template, conditionals=conditionals
         )
 
-    def format(self, llm: Optional[BaseLLM] = None, **kwargs: Any) -> str:
+    def format(self, llm: Optional["LLM"] = None, **kwargs: Any) -> str:
         """Format the prompt into a string."""
         prompt = self.select(llm=llm)
         return prompt.format(**kwargs)
 
     def format_messages(
-        self, llm: Optional[BaseLLM] = None, **kwargs: Any
-    ) -> List[ChatMessage]:
+        self, llm: Optional["LLM"] = None, **kwargs: Any
+    ) -> List["ChatMessage"]:
         """Format the prompt into a list of chat messages."""
         prompt = self.select(llm=llm)
         return prompt.format_messages(**kwargs)
 
-    def get_template(self, llm: Optional[BaseLLM] = None) -> str:
+    def get_template(self, llm: Optional["LLM"] = None) -> str:
         prompt = self.select(llm=llm)
         return prompt.get_template(llm=llm)
     

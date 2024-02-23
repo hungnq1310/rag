@@ -11,7 +11,7 @@ from rag.constants import (
     DEFAULT_NUM_OUTPUTS,
     DEFAULT_TEMPERATURE,
 )
-from rag.schema.output_parser import BaseOutputParser, PydanticProgramMode
+from rag.output_parser.base import BaseOutputParser, PydanticProgramMode
 from rag.rag_utils.utils import get_cache_dir
 
 from .llm_type import (

@@ -4,7 +4,7 @@ from typing import Any, List, Sequence
 
 from rag.bridge.pydantic import Field
 from rag.callbacks.callback_manager import CallbackManager, CBEventType, EventPayload
-from rag.node import (
+from rag.node.base_node import (
     BaseNode,
     Document,
     MetadataMode,

@@ -1,13 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 
 from rag.bridge.pydantic import Field
 from rag.callbacks import CallbackManager
-from rag.prompt.mixin import PromptDictType, PromptMixinType
 from rag.schema.component import BaseComponent
 from rag.retrievers.types import QueryBundle
 from rag.node.base_node import NodeWithScore
+
+if TYPE_CHECKING:
+    from rag.prompt.mixin import PromptDictType, PromptMixinType
+
 
 class BaseNodePostprocessor(BaseComponent, ABC):
     callback_manager: CallbackManager = Field(
@@ -22,10 +25,10 @@ class BaseNodePostprocessor(BaseComponent, ABC):
         # set by default since most postprocessors don't require prompts
         return {}
 
-    def _update_prompts(self, prompts: PromptDictType) -> None:
+    def _update_prompts(self, prompts: "PromptDictType") -> None:
         """Update prompts."""
 
-    def _get_prompt_modules(self) -> PromptMixinType:
+    def _get_prompt_modules(self) -> "PromptMixinType":
         """Get prompt modules."""
         return {}
 

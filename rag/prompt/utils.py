@@ -1,10 +1,9 @@
 from string import Formatter
 from typing import List
 import os
-from typing import Any, Awaitable, Callable, List, Optional, Sequence
+from typing import Any, Awaitable, Callable, List, Optional, Sequence, TYPE_CHECKING
 
-from rag.llm import (
-    LLM,
+from rag.llm.llm_type import (
     ChatMessage,
     ChatResponse,
     ChatResponseAsyncGen,
@@ -14,6 +13,9 @@ from rag.llm import (
     CompletionResponseGen,
     MessageRole,
 )
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM
 
 def get_template_vars(template_str: str) -> List[str]:
     """Get template variables from a template string."""

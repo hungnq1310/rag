@@ -16,7 +16,7 @@ from .generic_utils import (
 
 if TYPE_CHECKING:
     from rag.prompt.base_prompt import BasePromptTemplate
-    from rag.schema.output_parser import BaseOutputParser, TokenAsyncGen, TokenGen
+    from rag.output_parser.base import BaseOutputParser, TokenAsyncGen, TokenGen
 
 # NOTE: These two protocols are needed to appease mypy
 @runtime_checkable

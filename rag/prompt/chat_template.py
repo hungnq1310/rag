@@ -3,10 +3,15 @@ from copy import deepcopy
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 import logging
 
-from rag.prompt import PromptType, BasePromptTemplate
-from rag.llm import ChatMessage, MessageRole, LLM, ChatMessage
-from rag.output_parser.base import BaseOutputParser
+from rag.llm.llm_type import ChatMessage, MessageRole, ChatMessage
+
+from .base_prompt import BasePromptTemplate
+from .types import PromptType
 from .utils import get_template_vars, messages_to_prompt
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM
+    from rag.output_parser.base import BaseOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +23,7 @@ class ChatPromptTemplate(BasePromptTemplate):
         self,
         message_templates: List[ChatMessage],
         prompt_type: str = PromptType.CUSTOM,
-        output_parser: Optional[BaseOutputParser] = None,
+        output_parser: Optional["BaseOutputParser"] = None,
         metadata: Optional[Dict[str, Any]] = None,
         template_var_mappings: Optional[Dict[str, Any]] = None,
         function_mappings: Optional[Dict[str, Callable]] = None,
@@ -47,13 +52,13 @@ class ChatPromptTemplate(BasePromptTemplate):
         prompt.kwargs.update(kwargs)
         return prompt
 
-    def format(self, llm: Optional[LLM] = None, **kwargs: Any) -> str:
+    def format(self, llm: Optional["LLM"] = None, **kwargs: Any) -> str:
         del llm  # unused
         messages = self.format_messages(**kwargs)
         return messages_to_prompt(messages)
 
     def format_messages(
-        self, llm: Optional[LLM] = None, **kwargs: Any
+        self, llm: Optional["LLM"] = None, **kwargs: Any
     ) -> List[ChatMessage]:
         del llm  # unused
         """Format the prompt into a list of chat messages."""
@@ -83,7 +88,7 @@ class ChatPromptTemplate(BasePromptTemplate):
 
         return messages
 
-    def get_template(self, llm: Optional[LLM] = None) -> str:
+    def get_template(self, llm: Optional["LLM"] = None) -> str:
         return messages_to_prompt(self.message_templates)
     
 

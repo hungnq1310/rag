@@ -1,12 +1,15 @@
 """Prompts."""
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 import logging
 
-from rag.prompt import PromptType, BasePromptTemplate 
-from rag.llm.base import LLM, ChatMessage
-from rag.output_parser.base import BaseOutputParser
+from .base_prompt import BasePromptTemplate
+from .types import PromptType
 from .utils import get_template_vars, prompt_to_messages
+
+if TYPE_CHECKING:
+    from rag.llm.base import LLM, ChatMessage
+    from rag.output_parser.base import BaseOutputParser
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +21,7 @@ class PromptTemplate(BasePromptTemplate):
         self,
         template: str,
         prompt_type: str = PromptType.CUSTOM,
-        output_parser: Optional[BaseOutputParser] = None,
+        output_parser: Optional["BaseOutputParser"] = None,
         metadata: Optional[Dict[str, Any]] = None,
         template_var_mappings: Optional[Dict[str, Any]] = None,
         function_mappings: Optional[Dict[str, Callable]] = None,
@@ -56,7 +59,7 @@ class PromptTemplate(BasePromptTemplate):
         self.output_parser = output_parser
         return prompt
 
-    def format(self, llm: Optional[LLM] = None, **kwargs: Any) -> str:
+    def format(self, llm: Optional["LLM"] = None, **kwargs: Any) -> str:
         """Format the prompt into a string."""
         del llm  # unused
         all_kwargs = {
@@ -71,12 +74,12 @@ class PromptTemplate(BasePromptTemplate):
         return prompt
 
     def format_messages(
-        self, llm: Optional[LLM] = None, **kwargs: Any
-    ) -> List[ChatMessage]:
+        self, llm: Optional["LLM"] = None, **kwargs: Any
+    ) -> List["ChatMessage"]:
         """Format the prompt into a list of chat messages."""
         del llm  # unused
         prompt = self.format(**kwargs)
         return prompt_to_messages(prompt)
 
-    def get_template(self, llm: Optional[LLM] = None) -> str:
+    def get_template(self, llm: Optional["LLM"] = None) -> str:
         return self.template

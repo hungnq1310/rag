@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from rag.engine.base_query_engine import BaseQueryEngine
 from rag.callbacks.callback_manager import CallbackManager, CBEventType, EventPayload
 from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
-from rag.node import BaseNode, IndexNode, NodeWithScore, TextNode
+from rag.node.base_node import BaseNode, IndexNode, NodeWithScore, TextNode
 from rag.rag_utils.utils import print_text
 
 DEFAULT_QUERY_RESPONSE_TMPL = "Query: {query_str}\nResponse: {response}"

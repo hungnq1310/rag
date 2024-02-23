@@ -7,7 +7,7 @@ from schema.component import BaseComponent
 from .llm_type import *
 
 if TYPE_CHECKING:
-    from rag.schema.output_parser import TokenAsyncGen, TokenGen
+    from rag.output_parser.base import TokenAsyncGen, TokenGen
     from rag.prompt.base_prompt import BasePromptTemplate
 
 class BaseLLM(BaseComponent):

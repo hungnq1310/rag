@@ -1,7 +1,7 @@
 from typing import Any, Callable, Optional, Sequence
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.schema.output_parser import PydanticProgramMode
+from rag.output_parser.base import PydanticProgramMode
 
 from .llm_type import (
     ChatMessage,

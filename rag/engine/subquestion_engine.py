@@ -1,26 +1,30 @@
 import asyncio
 import logging
-from typing import List, Optional, Sequence, cast
+from typing import List, Optional, Sequence, cast, TYPE_CHECKING
 
-from llama_index.bridge.pydantic import BaseModel, Field
-from llama_index.async_utils import run_async_tasks
-from llama_index.callbacks.base import CallbackManager
-from llama_index.callbacks.schema import CBEventType, EventPayload
+from rag.bridge.pydantic import BaseModel, Field
+from rag.rag_utils.async_utils import run_async_tasks
+from rag.callbacks.callback_manager import CallbackManager
+from rag.callbacks.types import CBEventType, EventPayload
 
-from llama_index.tools.query_engine import QueryEngineTool
-from llama_index.response_synthesizers import get_response_synthesizer
+from rag.tools.query_tool import QueryEngineTool
 
 from rag.core.service_context import ServiceContext
 from rag.node.base_node import NodeWithScore, TextNode
 from rag.retrievers.types import QueryBundle
+
 from rag.synthesizer.types import RESPONSE_TYPE
 from rag.synthesizer.base_synthesizer import BaseSynthesizer
-from rag.prompt.mixin import PromptMixinType
+from rag.synthesizer.utils import get_response_synthesizer
+
 from rag.question_gen.base import BaseQuestionGenerator, SubQuestion
 from rag.question_gen import LLMQuestionGenerator
 from rag.rag_utils.utils import get_color_mapping, print_text
 
 from .base_query_engine import BaseQueryEngine
+
+if TYPE_CHECKING:
+    from rag.prompt.mixin import PromptMixinType
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +79,7 @@ class SubQuestionQueryEngine(BaseQueryEngine):
         self._use_async = use_async
         super().__init__(callback_manager)
 
-    def _get_prompt_modules(self) -> PromptMixinType:
+    def _get_prompt_modules(self) -> "PromptMixinType":
         """Get prompt sub-modules."""
         return {
             "question_gen": self._question_gen,

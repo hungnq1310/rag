@@ -7,8 +7,9 @@ from rag.prompt.selector_template import DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
 from rag.rag_utils.async_utils import run_async_tasks
 
 if TYPE_CHECKING:
-    from rag.prompt import BasePromptTemplate, PromptDictType
-    from rag.schema.output_parser import RESPONSE_TEXT_TYPE
+    from rag.prompt.base_prompt import BasePromptTemplate
+    from rag.prompt.mixin import PromptDictType
+    from rag.output_parser.base import RESPONSE_TEXT_TYPE
     from rag.core.service_context import ServiceContext
 
 
@@ -30,7 +31,7 @@ class TreeSummarize(BaseSynthesizer):
         self,
         summary_template: Optional["BasePromptTemplate"] = None,
         service_context: Optional["ServiceContext"] = None,
-        output_cls: Optional["BaseModel"] = None,
+        output_cls: Optional[BaseModel] = None,
         streaming: bool = False,
         use_async: bool = False,
         verbose: bool = False,

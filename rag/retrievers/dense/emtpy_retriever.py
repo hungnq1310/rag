@@ -4,9 +4,9 @@ from typing import Any, List, Optional, TYPE_CHECKING
 from rag.callbacks.callback_manager import CallbackManager
 from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import DEFAULT_SIMPLE_INPUT_PROMPT
-from rag.indices.empty.base import EmptyIndex
 
 if TYPE_CHECKING:
+    from rag.indices.empty.base import EmptyIndex
     from rag.prompt.base_prompt import BasePromptTemplate
     from rag.node.base_node import NodeWithScore
 
@@ -24,7 +24,7 @@ class EmptyIndexRetriever(BaseRetriever):
 
     def __init__(
         self,
-        index: EmptyIndex,
+        index: "EmptyIndex",
         input_prompt: Optional["BasePromptTemplate"] = None,
         callback_manager: Optional[CallbackManager] = None,
         **kwargs: Any,

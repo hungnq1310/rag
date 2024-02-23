@@ -3,7 +3,7 @@ from typing import Any, Sequence, TYPE_CHECKING
 from rag.synthesizer.base_synthesizer import BaseSynthesizer
 
 if TYPE_CHECKING:
-    from rag.schema.output_parser import RESPONSE_TEXT_TYPE
+    from rag.output_parser.base import RESPONSE_TEXT_TYPE
     from rag.prompt.mixin import PromptDictType
 
 

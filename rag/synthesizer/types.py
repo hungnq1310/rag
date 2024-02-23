@@ -8,7 +8,7 @@ from rag.rag_utils.utils import truncate_text
 
 if TYPE_CHECKING:
     from rag.node import NodeWithScore
-    from rag.schema.output_parser import TokenGen
+    from rag.output_parser.base import TokenGen
 
 @dataclass
 class Response:

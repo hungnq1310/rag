@@ -1,7 +1,7 @@
 """Base index classes."""
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Optional, Sequence, Type, TypeVar, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, TYPE_CHECKING
 
 from rag.indices.utils import run_transformations
 from rag.node.base_node import BaseNode, Document

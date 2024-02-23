@@ -8,8 +8,8 @@ from rag.constants import (
     DEFAULT_CONTEXT_WINDOW,
     DEFAULT_NUM_OUTPUTS,
 )
-from rag.llm.base import LLM
-from rag.llm.llm_type import (
+from .base import LLM
+from .llm_type import (
     MessageRole,
     ChatMessage,
     ChatResponse,
@@ -20,7 +20,7 @@ from rag.llm.llm_type import (
     CompletionResponseAsyncGen,
     LLMMetadata
 )
-from rag.llm.generic_utils import (
+from .generic_utils import (
     llm_chat_callback,
     llm_completion_callback,
     completion_response_to_chat_response,

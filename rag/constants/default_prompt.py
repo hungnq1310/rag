@@ -1,7 +1,7 @@
 """Set of default prompts."""
 
 from rag.prompt.prompt_template import PromptTemplate
-from rag.prompt import PromptType
+from rag.prompt.types import PromptType
 
 ############################################
 # Tree

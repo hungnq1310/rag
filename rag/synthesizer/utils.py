@@ -16,7 +16,7 @@ from .tree_summary import TreeSummarize
 
 if TYPE_CHECKING:
     from rag.callbacks.callback_manager import CallbackManager
-    from rag.prompt import BasePromptTemplate
+    from rag.prompt.base_prompt import BasePromptTemplate
     from rag.synthesizer.base_synthesizer import BaseSynthesizer
 
 
@@ -37,7 +37,7 @@ def get_response_synthesizer(
     simple_template = simple_template or DEFAULT_SIMPLE_INPUT_PROMPT
     summary_template = summary_template or DEFAULT_TREE_SUMMARIZE_PROMPT_SEL
 
-    service_context = service_context or ServiceContext.from_defaults(
+    service_context = service_context or ServiceContext(
         callback_manager=callback_manager
     )
     if response_mode == ResponseMode.TREE_SUMMARIZE:

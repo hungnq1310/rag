@@ -5,8 +5,9 @@ from rag.synthesizer.base_synthesizer import BaseSynthesizer
 
 
 if TYPE_CHECKING:
-    from rag.prompt import BasePromptTemplate, PromptDictType
-    from rag.schema.output_parser import RESPONSE_TEXT_TYPE
+    from rag.prompt.base_prompt import BasePromptTemplate
+    from rag.prompt.mixin import PromptDictType
+    from rag.output_parser.base import RESPONSE_TEXT_TYPE
     from rag.core.service_context import ServiceContext
 
 
@@ -14,8 +15,6 @@ class SimpleSummarize(BaseSynthesizer):
     def __init__(
         self,
         text_qa_template: Optional["BasePromptTemplate"] = None,
-
-        
         service_context: Optional["ServiceContext"] = None,
         streaming: bool = False,
     ) -> None:

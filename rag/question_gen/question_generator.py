@@ -1,14 +1,9 @@
-from typing import List, Optional, Sequence, cast
+from typing import List, Optional, Sequence, cast, TYPE_CHECKING
 
-from rag.llm.base import LLM
-from rag.tools.types import ToolMetadata
 from rag.prompt import PromptType
-from rag.retrievers.base_retriver import QueryBundle
 from rag.core.service_context import ServiceContext
-from rag.prompt.base_prompt import BasePromptTemplate
-from rag.prompt.mixin import PromptDictType
 from rag.prompt.prompt_template import PromptTemplate
-from rag.output_parser.output_parser import SubQuestionOutputParser, BaseOutputParser
+from rag.output_parser.output_parser import SubQuestionOutputParser
 from rag.output_parser.types import StructuredOutput
 
 from .base import BaseQuestionGenerator, SubQuestion
@@ -17,12 +12,20 @@ from .prompt_gen import (
     build_tools_text,
 )
 
+if TYPE_CHECKING:
+    from rag.llm.base import LLM
+    from rag.tools.types import ToolMetadata
+    from rag.retrievers.base_retriver import QueryBundle
+    from rag.prompt.base_prompt import BasePromptTemplate
+    from rag.output_parser.base import BaseOutputParser
+    from rag.prompt.mixin import PromptDictType
+
 
 class LLMQuestionGenerator(BaseQuestionGenerator):
     def __init__(
         self,
-        llm: LLM,
-        prompt: BasePromptTemplate,
+        llm: "LLM",
+        prompt: "BasePromptTemplate",
     ) -> None:
         self._llm = llm
         self._prompt = prompt
@@ -60,7 +63,7 @@ class LLMQuestionGenerator(BaseQuestionGenerator):
             self._prompt = prompts["question_gen_prompt"]
 
     def generate(
-        self, tools: Sequence[ToolMetadata], query: QueryBundle
+        self, tools: Sequence["ToolMetadata"], query: "QueryBundle"
     ) -> List[SubQuestion]:
         tools_str = build_tools_text(tools)
         query_str = query.query_str
@@ -76,7 +79,7 @@ class LLMQuestionGenerator(BaseQuestionGenerator):
         return parse.parsed_output
 
     async def agenerate(
-        self, tools: Sequence[ToolMetadata], query: QueryBundle
+        self, tools: Sequence["ToolMetadata"], query: "QueryBundle"
     ) -> List[SubQuestion]:
         tools_str = build_tools_text(tools)
         query_str = query.query_str

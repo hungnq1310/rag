@@ -5,7 +5,7 @@ import logging
 import uuid
 from typing import List, Optional, Protocol, runtime_checkable
 
-from rag.node import (
+from rag.node.base_node import (
     BaseNode,
     Document,
     NodeRelationship,

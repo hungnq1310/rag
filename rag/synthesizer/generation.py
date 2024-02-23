@@ -6,7 +6,7 @@ from rag.synthesizer.base_synthesizer import BaseSynthesizer
 
 if TYPE_CHECKING:
     from rag.prompt.base_prompt import BasePromptTemplate
-    from rag.schema.output_parser import RESPONSE_TEXT_TYPE
+    from rag.output_parser.base import RESPONSE_TEXT_TYPE
     from rag.prompt.mixin import PromptDictType
     from rag.core.service_context import ServiceContext
 

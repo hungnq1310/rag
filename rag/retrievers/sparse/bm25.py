@@ -12,7 +12,7 @@ from rag.node.base_node import BaseNode, NodeWithScore
 from rag.rag_utils.utils import globals_helper
 
 if TYPE_CHECKING:
-    from rag.storage.docstore import BaseDocumentStore
+    from rag.storage.docstore.base import BaseDocumentStore
     from rag.indices.vector_store import VectorStoreIndex
 
 logger = logging.getLogger(__name__)
