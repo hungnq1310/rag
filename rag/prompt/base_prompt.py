@@ -81,7 +81,7 @@ class BasePromptTemplate(BaseModel, ABC):
     @abstractmethod
     def format_messages(
         self, llm: Optional["LLM"] = None, **kwargs: Any
-    ) -> List[ChatMessage]:
+    ) -> List["ChatMessage"]:
         ...
 
     @abstractmethod
