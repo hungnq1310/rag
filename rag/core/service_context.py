@@ -72,7 +72,7 @@ class ServiceContext:
     callback_manager: CallbackManager = None
 
     def __init__(self,
-        llm: Optional[LLMType] = "default",
+        llm: Optional[LLMType] = None,
         prompt_helper: Optional[PromptHelper] = None,
         embed_model: Optional[EmbedType] = None,
         node_parser: Optional[SentenceSplitter] = None,
@@ -99,8 +99,7 @@ class ServiceContext:
 
         """
         self.callback_manager = callback_manager or CallbackManager([])
-        if llm != "default":
-            self.llm = resolve_llm(llm)
+        self.llm = resolve_llm(llm)
 
         # NOTE: the embed_model isn't used in all indices
         # NOTE: embed model should be a transformation, but the way the service
