@@ -74,7 +74,7 @@ class ServiceContext:
     def __init__(self,
         llm: Optional[LLMType] = "default",
         prompt_helper: Optional[PromptHelper] = None,
-        embed_model: Optional[EmbedType] = "default",
+        embed_model: Optional[EmbedType] = None,
         node_parser: Optional[SentenceSplitter] = None,
         text_splitter: Optional[TextSplitter] = None,
         transformations: Optional[List[TransformComponent]] = None,

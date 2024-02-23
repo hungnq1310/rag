@@ -353,4 +353,4 @@ class BaseEmbedding(TransformComponent):
         return nodes
 
 
-EmbedType = Union[BaseEmbedding, str]
+EmbedType = Union[BaseEmbedding, str, None]
