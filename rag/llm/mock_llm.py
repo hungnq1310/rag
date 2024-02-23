@@ -1,7 +1,8 @@
 from typing import Any, Callable, Optional, Sequence
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.output_parser.base import PydanticProgramMode
+from rag.output_parser.output_parser import BaseOutputParser
+from rag.prompt.base_prompt import BasePromptTemplate
 
 from .llm_type import (
     ChatMessage,
@@ -25,7 +26,8 @@ class MockLLM(LLM):
         system_prompt: Optional[str] = None,
         messages_to_prompt: Optional[Callable[[Sequence[ChatMessage]], str]] = None,
         completion_to_prompt: Optional[Callable[[str], str]] = None,
-        pydantic_program_mode: PydanticProgramMode = PydanticProgramMode.DEFAULT,
+        output_parser: Optional[BaseOutputParser] = None,
+        query_wrapper_prompt: Optional[BasePromptTemplate] = None,
     ) -> None:
         super().__init__(
             max_tokens=max_tokens,
@@ -33,7 +35,8 @@ class MockLLM(LLM):
             system_prompt=system_prompt,
             messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt,
-            pydantic_program_mode=pydantic_program_mode,
+            output_parser=output_parser,   
+            query_wrapper_prompt=query_wrapper_prompt,    
         )
 
     @classmethod
