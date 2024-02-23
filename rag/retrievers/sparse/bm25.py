@@ -41,7 +41,7 @@ class BM25Retriever(BaseRetriever):
     def __init__(
         self,
         nodes: List[BaseNode],
-        tokenizer: Optional[Callable[[str], List[str]]],
+        tokenizer: Optional[Callable[[str], List[str]]] = None,
         similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
         callback_manager: Optional[CallbackManager] = None,
     ) -> None:
