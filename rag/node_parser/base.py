@@ -10,7 +10,7 @@ from rag.node.base_node import (
     MetadataMode,
     NodeRelationship
 )
-from schema.component import TransformComponent
+from rag.schema.component import TransformComponent
 from rag.rag_utils.utils import get_tqdm_iterable
 from .utils import (
     IdFuncCallable,
