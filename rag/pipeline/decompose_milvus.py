@@ -25,7 +25,7 @@ from rag.indices.vector_store import VectorStoreIndex
 from rag.engine.retriever_engine import RetrieverQueryEngine
 from rag.vector_stores.milvus import MilvusVectorStore
 from rag.engine.subquestion_engine import SubQuestionQueryEngine
-from question_gen.question_generator import LLMQuestionGenerator
+from rag.question_gen.question_generator import LLMQuestionGenerator
 from rag.synthesizer.utils import get_response_synthesizer
 
 logger = logging.getLogger(__name__)
