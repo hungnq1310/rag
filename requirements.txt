@@ -11,3 +11,4 @@ python-box
 ensure
 pdfminer.six
 rank-bm25
+dataclasses_json
