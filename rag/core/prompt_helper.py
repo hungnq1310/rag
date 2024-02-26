@@ -16,7 +16,7 @@ from typing import Callable, List, Optional, Sequence
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.constants import DEFAULT_CONTEXT_WINDOW, DEFAULT_NUM_OUTPUTS
 from rag.schema.component import BaseComponent
-from llm.llm_type import ChatMessage, LLMMetadata
+from rag.llm.llm_type import ChatMessage, LLMMetadata
 from rag.llm.base import LLM
 from rag.node_parser.utils import truncate_text
 from rag.node_parser.text.token import TokenTextSplitter
