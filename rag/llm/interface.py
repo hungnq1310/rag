@@ -3,7 +3,7 @@ from typing import Any, Sequence, TYPE_CHECKING
 
 from rag.bridge.pydantic import Field, validator
 from rag.callbacks.callback_manager import CallbackManager
-from schema.component import BaseComponent
+from rag.schema.component import BaseComponent
 from .llm_type import *
 
 if TYPE_CHECKING:
