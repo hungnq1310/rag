@@ -35,8 +35,8 @@ class CohereRerank(BaseNodePostprocessor):
                 "Cannot import cohere package, please `pip install cohere`."
             )
 
-        self._client = Client(api_key=api_key)
         super().__init__(top_n=top_n, model=model)
+        self._client = Client(api_key=api_key)
 
     @classmethod
     def class_name(cls) -> str:
