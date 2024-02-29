@@ -36,6 +36,11 @@ vector_store_config:
     params: 
       nlist: 1024
 
+faiss_config:
+  vector_name: faiss
+  embedding_dim: 384
+  index_build: l2
+
 splitter_config: 
   splitter_mode: sentence
   model_name_tokenizer: BAAI/bge-small-en
@@ -84,10 +89,10 @@ index_retriever_config:
   sparse_top_k: null 
   alpha: null
   list_query_mode: null
-  keyword_table_mode: null
+  keyword_table_mode: simple
   max_keywords_per_chunk: null
-  max_keywords_per_query: null
-  num_chunks_per_query: null
+  max_keywords_per_query: 10
+  num_chunks_per_query: 10
   vector_store_query_mode: default
   store_nodes_override: True
   insert_batch_size: 2048
