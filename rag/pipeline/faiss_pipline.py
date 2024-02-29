@@ -8,7 +8,8 @@ from rag.config.schema import (
     SpiltterConfig,
     EmbeddingConfig,
     IndexRetrieverConfig,
-    ResponseConfig
+    ResponseConfig,
+    FaissConfig
 )
 from rag.node_parser import SentenceSplitter
 from rag.callbacks import CallbackManager
@@ -32,10 +33,12 @@ class FaissRetrieverPipeline:
         splitter_config: SpiltterConfig,
         index_retriver_config: IndexRetrieverConfig,
         embed_config: EmbeddingConfig,
+        faiss_config: FaissConfig,
         response_config: ResponseConfig,
     ) -> None:
         self.splitter_config = splitter_config
         self.index_retriver_config = index_retriver_config
+        self.faiss_config = faiss_config
         self.response_config = response_config
 
         # resole index_type for faiss
