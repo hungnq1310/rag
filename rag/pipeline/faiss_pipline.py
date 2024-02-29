@@ -9,7 +9,8 @@ from rag.config.schema import (
     EmbeddingConfig,
     IndexRetrieverConfig,
     ResponseConfig,
-    FaissConfig
+    FaissConfig,
+    CohereRerankConfig
 )
 from rag.node_parser import SentenceSplitter
 from rag.callbacks import CallbackManager
@@ -22,6 +23,7 @@ from rag.vector_stores.faiss import FaissVectorStore
 from rag.core.prompt_helper import PromptHelper
 from rag.synthesizer.utils import get_response_synthesizer
 from rag.node.base_node import Document
+from rag.rerank.cohere_rerank import CohereRerank
 
 from rag.embeddings.huggingface import HuggingFaceEmbedding
 
@@ -35,11 +37,13 @@ class FaissRetrieverPipeline:
         index_retriver_config: IndexRetrieverConfig,
         embed_config: EmbeddingConfig,
         faiss_config: FaissConfig,
+        rerank_config: CohereRerankConfig,
         response_config: ResponseConfig,
     ) -> None:
         self.splitter_config = splitter_config
         self.index_retriver_config = index_retriver_config
         self.faiss_config = faiss_config
+        self.rerank_config = rerank_config
         self.response_config = response_config
 
         #callback manager
@@ -145,12 +149,18 @@ class FaissRetrieverPipeline:
             streaming= self.response_config.streaming,
         ) 
 
+        # cohere rerank
+        node_processor = CohereRerank(
+            top_n= self.rerank_config.top_n,
+            model= self.rerank_config.model,
+            api_key= self.rerank_config.api_key,
+        )
 
         #TODO: assemble query engine
         query_engine = RetrieverQueryEngine(
             retriever= retriever,
             response_synthesizer= response_synthesizer,
-            node_postprocessors= None
+            node_postprocessors= [node_processor]
         )
         #TODO: query
         nodes = query_engine.retrieve(query)
