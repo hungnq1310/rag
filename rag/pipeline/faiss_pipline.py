@@ -42,12 +42,12 @@ class FaissRetrieverPipeline:
         self.response_config = response_config
 
         # resole index_type for faiss
-        if self.index_retriver_config.index_type == "l2":
-            self.faiss_index = faiss.IndexFlatL2
-        elif self.index_retriver_config.index_type == "ip":
-            self.faiss_index = faiss.IndexFlatIP
-        elif self.index_retriver_config.index_type == "ivf":
-            self.faiss_index = faiss.IndexIVFFlat
+        if self.faiss_config.index_build == "l2":
+            self.faiss_index = faiss.IndexFlatL2(self.faiss_config.embedding_dim)
+        elif self.faiss_config.index_build == "ip":
+            self.faiss_index = faiss.IndexFlatIP(self.faiss_config.embedding_dim)
+        elif self.faiss_config.index_build == "ivf":
+            self.faiss_index = faiss.IndexIVFFlat(self.faiss_config.embedding_dim)
 
         #callback manager
         callback_manager = CallbackManager()
