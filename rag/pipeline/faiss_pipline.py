@@ -61,8 +61,8 @@ class FaissRetrieverPipeline:
 
 
         # check if embed_model.embedding_dim == faiss_config.embedding_dim
-        assert embed_model.get_model_dim == self.faiss_config.embedding_dim, f"""
-        The embedding_dim of embed_model: {embed_model.get_model_dim} is not equal to the embedding_dim of faiss_config: {self.faiss_config.embedding_dim}"""
+        assert embed_model.get_model_dim() == self.faiss_config.embedding_dim, f"""
+        The embedding_dim of embed_model: {embed_model.get_model_dim()} is not equal to the embedding_dim of faiss_config: {self.faiss_config.embedding_dim}"""
 
         # resole index_type for faiss
         if self.faiss_config.index_build == "l2":
