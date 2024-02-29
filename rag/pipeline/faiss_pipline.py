@@ -1,7 +1,7 @@
 import logging 
 import time
 import faiss
-
+from typing import List
 from transformers import AutoTokenizer
 
 from rag.config.schema import (
@@ -21,7 +21,7 @@ from rag.engine.retriever_engine import RetrieverQueryEngine
 from rag.vector_stores.faiss import FaissVectorStore 
 from rag.core.prompt_helper import PromptHelper
 from rag.synthesizer.utils import get_response_synthesizer
-
+from rag.node.base_node import Document
 
 from rag.embeddings.huggingface import HuggingFaceEmbedding
 
@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 class FaissRetrieverPipeline:
     def __init__(
         self,
+        documents: List[Document],
         splitter_config: SpiltterConfig,
         index_retriver_config: IndexRetrieverConfig,
         embed_config: EmbeddingConfig,
@@ -93,12 +94,6 @@ class FaissRetrieverPipeline:
         self.storage_context = StorageContext.from_defaults(
             vector_store= faiss_vector
         )
-              
-
-    def main(self, query, documents):
-
-        """Wrap time"""
-        start_build_collection_index = int(round(time.time() * 1000))
 
         nodes = []
 
@@ -110,7 +105,7 @@ class FaissRetrieverPipeline:
             nodes.extend(parsing_nodes)
 
 
-        index = VectorStoreIndex(
+        self.index = VectorStoreIndex(
             nodes=nodes,
             storage_context= self.storage_context,
             service_context= self.service_context,
@@ -119,6 +114,12 @@ class FaissRetrieverPipeline:
             use_async= self.index_retriver_config.use_async,
             show_progress= self.index_retriver_config.show_progress,
         )
+              
+
+    def main(self, query):
+
+        """Wrap time"""
+        start_build_collection_index = int(round(time.time() * 1000))
 
         end_build_collection_index = int(round(time.time() * 1000))
         print(f"Time for build collection and index: {end_build_collection_index - start_build_collection_index} ms")
@@ -127,7 +128,7 @@ class FaissRetrieverPipeline:
         start_build_retrieve_search = int(round(time.time() * 1000))
         #TODO: build retriever
         retriever = VectorIndexRetriever(
-            index=index,
+            index=self.index,
             similarity_top_k= self.index_retriver_config.similarity_top_k,
             sparse_top_k= self.index_retriver_config.sparse_top_k,
             alpha= self.index_retriver_config.alpha,
