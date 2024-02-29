@@ -18,6 +18,7 @@ from rag.core.storage_context import StorageContext
 from rag.core.service_context import ServiceContext
 from rag.indices.vector_store import VectorStoreIndex
 from rag.retrievers.dense.vector_retriver import VectorIndexRetriever
+from rag.retrievers.types import QueryBundle, QueryType
 from rag.engine.retriever_engine import RetrieverQueryEngine
 from rag.vector_stores.faiss import FaissVectorStore 
 from rag.core.prompt_helper import PromptHelper
@@ -120,7 +121,7 @@ class FaissRetrieverPipeline:
         )
               
 
-    def main(self, query):
+    def main(self, query: QueryType):
 
         """Wrap time"""
         start_build_collection_index = int(round(time.time() * 1000))
@@ -163,6 +164,8 @@ class FaissRetrieverPipeline:
             node_postprocessors= [node_processor]
         )
         #TODO: query
+        if isinstance(query, str):
+            query = QueryBundle(query_str= query)
         nodes = query_engine.retrieve(query)
 
         end_build_retrieve_search = int(round(time.time() * 1000))
