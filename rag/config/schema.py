@@ -22,6 +22,11 @@ class MilvusConfig:
     search_params: Dict[str, Any]
     overwrite: bool
 
+@dataclass
+class FaissConfig:
+    vectorstore_name: str
+    embedding_dim: int
+    index_build: str
 
 @dataclass
 class SpiltterConfig:

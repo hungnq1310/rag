@@ -11,6 +11,7 @@ from .schema import (
     EmbeddingConfig,
     IndexRetrieverConfig,
     ResponseConfig,
+    FaissConfig
 )
 
 class ConfigurationManager: 
@@ -43,6 +44,17 @@ class ConfigurationManager:
             embedding_dim=configs.embedding_dim,
         )
         return milvus_config
+    
+    
+    def get_faiss_config(self) -> FaissConfig:
+        config = self.config.faiss_config
+
+        faiss_config = FaissConfig(
+            vectorstore_name=config.vector_name,
+            embedding_dim=config.embedding_dim,
+            index_build=config.index_build,
+        )
+        return faiss_config
 
     
     def get_splitter_config(self) -> SpiltterConfig: 
