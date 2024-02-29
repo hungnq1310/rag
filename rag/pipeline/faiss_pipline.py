@@ -41,14 +41,6 @@ class FaissRetrieverPipeline:
         self.faiss_config = faiss_config
         self.response_config = response_config
 
-        # resole index_type for faiss
-        if self.faiss_config.index_build == "l2":
-            self.faiss_index = faiss.IndexFlatL2(self.faiss_config.embedding_dim)
-        elif self.faiss_config.index_build == "ip":
-            self.faiss_index = faiss.IndexFlatIP(self.faiss_config.embedding_dim)
-        elif self.faiss_config.index_build == "ivf":
-            self.faiss_index = faiss.IndexIVFFlat(self.faiss_config.embedding_dim)
-
         #callback manager
         callback_manager = CallbackManager()
 
@@ -66,6 +58,20 @@ class FaissRetrieverPipeline:
 
         #embed model
         embed_model = self.get_embed_mode(embed_config)
+
+
+        # check if embed_model.embedding_dim == faiss_config.embedding_dim
+        assert embed_model.get_model_dim == self.faiss_config.embedding_dim, f"""
+        The embedding_dim of embed_model: {embed_model.get_model_dim} is not equal to the embedding_dim of faiss_config: {self.faiss_config.embedding_dim}"""
+
+        # resole index_type for faiss
+        if self.faiss_config.index_build == "l2":
+            self.faiss_index = faiss.IndexFlatL2(self.faiss_config.embedding_dim)
+        elif self.faiss_config.index_build == "ip":
+            self.faiss_index = faiss.IndexFlatIP(self.faiss_config.embedding_dim)
+        elif self.faiss_config.index_build == "ivf":
+            self.faiss_index = faiss.IndexIVFFlat(self.faiss_config.embedding_dim)
+
 
         # prompt helper - tong hop 3 cai params cua llm, emb, node parser
         prompt_helper = PromptHelper()

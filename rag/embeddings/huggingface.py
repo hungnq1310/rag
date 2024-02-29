@@ -122,6 +122,12 @@ class HuggingFaceEmbedding(BaseEmbedding):
         )
         self._tokenizer = tokenizer
 
+    @property
+    def get_model_dim(self) -> Any:
+        """Get model."""
+        if self._model is None:
+            raise ValueError("Model is not loaded yet.")
+        return self._model[-1].word_embedding_dimension
 
     @classmethod
     def class_name(cls) -> str:
