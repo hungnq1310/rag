@@ -94,6 +94,12 @@ class IndexRetrieverConfig:
     show_progress: bool
 
 @dataclass
+class CohereRerankConfig:
+    top_n: int
+    model: str
+    api_key: str
+
+@dataclass
 class ResponseConfig:
     verbose: bool
     response_mode: str

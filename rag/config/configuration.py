@@ -11,7 +11,8 @@ from .schema import (
     EmbeddingConfig,
     IndexRetrieverConfig,
     ResponseConfig,
-    FaissConfig
+    FaissConfig,
+    CohereRerankConfig
 )
 
 class ConfigurationManager: 
@@ -129,6 +130,15 @@ class ConfigurationManager:
             show_progress=config.show_progress,
         )
         return embed_config
+    
+    def get_cohere_rerank_config(self) -> CohereRerankConfig:
+        config = self.config.rerank_config
+        cohere_rerank_config = CohereRerankConfig(
+            top_n=config.top_n,
+            model=config.model,
+            api_key=config.api_key,
+        )
+        return cohere_rerank_config
     
     def get_response_config(self) -> ResponseConfig:
         config = self.config.response_config
