@@ -126,7 +126,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         """Get model."""
         if self._model is None:
             raise ValueError("Model is not loaded yet.")
-        return self._model.get_sentence_embedding_dimension()
+        return self._model.config.hidden_size
 
     @classmethod
     def class_name(cls) -> str:
