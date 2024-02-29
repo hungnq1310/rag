@@ -26,7 +26,7 @@ from rag.embeddings.huggingface import HuggingFaceEmbedding
 
 logger = logging.getLogger(__name__)
 
-class MilvusRetrieverPipeline:
+class FaissRetrieverPipeline:
     def __init__(
         self,
         splitter_config: SpiltterConfig,
@@ -81,7 +81,7 @@ class MilvusRetrieverPipeline:
         """Wrap time"""
         start_build_collection_index = int(round(time.time() * 1000))
 
-        #TODO: build milvus vector from documents
+        #TODO: build faiss vector from documents
         faiss_vector = FaissVectorStore(
             faiss_index= self.faiss_index,
         )
