@@ -83,12 +83,6 @@ class FaissRetrieverPipeline:
             node_parser=node_parser,
             callback_manager=callback_manager,
         )
-              
-
-    def main(self, query, documents):
-
-        """Wrap time"""
-        start_build_collection_index = int(round(time.time() * 1000))
 
         #TODO: build faiss vector from documents
         faiss_vector = FaissVectorStore(
@@ -96,9 +90,15 @@ class FaissRetrieverPipeline:
         )
 
         # construct index and customize storage context
-        storage_context = StorageContext.from_defaults(
+        self.storage_context = StorageContext.from_defaults(
             vector_store= faiss_vector
         )
+              
+
+    def main(self, query, documents):
+
+        """Wrap time"""
+        start_build_collection_index = int(round(time.time() * 1000))
 
         nodes = []
 
@@ -112,7 +112,7 @@ class FaissRetrieverPipeline:
 
         index = VectorStoreIndex(
             nodes=nodes,
-            storage_context= storage_context,
+            storage_context= self.storage_context,
             service_context= self.service_context,
             store_nodes_override= self.index_retriver_config.store_nodes_override,
             insert_batch_size= self.index_retriver_config.insert_batch_size,
