@@ -122,7 +122,6 @@ class HuggingFaceEmbedding(BaseEmbedding):
         )
         self._tokenizer = tokenizer
 
-    @property
     def get_model_dim(self) -> int:
         """Get model."""
         if self._model is None:
