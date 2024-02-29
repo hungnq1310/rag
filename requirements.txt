@@ -13,3 +13,6 @@ pdfminer.six
 rank-bm25
 dataclasses_json
 pypdf
+pydantic
+hydra-core
+docx2txt
