@@ -1,25 +1,12 @@
 import asyncio
 from enum import Enum
-from typing import Dict, List, Optional, Tuple, cast
+from typing import List, Optional
 
-from rag.rag_utils.async_utils import run_async_tasks
 from rag.callbacks import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.llm.resolve_llm import resolve_llm
-from rag.prompt.prompt_template import PromptTemplate
-from rag.prompt.mixin import PromptDictType
 from rag.retrievers.base_retriver import BaseRetriever
 from rag.retrievers.types import QueryBundle
-from rag.node.base_node import IndexNode, NodeWithScore
-from rag.llm.base import LLMType
-
-QUERY_GEN_PROMPT = (
-    "You are a helpful assistant that generates multiple search queries based on a "
-    "single input query. Generate {num_queries} search queries, one on each line, "
-    "related to the following input query:\n"
-    "Query: {query}\n"
-    "Queries:\n"
-)
+from rag.node.base_node import NodeWithScore
 
 
 class HYBRID_MODE(str, Enum):
