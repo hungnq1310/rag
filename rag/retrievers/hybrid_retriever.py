@@ -25,14 +25,11 @@ class HybridSearchRetriever(BaseRetriever):
         sparse_retriever: BaseRetriever,  
         dense_retriever: BaseRetriever,  
         mode: HYBRID_MODE = HYBRID_MODE.AND,
-        similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
         callback_manager: Optional[CallbackManager] = None,
 
     ) -> None:
-        self._similarity_top_k = similarity_top_k
         self._sparse_retriever = sparse_retriever
         self._dense_retriever = dense_retriever
-        self._similarity_top_k = similarity_top_k
 
         if mode not in ("and", "or"):
             raise ValueError("Invalid mode.")
@@ -60,4 +57,4 @@ class HybridSearchRetriever(BaseRetriever):
             retrieve_ids = vector_ids.union(sparse_ids)
 
         retrive_nodes = [combine_dict[rid] for rid in retrieve_ids]
-        return retrive_nodes[: self._similarity_top_k]
+        return retrive_nodes
