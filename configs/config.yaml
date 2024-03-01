@@ -84,9 +84,9 @@ embeddings_config:
   trust_remote_code: True
 
 index_retriever_config:
-  index_type: vector_store
+  hybrid_mode: and
   similarity_top_k: 5
-  sparse_top_k: null 
+  sparse_top_k: 5 
   alpha: null
   list_query_mode: null
   keyword_table_mode: simple

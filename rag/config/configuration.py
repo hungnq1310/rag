@@ -114,7 +114,7 @@ class ConfigurationManager:
     def get_index_retriever_config(self) -> IndexRetrieverConfig:
         config = self.config.index_retriever_config
         embed_config = IndexRetrieverConfig(
-            index_type=config.index_type,
+            hybrid_mode=config.hybrid_mode,
             similarity_top_k=config.similarity_top_k,
             sparse_top_k=config.sparse_top_k,
             alpha=config.alpha,

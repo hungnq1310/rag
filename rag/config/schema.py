@@ -75,7 +75,7 @@ class EmbeddingConfig:
 
 @dataclass
 class IndexRetrieverConfig:
-    index_type: str
+    hybrid_mode: str
     similarity_top_k: int
     alpha: float
     sparse_top_k: int 
