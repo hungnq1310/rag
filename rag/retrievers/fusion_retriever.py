@@ -10,7 +10,7 @@ from rag.prompt.prompt_template import PromptTemplate
 from rag.prompt.mixin import PromptDictType
 from rag.retrievers.base_retriver import BaseRetriever
 from rag.retrievers.types import QueryBundle
-from rag.node.base_node import IndexNode, NodeWithScore
+from rag.node.base_node import NodeWithScore
 from rag.llm.base import LLMType
 
 QUERY_GEN_PROMPT = (
@@ -41,22 +41,18 @@ class QueryFusionRetriever(BaseRetriever):
         use_async: bool = True,
         verbose: bool = False,
         callback_manager: Optional[CallbackManager] = None,
-        objects: Optional[List[IndexNode]] = None,
-        object_map: Optional[dict] = None,
     ) -> None:
         self.num_queries = num_queries
         self.query_gen_prompt = query_gen_prompt or QUERY_GEN_PROMPT
         self.similarity_top_k = similarity_top_k
         self.mode = mode
         self.use_async = use_async
+        self.verbose = verbose
 
         self._retrievers = retrievers
         self._llm = resolve_llm(llm)
         super().__init__(
             callback_manager=callback_manager,
-            object_map=object_map,
-            objects=objects,
-            verbose=verbose,
         )
 
     def _get_prompts(self) -> PromptDictType:
