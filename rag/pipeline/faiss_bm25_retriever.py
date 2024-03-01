@@ -155,7 +155,6 @@ class HybridSearchRetrieverPipeline:
             sparse_retriever=self.sparse_retriver,
             dense_retriever=self.dense_retriever,
             mode=self.index_retriver_config.hybrid_mode,
-            similarity_top_k=self.index_retriver_config.similarity_top_k,
             callback_manager=self.service_context.callback_manager,
         )
 
