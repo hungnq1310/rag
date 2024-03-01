@@ -33,7 +33,7 @@ from rag.embeddings.huggingface import HuggingFaceEmbedding
 
 logger = logging.getLogger(__name__)
 
-class FaissRetrieverPipeline:
+class HybridSearchRetrieverPipeline:
     def __init__(
         self,
         documents: List[Document],
