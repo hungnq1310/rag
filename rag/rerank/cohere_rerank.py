@@ -68,6 +68,8 @@ class CohereRerank(BaseNodePostprocessor):
                 query=query_bundle.query_str,
                 documents=texts,
             )
+            print("results after rerank: ", results)
+            print("result[0] after rerank: ", results[0])
 
             new_nodes = []
             for result in results:
