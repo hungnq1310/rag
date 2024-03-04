@@ -84,12 +84,12 @@ class CohereRerank(BaseNodePostprocessor):
         # EVAL: Saving for evaluatate
         data = {
             "query": query_bundle.query_str,
-            "old_order": [i for i in len(nodes)],
+            "old_order": [i for i in range(len(nodes))],
             "doc": [node.node.get_content() for node in nodes],
             "new_order": new_order,
             "new_doc": [node.node.get_content() for node in new_nodes],
         }
-        with open("artifacts/evaluate_rerank.json", "a") as f:
+        with open(os.path.abspath(os.curdir) + "/evaluate_rerank.json", "a") as f:
             f.write(json.dumps(data) + "\n")
 
         return new_nodes
