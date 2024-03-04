@@ -1,5 +1,6 @@
 import os
 from typing import Any, List, Optional
+import json
 
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.callbacks import CBEventType, EventPayload
@@ -68,15 +69,27 @@ class CohereRerank(BaseNodePostprocessor):
                 query=query_bundle.query_str,
                 documents=texts,
             )
-            print("results after rerank: ", results)
-            print("result[0] after rerank: ", results[0])
 
+            new_order = []
             new_nodes = []
+
             for result in results:
                 new_node_with_score = NodeWithScore(
                     node=nodes[result.index].node, score=result.relevance_score
                 )
                 new_nodes.append(new_node_with_score)
+                new_order.append(result.index)
             event.on_end(payload={EventPayload.NODES: new_nodes})
+
+        # EVAL: Saving for evaluatate
+        data = {
+            "query": query_bundle.query_str,
+            "old_order": [i for i in len(nodes)],
+            "doc": [node.node.get_content() for node in nodes],
+            "new_order": new_order,
+            "new_doc": [node.node.get_content() for node in new_nodes],
+        }
+        with open("artifacts/evaluate_rerank.json", "a") as f:
+            f.write(json.dumps(data) + "\n")
 
         return new_nodes
