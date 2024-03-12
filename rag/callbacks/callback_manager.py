@@ -1,6 +1,5 @@
 import logging
 import uuid
-from abc import ABC
 from collections import defaultdict
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -20,7 +19,7 @@ empty_trace_ids: List[str] = []
 global_stack_trace_ids = ContextVar("trace_ids", default=empty_trace_ids)
 
 
-class CallbackManager(BaseCallbackHandler, ABC):
+class CallbackManager:
     """
     Callback manager that handles callbacks for events within LlamaIndex.
 
@@ -51,7 +50,7 @@ class CallbackManager(BaseCallbackHandler, ABC):
 
     def __init__(self, handlers: Optional[List[BaseCallbackHandler]] = None):
         """Initialize the manager with a list of handlers."""
-        from . import global_handler
+        from rag import global_handler
 
         handlers = handlers or []
 
@@ -86,7 +85,7 @@ class CallbackManager(BaseCallbackHandler, ABC):
         try:
             parent_id = parent_id or global_stack_trace.get()[-1]
         except IndexError:
-            self.start_trace("llama-index")
+            self.start_trace("rag_trace")
             parent_id = global_stack_trace.get()[-1]
 
         self._trace_map[parent_id].append(event_id)

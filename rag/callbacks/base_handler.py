@@ -1,13 +1,10 @@
 import logging
 from abc import ABC, abstractmethod
-from contextvars import ContextVar
 from typing import Any, Dict, List, Optional
 
-from .types import BASE_TRACE_EVENT, CBEventType
+from .types import CBEventType
 
 logger = logging.getLogger(__name__)
-global_stack_trace = ContextVar("trace", default=[BASE_TRACE_EVENT])
-
 
 class BaseCallbackHandler(ABC):
     """Base callback handler that can be used to track event starts and ends."""
