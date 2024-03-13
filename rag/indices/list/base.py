@@ -56,7 +56,7 @@ class SummaryIndex(BaseIndex):
         """Initialize params."""
         super().__init__(
             nodes=nodes,
-            index_struct=index_struct,
+            index_struct=index_struct or IndexList(),
             service_context=service_context,
             show_progress=show_progress,
             **kwargs,
@@ -93,7 +93,7 @@ class SummaryIndex(BaseIndex):
         Returns:
             IndexList: The created summary index.
         """
-        index_struct = IndexList()
+        index_struct = self.index_struct
         nodes_with_progress = get_tqdm_iterable(
             nodes, show_progress, "Processing nodes"
         )
@@ -104,19 +104,19 @@ class SummaryIndex(BaseIndex):
     def _insert(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert a document."""
         for n in nodes:
-            self._index_struct.add_node(n)
+            self.index_struct.add_node(n)
 
     def _delete_node(self, node_id: str, **delete_kwargs: Any) -> None:
         """Delete a node."""
-        cur_node_ids = self._index_struct.nodes
+        cur_node_ids = self.index_struct.nodes
         cur_nodes = self._docstore.get_nodes(cur_node_ids)
         nodes_to_keep = [n for n in cur_nodes if n.node_id != node_id]
-        self._index_struct.nodes = [n.node_id for n in nodes_to_keep]
+        self.index_struct.nodes = [n.node_id for n in nodes_to_keep]
 
     @property
     def ref_doc_info(self) -> Dict[str, RefDocInfo]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
-        node_doc_ids = self._index_struct.nodes
+        node_doc_ids = self.index_struct.nodes
         nodes = self.docstore.get_nodes(node_doc_ids)
 
         all_ref_doc_info = {}
