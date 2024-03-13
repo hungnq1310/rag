@@ -1,7 +1,7 @@
 """Base index classes."""
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 
 from rag.indices.utils import run_transformations
 from rag.node.base_node import BaseNode, Document
@@ -15,8 +15,6 @@ if TYPE_CHECKING:
     from rag.core.service_context import ServiceContext
     from rag.core.storage_context import StorageContext
 
-
-IS = TypeVar("IS", bound=IndexStruct)
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +33,7 @@ class BaseIndex(ABC):
     def __init__(
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
-        index_struct: Optional[IS] = None,
+        index_struct: Optional[IndexStruct] = None,
         storage_context: Optional["StorageContext"] = None,
         service_context: Optional["ServiceContext"] = None,
         show_progress: bool = False,
@@ -73,7 +71,7 @@ class BaseIndex(ABC):
             
 
     @property
-    def index_struct(self) -> IS:
+    def index_struct(self) -> IndexStruct:
         """Get the index struct."""
         return self._index_struct
 
@@ -97,10 +95,10 @@ class BaseIndex(ABC):
 
 
     @abstractmethod
-    def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IS:
+    def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IndexStruct:
         """Build the index from nodes."""
 
-    def build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IS:
+    def build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IndexStruct:
         """Build the index from nodes."""
         self._docstore.add_documents(nodes, allow_update=True)
         return self._build_index_from_nodes(nodes)
