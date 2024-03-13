@@ -4,7 +4,7 @@ An index that is built within Milvus.
 
 """
 import logging
-from typing import Any, List, Dict, Union, TYPE_CHECKING
+from typing import Any, List, Dict, Optional, Union, TYPE_CHECKING
 
 from .types import (
     MetadataFilters,
@@ -15,14 +15,14 @@ from .types import (
 from .utils import (
     metadata_dict_to_node,
     node_to_metadata_dict,
+    DEFAULT_EMBEDDING_KEY,
+    DEFAULT_DOC_ID_KEY,
+    DEFAULT_TEXT_KEY,
 )
 
 from rag.node.base_node import ( 
     BaseNode, 
     TextNode,
-)
-from rag.config.schema import (
-    MilvusConfig, 
 )
 from .base_vector import VectorStore
 
@@ -90,7 +90,21 @@ class MilvusVectorStore(VectorStore):
 
     def __init__(
         self,
-        config: MilvusConfig,
+        host: Optional[str] = None,
+        port: Optional[str] = None,
+        uri: str = "http://localhost:19530",
+        address: Optional[str] = None,
+        user: Optional[str] = None,
+        collection_name: str = "rag_collection",
+        dim: Optional[int] = None,
+        embedding_field: str = DEFAULT_EMBEDDING_KEY,
+        doc_id_field: str = DEFAULT_DOC_ID_KEY,
+        text_field: Optional[str] = DEFAULT_TEXT_KEY,
+        consistency_level: str = "Strong",
+        overwrite: bool = False,
+        search_params: Optional[Dict[str, Union[str, dict]]] = None, 
+        index_params: Optional[Dict[str, Union[str, dict]]] = None, 
+        **kwargs,
     ) -> None:
         """Init config."""
         import_err_msg = (
@@ -103,22 +117,26 @@ class MilvusVectorStore(VectorStore):
 
         from pymilvus import Collection
 
-        self.config = config
-
-        self.collection_name = config.collection_name
-        self.dim = config.embedding_dim
-        self.embedding_field = config.embedding_field
-        self.doc_id_field = config.primary_field
-        self.text_field = config.text_field
-        self.consistency_level = config.consistency_level
-        self.overwrite = config.overwrite
-        
+        self.host = host
+        self.port = port
+        self.address = address
+        self.uri = uri
+        self.user = user
+        self.collection_name = collection_name
+        self.dim = dim
+        self.embedding_field = embedding_field
+        self.doc_id_field = doc_id_field
+        self.text_field = text_field
+        self.consistency_level = consistency_level
+        self.overwrite = overwrite
+        self.search_params = search_params
+        self.index_params = index_params
 
         # Select the similarity metric
-        self.similarity_metric = self.config.search_params.get("metric_type", None)
+        self.similarity_metric = self.search_params.get("metric_type", None)
 
         # Connect to Milvus instance
-        self.milvusclient = self.connect_client()
+        self.milvusclient = self.client()
 
         # Delete previous collection if overwriting
         if self.overwrite and self.collection_name in self.milvusclient.list_collections():
@@ -145,13 +163,13 @@ class MilvusVectorStore(VectorStore):
         logger.debug(f"Successfully created a new collection: {self.collection_name}")
 
     
-    def connect_client(self) -> "MilvusClient":
+    def client(self) -> "MilvusClient":
         from pymilvus import MilvusClient
         # Order of use is host/port, uri, address
-        if self.config.uri is not None:
-            return MilvusClient(self.config.uri)
-        elif self.config.host is not None and self.config.port is not None:
-            uri = f"http://{self.config.host}:{self.config.port}"
+        if self.uri is not None:
+            return MilvusClient(self.uri)
+        elif self.host is not None and self.port is not None:
+            uri = f"http://{self.host}:{self.port}"
             return MilvusClient(uri=uri)
         raise Exception("Cannot connect milvus database")
 
@@ -168,8 +186,8 @@ class MilvusVectorStore(VectorStore):
         Returns:
             List[str]: List of ids inserted.
         """
-        insert_list = []
-        insert_ids = []
+        insert_list: List[Any] = []
+        insert_ids: List[Any] = []
 
         # Process that data we are going to insert
         for node in nodes:
@@ -229,7 +247,7 @@ class MilvusVectorStore(VectorStore):
         if query.mode != VectorStoreQueryMode.DEFAULT:
             raise ValueError(f"Milvus does not support {query.mode} yet.")
 
-        expr = []
+        expr: List[Any] = []
         output_fields = ["*"]
 
         # Parse the filter
@@ -255,8 +273,6 @@ class MilvusVectorStore(VectorStore):
         if len(expr) != 0:
             string_expr = " and ".join(expr)
 
-        print("self.config.search_config:", self.config.search_params)
-        base_config = self.config.search_params
         # Perform the search
         res = self.milvusclient.search(
             collection_name=self.collection_name,
@@ -264,7 +280,7 @@ class MilvusVectorStore(VectorStore):
             filter=string_expr,
             limit=query.similarity_top_k,
             output_fields=output_fields,
-            search_config=base_config
+            search_config=self.search_params,
         )
 
         logger.debug(
@@ -272,9 +288,9 @@ class MilvusVectorStore(VectorStore):
             f" Num Results: {len(res[0])}"
         )
 
-        nodes = []
-        similarities = []
-        ids = []
+        nodes: List[Any] = []
+        similarities: List[Any] = []
+        ids: List[Any] = []
 
         # Parse the results
         for hit in res[0]:
@@ -308,9 +324,7 @@ class MilvusVectorStore(VectorStore):
         if (self.collection.has_index() and self.overwrite) or force:
             self.collection.release()
             self.collection.drop_index()
-            index_config: Dict[str, Union[str, Dict[str, Any]]] = self.config.index_params
-            print(index_config)
             self.collection.create_index(
-                self.embedding_field, index_config=index_config
+                self.embedding_field, index_config=self.index_params,
             )
             self.collection.load()
