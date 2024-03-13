@@ -51,7 +51,7 @@ class VectorStoreIndex(BaseIndex):
         self._insert_batch_size = insert_batch_size
         super().__init__(
             nodes=nodes,
-            index_struct=index_struct,
+            index_struct=index_struct or IndexDict(),
             service_context=service_context,
             storage_context=storage_context,
             show_progress=show_progress,
@@ -216,7 +216,7 @@ class VectorStoreIndex(BaseIndex):
         **insert_kwargs: Any,
     ) -> IndexDict:
         """Build index from nodes."""
-        index_struct = IndexDict()
+        index_struct = self.index_struct
         if self._use_async:
             tasks = [
                 self._async_add_nodes_to_index(
@@ -261,7 +261,7 @@ class VectorStoreIndex(BaseIndex):
 
     def _insert(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert a document."""
-        self._add_nodes_to_index(self._index_struct, nodes, **insert_kwargs)
+        self._add_nodes_to_index(self.index_struct, nodes, **insert_kwargs)
 
     def insert_nodes(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert nodes.
@@ -271,7 +271,7 @@ class VectorStoreIndex(BaseIndex):
             if vector store does not store text
         """
         self._insert(nodes, **insert_kwargs)
-        self._storage_context.index_store.add_index_struct(self._index_struct)
+        self._storage_context.index_store.add_index_struct(self.index_struct)
 
     def _delete_node(self, node_id: str, **delete_kwargs: Any) -> None:
         pass
@@ -304,7 +304,7 @@ class VectorStoreIndex(BaseIndex):
             ref_doc_info = self._docstore.get_ref_doc_info(ref_doc_id)
             if ref_doc_info is not None:
                 for node_id in ref_doc_info.node_ids:
-                    self._index_struct.delete(node_id)
+                    self.index_struct.delete(node_id)
                     self._vector_store.delete(node_id)
 
         # delete from docstore only if needed
@@ -313,7 +313,7 @@ class VectorStoreIndex(BaseIndex):
         ) and delete_from_docstore:
             self._docstore.delete_ref_doc(ref_doc_id, raise_error=False)
 
-        self._storage_context.index_store.add_index_struct(self._index_struct)
+        self._storage_context.index_store.add_index_struct(self.index_struct)
 
     @property
     def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
