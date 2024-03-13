@@ -55,7 +55,7 @@ class BaseIndex(ABC):
             else:
                 raise ValueError("nodes must be a list of Node objects.")
 
-        self._service_context = service_context 
+        self._service_context = service_context
         self._storage_context = storage_context
         self._docstore = self._storage_context.docstore
         self._show_progress = show_progress
@@ -78,7 +78,7 @@ class BaseIndex(ABC):
     @property
     def index_id(self) -> str:
         """Get the index struct."""
-        return self._index_struct.index_id
+        return self.index_struct.index_id
 
     @property
     def docstore(self) -> "BaseDocumentStore":
@@ -100,7 +100,7 @@ class BaseIndex(ABC):
 
     def build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IndexStruct:
         """Build the index from nodes."""
-        self._docstore.add_documents(nodes, allow_update=True)
+        self.docstore.add_documents(nodes, allow_update=True)
         return self._build_index_from_nodes(nodes)
 
     @abstractmethod
@@ -109,17 +109,17 @@ class BaseIndex(ABC):
 
     def insert_nodes(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert nodes."""
-        with self._service_context.callback_manager.as_trace("insert_nodes"):
+        with self.service_context.callback_manager.as_trace("insert_nodes"):
             self.docstore.add_documents(nodes, allow_update=True)
             self._insert(nodes, **insert_kwargs)
-            self._storage_context.index_store.add_index_struct(self._index_struct)
+            self.storage_context.index_store.add_index_struct(self.index_struct)
 
     def insert(self, document: Document, **insert_kwargs: Any) -> None:
         """Insert a document."""
-        with self._service_context.callback_manager.as_trace("insert"):
+        with self.service_context.callback_manager.as_trace("insert"):
             nodes = run_transformations(
                 [document],
-                self._service_context.transformations,
+                self.service_context.transformations,
                 show_progress=self._show_progress,
             )
 
@@ -147,7 +147,7 @@ class BaseIndex(ABC):
             if delete_from_docstore:
                 self.docstore.delete_document(node_id, raise_error=False)
 
-        self._storage_context.index_store.add_index_struct(self._index_struct)
+        self.storage_context.index_store.add_index_struct(self.index_struct)
 
     def delete(self, doc_id: str, **delete_kwargs: Any) -> None:
         """Delete a document from the index.
@@ -209,7 +209,7 @@ class BaseIndex(ABC):
             delete_kwargs (Dict): kwargs to pass to delete
 
         """
-        with self._service_context.callback_manager.as_trace("update"):
+        with self.service_context.callback_manager.as_trace("update"):
             self.delete_ref_doc(
                 document.get_doc_id(),
                 delete_from_docstore=True,
@@ -241,10 +241,10 @@ class BaseIndex(ABC):
         updating documents that have any changes in text or metadata. It
         will also insert any documents that previously were not stored.
         """
-        with self._service_context.callback_manager.as_trace("refresh"):
+        with self.service_context.callback_manager.as_trace("refresh"):
             refreshed_documents = [False] * len(documents)
             for i, document in enumerate(documents):
-                existing_doc_hash = self._docstore.get_document_hash(
+                existing_doc_hash = self.docstore.get_document_hash(
                     document.get_doc_id()
                 )
                 if existing_doc_hash is None:
