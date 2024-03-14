@@ -24,6 +24,7 @@ class PyPDFReader(BaseReader):
                 "pypdf is required to read PDF files: `pip install pypdf`"
             )
 
+        documents = []
         with open(file_path, "rb") as fp:
             # Create a PDF object
             pdf = pypdf.PdfReader(fp)
@@ -32,18 +33,17 @@ class PyPDFReader(BaseReader):
             num_pages = len(pdf.pages)
 
             # Iterate over every page
-            pages_text = []
             for page in range(num_pages):
-                # Extract the text from the page
-                pages_text.append(pdf.pages[page].extract_text())
-            # concatenate all pages to one long text.
-            text = "".join(pages_text)
-            # add description
-            metadata = {"num_pages": num_pages, "file_name": file_path.name}
-            if extra_info is not None:
-                metadata.update(extra_info)
+                # Extract text and metadata from the i_th page of that file
+                text = pdf.pages[page].extract_text()
+                metadata = {"num_page": page, "file_name": file_path.name}
 
-        return [Document(text=text, metadata=metadata)]
+                if extra_info is not None:
+                    metadata.update(extra_info)
+                # Add to documents
+                documents.append(Document(text=text, metadata=metadata))
+
+        return documents
         
 
 class PDFMinerLoader(BaseReader):
