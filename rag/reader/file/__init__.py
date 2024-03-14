@@ -1,4 +1,4 @@
-from rag.reader.file_reader.pdf_reader import  (
+from rag.reader.file.pdf_reader import  (
     PDFMinerLoader, 
     PyPDFReader,
 )

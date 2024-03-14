@@ -33,7 +33,7 @@ from rag.prompt.selector_template import (
 )
 
 from rag.reader.directory_reader import DirectoryReader
-from rag.reader.file_reader.pdf_reader import  PDFMinerLoader, PyPDFReader
+from rag.reader.file.pdf_reader import  PDFMinerLoader, PyPDFReader
 
 from rag.retrievers.sparse.auto_merging import AutoMergingRetriever
 from rag.retrievers.sparse.recursive import RecursiveRetriever
