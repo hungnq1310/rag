@@ -1,5 +1,3 @@
-from rag.cache.ingestion_cache import IngestionCache
-
 from rag.embeddings.huggingface import (
     HuggingFaceEmbedding,
     HuggingFaceInferenceAPIEmbedding,
@@ -58,7 +56,6 @@ from rag.vector_stores.simple import SimpleVectorStore
 from rag.vector_stores.milvus import MilvusVectorStore
 
 __all__ = [
-    "IngestionCache",
     "HuggingFaceEmbedding",
     "HuggingFaceInferenceAPIEmbedding",
     "HuggingFaceInferenceAPIEmbeddings",
@@ -104,3 +101,7 @@ __all__ = [
     "SimpleVectorStore",
     "MilvusVectorStore"
 ]
+
+from  typing import Optional
+from rag.callbacks.base_handler import BaseCallbackHandler
+global_handler: Optional[BaseCallbackHandler] = None
