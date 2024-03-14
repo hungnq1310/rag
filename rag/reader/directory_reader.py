@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 from rag.node.base_node import Document
 from rag.reader.base_reader import BaseReader
-from .file.pdf_reader import PyPDFReader as PDFReader
+from .file.pdf import PyPDFReader as PDFReader
 
 
 DEFAULT_FILE_READER_CLS: Dict[str, Type[BaseReader]] = {

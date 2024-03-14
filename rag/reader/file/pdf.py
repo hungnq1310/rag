@@ -43,7 +43,7 @@ class PyPDFReader(BaseReader):
             if extra_info is not None:
                 metadata.update(extra_info)
 
-        return Document(text=text, metadata=metadata)
+        return [Document(text=text, metadata=metadata)]
         
 
 class PDFMinerLoader(BaseReader):
@@ -64,4 +64,4 @@ class PDFMinerLoader(BaseReader):
         metadata = {"file_name": file_path.name}
         if extra_info is not None:
             metadata.update(extra_info)
-        return Document(page_content=text, metadata=metadata)
+        return [Document(text=text, metadata=metadata)]

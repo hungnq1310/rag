@@ -1,4 +1,4 @@
-from rag.reader.file.pdf_reader import  PDFMinerLoader, PyPDFReader
+from reader.file.pdf import  PDFMinerLoader, PyPDFReader
 from rag.reader.directory_reader import DirectoryReader
 
 __all__ = [
