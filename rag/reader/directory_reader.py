@@ -286,7 +286,7 @@ class DirectoryReader(BaseReader):
 
             # load data -- catch all errors except for ImportError
             try:
-                doc = reader.load_data(input_file, extra_info=metadata)
+                docs = reader.load_data(input_file, extra_info=metadata)
             except ImportError as e:
                 # ensure that ImportError is raised so user knows
                 # about missing dependencies
@@ -298,7 +298,7 @@ class DirectoryReader(BaseReader):
                     flush=True,
                 )
                 return []
-            documents.append(doc)
+            documents.extend(docs)
         else:
             # do standard read
             with open(input_file, errors=errors, encoding=encoding) as f:
