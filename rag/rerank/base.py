@@ -1,15 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
-
+from typing import List, Optional
 
 from rag.bridge.pydantic import Field
 from rag.callbacks import CallbackManager
 from rag.schema.component import BaseComponent
 from rag.retrievers.types import QueryBundle
 from rag.node.base_node import NodeWithScore
-
-if TYPE_CHECKING:
-    from rag.prompt.mixin import PromptDictType, PromptMixinType
 
 
 class BaseNodePostprocessor(BaseComponent, ABC):
@@ -19,18 +15,6 @@ class BaseNodePostprocessor(BaseComponent, ABC):
 
     class Config:
         arbitrary_types_allowed = True
-
-    def _get_prompts(self) -> "PromptDictType":
-        """Get prompts."""
-        # set by default since most postprocessors don't require prompts
-        return {}
-
-    def _update_prompts(self, prompts: "PromptDictType") -> None:
-        """Update prompts."""
-
-    def _get_prompt_modules(self) -> "PromptMixinType":
-        """Get prompt modules."""
-        return {}
 
     # implement class_name so users don't have to worry about it when extending
     @classmethod
