@@ -56,10 +56,10 @@ class KeywordNodePostprocessor(BaseNodePostprocessor):
         return new_nodes
 
 
-class SimilarityPostprocessor(BaseNodePostprocessor):
+class DeltaSimilarityPostprocessor(BaseNodePostprocessor):
     """Similarity-based Node processor."""
 
-    similarity_cutoff: float = Field(default=None)
+    delta_similarity_cutoff: float = Field(default=None)
 
     @classmethod
     def class_name(cls) -> str:
@@ -71,8 +71,13 @@ class SimilarityPostprocessor(BaseNodePostprocessor):
         query_bundle: Optional[QueryBundle] = None,
     ) -> List[NodeWithScore]:
         """Postprocess nodes."""
-        sim_cutoff_exists = self.similarity_cutoff is not None
+        sim_cutoff_exists = self.delta_similarity_cutoff is not None
 
+        # get best score of first node
+        best_score: float = 0.0
+        if nodes:
+            best_score = cast(float, nodes[0].score)
+        
         new_nodes = []
         for node in nodes:
             should_use_node = True
@@ -80,7 +85,7 @@ class SimilarityPostprocessor(BaseNodePostprocessor):
                 similarity = node.score
                 if similarity is None:
                     should_use_node = False
-                elif cast(float, similarity) < cast(float, self.similarity_cutoff):
+                elif best_score - cast(float, similarity) > self.delta_similarity_cutoff:
                     should_use_node = False
 
             if should_use_node:
