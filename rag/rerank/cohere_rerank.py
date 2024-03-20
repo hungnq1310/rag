@@ -11,7 +11,7 @@ from .base import BaseNodePostprocessor
 
 
 class CohereRerank(BaseNodePostprocessor):
-    model: str = Field(description="Cohere model name.")
+    model_name: str = Field(description="Cohere model name.")
     top_n: int = Field(description="Top N nodes to return.")
 
     _client: Any = PrivateAttr()
@@ -36,7 +36,7 @@ class CohereRerank(BaseNodePostprocessor):
                 "Cannot import cohere package, please `pip install cohere`."
             )
 
-        super().__init__(top_n=top_n, model=model)
+        super().__init__(top_n=top_n, model_name=model)
         self._client = Client(api_key=api_key)
 
     @classmethod
@@ -57,14 +57,14 @@ class CohereRerank(BaseNodePostprocessor):
             CBEventType.RERANKING,
             payload={
                 EventPayload.NODES: nodes,
-                EventPayload.MODEL_NAME: self.model,
+                EventPayload.MODEL_NAME: self.model_name,
                 EventPayload.QUERY_STR: query_bundle.query_str,
                 EventPayload.TOP_K: self.top_n,
             },
         ) as event:
             texts = [node.node.get_content() for node in nodes]
             results = self._client.rerank(
-                model=self.model,
+                model=self.model_name,
                 top_n=self.top_n,
                 query=query_bundle.query_str,
                 documents=texts,
