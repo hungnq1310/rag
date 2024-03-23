@@ -13,5 +13,5 @@ response_mode: tree_summarize
 streaming: False
 
 defaults:
-  - retrieve: sparse
+  - retriever: sparse
   - splitter: sentence
