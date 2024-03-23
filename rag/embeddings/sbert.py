@@ -24,12 +24,12 @@ class SBertEmbedding(BaseEmbedding):
         default=DEFAULT_HUGGINGFACE_LENGTH, description="Maximum length of input.", gt=0
     )
 
-    prompts : Optional[Dict[str, str]] = Field(
+    prompts : Dict[str, str] = Field(
         description="""A dictionary with prompts for the model. The key is the prompt name, the value is the prompt text. 
         For example: {“query”: “query: “, “passage”: “passage: “}"""
     )
 
-    default_prompt_name : Optional[str] = Field(
+    default_prompt_name : str = Field(
         description="The name of the prompt that should be used by default. If not set, no prompt will be applied."
     )
     
