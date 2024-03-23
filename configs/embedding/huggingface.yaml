@@ -1,0 +1,7 @@
+model_name: BAAI/bge-small-en
+tokenizer_name: BAAI/bge-small-en
+pooling: cls
+max_length: 512
+embedding_batch_size: 10
+token: null
+device: null

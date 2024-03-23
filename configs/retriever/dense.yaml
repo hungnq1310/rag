@@ -1,0 +1,8 @@
+# general
+similarity_top_k: 5
+# vector store
+vector_store_query_mode: default
+alpha: null
+sparse_top_k: 5 
+# retrive from list:
+choice_batch_size: null
