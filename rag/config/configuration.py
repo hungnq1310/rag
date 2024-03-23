@@ -61,7 +61,7 @@ class ConfigurationManager:
         )
     
     def get_cohere_rerank_config(self) -> RerankConfig:
-        configs = self.config.rerank_config
+        configs = self.config.rerank
         return RerankConfig(
             **configs
         )
