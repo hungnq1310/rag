@@ -11,3 +11,7 @@ num_files_limit: 10
 verbose: False
 response_mode: tree_summarize
 streaming: False
+
+defaults:
+  - retrieve: sparse
+  - splitter: sentence
