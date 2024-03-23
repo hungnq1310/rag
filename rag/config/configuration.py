@@ -67,7 +67,9 @@ class ConfigurationManager:
         )
     
     def get_response_config(self) -> ResponseConfig:
-        configs = self.config.response_config
         return ResponseConfig(
-            **configs
+            verbose=self.config.verbose,
+            response_mode=self.config.response_mode,
+            use_async=self.config.use_async,
+            streaming=self.config.streaming,
         )
