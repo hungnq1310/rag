@@ -57,6 +57,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         text_instruction: Optional[str] = None,
         normalize: bool = True,
         embed_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
+        token: Optional[str] = None,
         cache_folder: Optional[str] = None,
         trust_remote_code: bool = False,
         device: Optional[str] = None,
@@ -113,7 +114,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         )
         # set private attribute
         model = AutoModel.from_pretrained(
-            model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code
+            model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code, token=token,
         )
         self._model = model.to(self.device)
 
