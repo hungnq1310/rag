@@ -1,13 +1,12 @@
-artifacts_root: artifacts
+# General config
+show_progress: False
 
-reader_config: 
-  file_path: data/
-  only_suffixs: .pdf
-  encoding: null
-  recursive: False
-  num_files_limit: null
-  show_progress: False
-  num_workers: null
+# DirReader Config
+input_dir: data/
+only_suffixs: .pdf
+recursive: True
+num_files_limit: 10
+  
   
 vector_store_config: 
   vector_name: milvus
@@ -48,8 +47,8 @@ splitter_config:
   chunk_size: 256
   chunk_overlap: 20
   # for sentence splitter 
-  paragraph_separator: null
-  secondary_chunking_regex: null
+  paragraph_separator: "\n\n\n"
+  secondary_chunking_regex: "[^.。？！]+[.。？！]?"
   # for token splitter
   backup_separators: null
 
@@ -109,9 +108,3 @@ response_config:
   response_mode: tree_summarize
   use_async: False
   streaming: False
-
-extract_pdf_options:
-  only_extract_text: True
-  only_render_image: True
-  with_get_char_info: False
-  include_styling_info: False
