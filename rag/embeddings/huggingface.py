@@ -25,7 +25,6 @@ DEFAULT_HUGGINGFACE_LENGTH = 512
 
 
 class HuggingFaceEmbedding(BaseEmbedding):
-    tokenizer_name: str = Field(description="Tokenizer name from HuggingFace.")
     max_length: int = Field(
         default=DEFAULT_HUGGINGFACE_LENGTH, description="Maximum length of input.", gt=0
     )
@@ -70,10 +69,14 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 "HuggingFaceEmbedding requires transformers to be installed.\n"
                 "Please install transformers with `pip install transformers`."
             )
-    
-        device = device or infer_torch_device()
-        cache_folder = cache_folder or get_cache_dir()
 
+        # set attribute
+        self.device = device or infer_torch_device()
+        self.cache_folder = cache_folder or get_cache_dir()
+        self.normalize = normalize
+        self.query_instruction = query_instruction
+        self.text_instruction = text_instruction
+        
         if model_name is None:  # Use model_name with AutoModel
             model_name = DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
             print(f"Using default model: {model_name}")
@@ -84,7 +87,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         if max_length is None:
             try:
-                max_length = int(self._model.config.max_position_embeddings)
+                self.max_length = int(self._model.config.max_position_embeddings)
             except AttributeError as exc:
                 raise ValueError(
                     "Unable to find max_length from model config. Please specify max_length."
@@ -92,7 +95,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         if isinstance(pooling, str):
             try:
-                pooling = Pooling(pooling)
+                self.pooling = Pooling(pooling)
             except ValueError as exc:
                 raise NotImplementedError(
                     f"Pooling {pooling} unsupported, please pick one in"
@@ -101,16 +104,8 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         super().__init__(
             embed_batch_size=embed_batch_size,
-            callback_manager=callback_manager,
+            callback_manager=callback_manager or CallbackManager(),
             model_name=model_name,
-            tokenizer_name=tokenizer_name,
-            max_length=max_length,
-            pooling=pooling,
-            normalize=normalize,
-            device=device,
-            query_instruction=query_instruction,
-            text_instruction=text_instruction,
-            cache_folder=cache_folder
         )
         # set private attribute
         model = AutoModel.from_pretrained(
