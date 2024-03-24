@@ -50,10 +50,17 @@ class ServiceContext:
     - callback_manager: CallbackManager
 
     """
+    _instance = None
+
     llm: LLM
     embed_model: BaseEmbedding
     transformations: List[TransformComponent]
     callback_manager: CallbackManager
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
 
     def __init__(self,
         llm: Optional[LLMType] = None,
