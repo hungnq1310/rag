@@ -53,7 +53,10 @@ class StorageContext:
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
+            print('Creating new StorageContext instance...')
+            cls._instance = super().__new__(cls)
+        else:
+            print('Reusing StorageContext instance...')
         return cls._instance
 
     @classmethod
