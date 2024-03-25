@@ -4,7 +4,7 @@ from typing import List, Optional
 from rag.bridge.pydantic import Field
 from rag.callbacks import CallbackManager
 from rag.schema.component import BaseComponent
-from rag.retrievers.types import QueryBundle
+from rag.retrievers.types import QueryBundle, QueryType
 from rag.node.base_node import NodeWithScore
 
 
@@ -24,16 +24,13 @@ class BaseNodePostprocessor(BaseComponent, ABC):
     def postprocess_nodes(
         self,
         nodes: List[NodeWithScore],
-        query_bundle: Optional[QueryBundle] = None,
-        query_str: Optional[str] = None,
+        str_or_query_bundle: QueryType,
     ) -> List[NodeWithScore]:
         """Postprocess nodes."""
-        if query_str is not None and query_bundle is not None:
-            raise ValueError("Cannot specify both query_str and query_bundle")
-        elif query_str is not None:
-            query_bundle = QueryBundle(query_str)
+        if isinstance(str_or_query_bundle, str):
+            query_bundle = QueryBundle(str_or_query_bundle)
         else:
-            pass
+            query_bundle = str_or_query_bundle
         return self._postprocess_nodes(nodes, query_bundle)
 
     @abstractmethod
