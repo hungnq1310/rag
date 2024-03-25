@@ -3,7 +3,7 @@ from typing import List
 import os
 from typing import Any, Awaitable, Callable, List, Optional, Sequence, TYPE_CHECKING
 
-from rag.llm.llm_type import (
+from rag.llm.types import (
     ChatMessage,
     ChatResponse,
     ChatResponseAsyncGen,
