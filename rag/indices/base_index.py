@@ -42,7 +42,7 @@ class BaseIndex(ABC):
     ) -> None:
         """Initialize with parameters."""
         if index_struct is None and nodes is None:
-            raise ValueError("`nodes` and `index_struct` must be provided.")
+            raise ValueError("`nodes` or `index_struct` must be provided.")
         # This is to explicitly make sure that the old UX is not used
         if nodes is not None and len(nodes) >= 1 and not isinstance(nodes[0], BaseNode):
             if isinstance(nodes[0], Document):
