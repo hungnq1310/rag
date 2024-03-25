@@ -19,7 +19,7 @@ from typing import (
 from rag.bridge.pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from rag.llm.llm_type import ChatMessage, MessageRole
+    from llm.types import ChatMessage, MessageRole
 
 
 Model = TypeVar("Model", bound=BaseModel)
