@@ -18,6 +18,7 @@ def save_embedding(embedding: List[float], file_path: str) -> None:
 
 def load_embedding(file_path: str) -> List[float]:
     """Load embedding from file. Will only return first embedding in file."""
+    embedding = []
     with open(file_path) as f:
         for line in f:
             embedding = [float(x) for x in line.strip().split(",")]
