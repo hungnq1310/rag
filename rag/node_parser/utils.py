@@ -11,12 +11,6 @@ from rag.node.base_node import (
     NodeRelationship,
     TextNode,
 )
-from rag.callbacks.callback_manager import CallbackManager
-from rag.node_parser.text.sentence import (
-    DEFAULT_CHUNK_SIZE,
-    SENTENCE_CHUNK_OVERLAP,
-    SentenceSplitter,
-)
 from rag.rag_utils.utils import truncate_text
 
 logger = logging.getLogger(__name__)
@@ -30,19 +24,6 @@ class IdFuncCallable(Protocol):
 
 def default_id_func(i: int, doc: BaseNode) -> str:
     return str(uuid.uuid4())
-
-
-def get_default_node_parser(
-    chunk_size: int = DEFAULT_CHUNK_SIZE,
-    chunk_overlap: int = SENTENCE_CHUNK_OVERLAP,
-    callback_manager: Optional[CallbackManager] = None,
-) -> SentenceSplitter:
-    """Get default node parser."""
-    return SentenceSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        callback_manager=callback_manager or CallbackManager(),
-    )
 
 
 def build_nodes_from_splits(
