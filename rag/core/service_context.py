@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 
 from rag.bridge.pydantic import BaseModel
@@ -10,27 +10,14 @@ from rag.embeddings.resovle_embed import resolve_embed_model
 from rag.node_parser.text.sentence import (
     DEFAULT_CHUNK_SIZE,
     SENTENCE_CHUNK_OVERLAP,
-    SentenceSplitter,
 )
 from rag.embeddings.base_embeddings import BaseEmbedding, EmbedType
 from rag.llm.base import LLM, LLMType
 from rag.node_parser.base import NodeParser, TextSplitter
+from rag.node_parser.utils import get_default_node_parser
 
 
 logger = logging.getLogger(__name__)
-
-
-def _get_default_node_parser(
-    chunk_size: int = DEFAULT_CHUNK_SIZE,
-    chunk_overlap: int = SENTENCE_CHUNK_OVERLAP,
-    callback_manager: Optional[CallbackManager] = None,
-) -> SentenceSplitter:
-    """Get default node parser."""
-    return SentenceSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        callback_manager=callback_manager or CallbackManager(),
-    )
 
 
 class ServiceContextData(BaseModel):
@@ -100,7 +87,7 @@ class ServiceContext:
         # text splitter extends node parser
         node_parser = text_splitter \
             or node_parser \
-            or _get_default_node_parser(
+            or get_default_node_parser(
                 chunk_size=chunk_size or DEFAULT_CHUNK_SIZE,
                 chunk_overlap=chunk_overlap or SENTENCE_CHUNK_OVERLAP,
                 callback_manager=self.callback_manager,
