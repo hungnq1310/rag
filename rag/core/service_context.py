@@ -14,7 +14,7 @@ from rag.node_parser.text.sentence import (
 from rag.embeddings.base_embeddings import BaseEmbedding, EmbedType
 from rag.llm.base import LLM, LLMType
 from rag.node_parser.base import NodeParser, TextSplitter
-from rag.node_parser.utils import get_default_node_parser
+from rag.node_parser.text.sentence import get_default_node_parser
 
 
 logger = logging.getLogger(__name__)
@@ -26,6 +26,7 @@ class ServiceContextData(BaseModel):
     transformations: List[dict]
 
 
+# TODO: add function from_default which get mock values for base index
 class ServiceContext:
     """Service Context container.
 
