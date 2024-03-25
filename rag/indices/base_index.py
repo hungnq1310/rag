@@ -141,14 +141,17 @@ class BaseIndex(ABC):
     def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IndexStruct:
         """Build the index from nodes."""
 
+
     def build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> IndexStruct:
         """Build the index from nodes."""
         self.docstore.add_documents(nodes, allow_update=True)
         return self._build_index_from_nodes(nodes)
 
+
     @abstractmethod
     def _insert(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Index-specific logic for inserting nodes to the index struct."""
+
 
     def insert_nodes(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert nodes."""
@@ -156,6 +159,7 @@ class BaseIndex(ABC):
             self.docstore.add_documents(nodes, allow_update=True)
             self._insert(nodes, **insert_kwargs)
             self.storage_context.index_store.add_index_struct(self.index_struct)
+
 
     def insert_document(self, document: Document, **insert_kwargs: Any) -> None:
         """Insert a document."""
@@ -169,9 +173,11 @@ class BaseIndex(ABC):
             self.insert_nodes(nodes, **insert_kwargs)
             self.docstore.set_document_hash(document.get_doc_id(), document.hash)
 
+
     @abstractmethod
     def _delete_node(self, node_id: str, **delete_kwargs: Any) -> None:
         """Delete a node."""
+
 
     def delete_nodes(
         self,
@@ -192,19 +198,6 @@ class BaseIndex(ABC):
 
         self.storage_context.index_store.add_index_struct(self.index_struct)
 
-    def delete(self, doc_id: str, **delete_kwargs: Any) -> None:
-        """Delete a document from the index.
-        All nodes in the index related to the index will be deleted.
-
-        Args:
-            doc_id (str): A doc_id of the ingested document
-
-        """
-        logger.warning(
-            "delete() is now deprecated, please refer to delete_ref_doc() to delete "
-            "ingested documents+nodes or delete_nodes to delete a list of nodes."
-        )
-        self.delete_ref_doc(doc_id)
 
     def delete_ref_doc(
         self, ref_doc_id: str, delete_from_docstore: bool = False, **delete_kwargs: Any
@@ -224,22 +217,6 @@ class BaseIndex(ABC):
         if delete_from_docstore:
             self.docstore.delete_ref_doc(ref_doc_id, raise_error=False)
 
-    def update(self, document: Document, **update_kwargs: Any) -> None:
-        """Update a document and it's corresponding nodes.
-
-        This is equivalent to deleting the document and then inserting it again.
-
-        Args:
-            document (Union[BaseDocument, BaseIndex]): document to update
-            insert_kwargs (Dict): kwargs to pass to insert
-            delete_kwargs (Dict): kwargs to pass to delete
-
-        """
-        logger.warning(
-            "update() is now deprecated, please refer to update_ref_doc() to update "
-            "ingested documents+nodes."
-        )
-        self.update_ref_doc(document, **update_kwargs)
 
     def update_ref_doc(self, document: Document, **update_kwargs: Any) -> None:
         """Update a document and it's corresponding nodes.
@@ -260,20 +237,6 @@ class BaseIndex(ABC):
             )
             self.insert_document(document, **update_kwargs.pop("insert_kwargs", {}))
 
-    def refresh(
-        self, documents: Sequence[Document], **update_kwargs: Any
-    ) -> List[bool]:
-        """Refresh an index with documents that have changed.
-
-        This allows users to save LLM and Embedding model calls, while only
-        updating documents that have any changes in text or metadata. It
-        will also insert any documents that previously were not stored.
-        """
-        logger.warning(
-            "refresh() is now deprecated, please refer to refresh_ref_docs() to "
-            "refresh ingested documents+nodes with an updated list of documents."
-        )
-        return self.refresh_ref_docs(documents, **update_kwargs)
 
     def refresh_ref_docs(
         self, documents: Sequence[Document], **update_kwargs: Any
