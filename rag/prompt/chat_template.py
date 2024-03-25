@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 import logging
 
-from rag.llm.llm_type import ChatMessage, MessageRole, ChatMessage
+from rag.llm.types import ChatMessage, MessageRole, ChatMessage
 
 from .base_prompt import BasePromptTemplate
 from .types import PromptType
@@ -36,9 +36,9 @@ class ChatPromptTemplate(BasePromptTemplate):
         template_vars = []
         for message_template in message_templates:
             template_vars.extend(get_template_vars(message_template.content or ""))
+        self.message_templates = message_templates
 
         super().__init__(
-            message_templates=message_templates,
             kwargs=kwargs,
             metadata=metadata,
             output_parser=output_parser,
