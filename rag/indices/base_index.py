@@ -3,30 +3,31 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 
+from rag.callbacks import CallbackManager
 from rag.indices.utils import run_transformations
 from rag.node.base_node import BaseNode, Document
+from rag.core.storage_context import StorageContext
+from rag.core.service_context import ServiceContext
 
 from .data_struct import IndexStruct
 
 if TYPE_CHECKING:
-    from rag.engine.base_query_engine import BaseQueryEngine
-    from rag.retrievers.base_retriver import BaseRetriever
+    from retrievers.base import BaseRetriever
     from rag.storage.docstore.base import BaseDocumentStore, RefDocInfo
-    from rag.core.service_context import ServiceContext
-    from rag.core.storage_context import StorageContext
+
 
 
 logger = logging.getLogger(__name__)
 
 
 class BaseIndex(ABC):
-    """Base LlamaIndex.
+    """Base Index.
 
     Args:
         nodes (List[Node]): List of nodes to index
         show_progress (bool): Whether to show tqdm progress bars. Defaults to False.
-        service_context (ServiceContext): Service context container (contains
-            components like LLM, Embeddings, etc.).
+        storage_context (StorageContext): Storage context container (contains
+            storage to persist like docstore, index_store, etc.).
 
     """
 
@@ -34,16 +35,14 @@ class BaseIndex(ABC):
         self,
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexStruct] = None,
-        storage_context: Optional["StorageContext"] = None,
-        service_context: Optional["ServiceContext"] = None,
+        storage_context: Optional[StorageContext] = None,
+        service_context: Optional[ServiceContext] = None,
         show_progress: bool = False,
         **kwargs: Any,
     ) -> None:
         """Initialize with parameters."""
         if index_struct is None and nodes is None:
-            raise ValueError("One of nodes or index_struct must be provided.")
-        if index_struct is not None and nodes is not None:
-            raise ValueError("Only one of nodes or index_struct can be provided.")
+            raise ValueError("`nodes` and `index_struct` must be provided.")
         # This is to explicitly make sure that the old UX is not used
         if nodes is not None and len(nodes) >= 1 and not isinstance(nodes[0], BaseNode):
             if isinstance(nodes[0], Document):
@@ -55,18 +54,19 @@ class BaseIndex(ABC):
             else:
                 raise ValueError("nodes must be a list of Node objects.")
 
-        self._service_context = service_context
-        self._storage_context = storage_context
+        self._service_context = service_context or ServiceContext()
+        self._storage_context = storage_context or StorageContext.from_defaults()
         self._docstore = self._storage_context.docstore
+        self._callback_manager = self._service_context.callback_manager
         self._show_progress = show_progress
-        self._vector_store = self._storage_context.vector_store
-        self._index_struct = index_struct
 
-        with self._service_context.callback_manager.as_trace("index_construction"):
-            if self._index_struct is None:
+        with self._callback_manager.as_trace("index_construction"):
+            if index_struct is None:
                 assert nodes is not None
-                self._index_struct = self.build_index_from_nodes(nodes)
+                index_struct = self.build_index_from_nodes(nodes)
                 
+            self._index_struct = index_struct
+
         self._storage_context.index_store.add_index_struct(self._index_struct)
             
 
@@ -92,6 +92,49 @@ class BaseIndex(ABC):
     @property
     def storage_context(self) -> "StorageContext":
         return self._storage_context
+    
+    
+    @classmethod
+    def from_documents(
+        cls,
+        documents: Sequence[Document],
+        storage_context: Optional[StorageContext] = None,
+        service_context: Optional[ServiceContext] = None,
+        callback_manager: Optional[CallbackManager] = None,
+        show_progress: bool = False,
+        **kwargs: Any,
+    ) -> "BaseIndex":
+        """Create index from documents.
+
+        Args:
+            documents (Optional[Sequence[BaseDocument]]): List of documents to
+                build the index from.
+
+        """
+        storage_context = storage_context or StorageContext.from_defaults()
+        service_context = service_context or ServiceContext()
+        docstore = storage_context.docstore
+        callback_manager = service_context.callback_manager
+        transformations = service_context.transformations 
+
+        with callback_manager.as_trace("index_construction"):
+            for doc in documents:
+                docstore.set_document_hash(doc.get_doc_id(), doc.hash)
+
+            nodes = run_transformations(
+                documents,  # type: ignore
+                transformations,
+                show_progress=show_progress,
+                **kwargs,
+            )
+
+            return cls(
+                nodes=nodes,
+                storage_context=storage_context,
+                callback_manager=callback_manager,
+                show_progress=show_progress,
+                **kwargs,
+            )
 
 
     @abstractmethod
@@ -109,17 +152,17 @@ class BaseIndex(ABC):
 
     def insert_nodes(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert nodes."""
-        with self.service_context.callback_manager.as_trace("insert_nodes"):
+        with self._callback_manager.as_trace("insert_nodes"):
             self.docstore.add_documents(nodes, allow_update=True)
             self._insert(nodes, **insert_kwargs)
             self.storage_context.index_store.add_index_struct(self.index_struct)
 
-    def insert(self, document: Document, **insert_kwargs: Any) -> None:
+    def insert_document(self, document: Document, **insert_kwargs: Any) -> None:
         """Insert a document."""
-        with self.service_context.callback_manager.as_trace("insert"):
+        with self._callback_manager.as_trace("insert"):
             nodes = run_transformations(
                 [document],
-                self.service_context.transformations,
+                self._service_context.transformations,
                 show_progress=self._show_progress,
             )
 
@@ -209,13 +252,13 @@ class BaseIndex(ABC):
             delete_kwargs (Dict): kwargs to pass to delete
 
         """
-        with self.service_context.callback_manager.as_trace("update"):
+        with self._callback_manager.as_trace("update"):
             self.delete_ref_doc(
                 document.get_doc_id(),
                 delete_from_docstore=True,
                 **update_kwargs.pop("delete_kwargs", {}),
             )
-            self.insert(document, **update_kwargs.pop("insert_kwargs", {}))
+            self.insert_document(document, **update_kwargs.pop("insert_kwargs", {}))
 
     def refresh(
         self, documents: Sequence[Document], **update_kwargs: Any
@@ -241,14 +284,14 @@ class BaseIndex(ABC):
         updating documents that have any changes in text or metadata. It
         will also insert any documents that previously were not stored.
         """
-        with self.service_context.callback_manager.as_trace("refresh"):
+        with self._callback_manager.as_trace("refresh"):
             refreshed_documents = [False] * len(documents)
             for i, document in enumerate(documents):
                 existing_doc_hash = self.docstore.get_document_hash(
                     document.get_doc_id()
                 )
                 if existing_doc_hash is None:
-                    self.insert(document, **update_kwargs.pop("insert_kwargs", {}))
+                    self.insert_document(document, **update_kwargs.pop("insert_kwargs", {}))
                     refreshed_documents[i] = True
                 elif existing_doc_hash != document.hash:
                     self.update_ref_doc(
@@ -267,14 +310,3 @@ class BaseIndex(ABC):
     @abstractmethod
     def as_retriever(self, **kwargs: Any) -> "BaseRetriever":
         ...
-
-    def as_query_engine(self, **kwargs: Any) -> "BaseQueryEngine":
-        # NOTE: lazy import
-        from rag.engine.retriever_engine import RetrieverQueryEngine
-
-        retriever = self.as_retriever(**kwargs)
-
-        kwargs["retriever"] = retriever
-        if "service_context" not in kwargs:
-            kwargs["service_context"] = self._service_context
-        return RetrieverQueryEngine.from_args(**kwargs)
