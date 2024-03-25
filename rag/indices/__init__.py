@@ -1,13 +1,19 @@
-from rag.indices.empty.base import EmptyIndex
-from rag.indices.keyword_table.base import KeywordTableIndex  
-from rag.indices.list import SummaryIndex
-from rag.indices.vector_store.base import VectorStoreIndex
-from rag.indices.get_embeddings import get_top_k_embeddings
+from rag.indices.base_index import BaseIndex
+from rag.indices.data_struct import (
+    IndexDict, 
+    IndexList,
+    IndexStruct,
+    EmptyIndexStruct,
+)
+from rag.indices.registry import INDEX_STRUCT_TYPE_TO_INDEX_STRUCT_CLASS
+from rag.indices.types import IndexStructType
 
 __all__ = [
-    "get_top_k_embeddings",
-    "EmptyIndex",
-    "KeywordTableIndex",
-    "SummaryIndex",
-    "VectorStoreIndex"
+    "BaseIndex",
+    "IndexDict",
+    "IndexList",
+    "IndexStruct",
+    "EmptyIndexStruct",
+    "INDEX_STRUCT_TYPE_TO_INDEX_STRUCT_CLASS",
+    "IndexStructType",
 ]
