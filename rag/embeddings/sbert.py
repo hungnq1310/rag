@@ -78,14 +78,13 @@ class SBertEmbedding(BaseEmbedding):
             embed_batch_size=embed_batch_size,
             callback_manager=callback_manager,
             model_name=model_name_or_path,
+            device=device or infer_torch_device(),
+            cache_folder=cache_folder or get_cache_dir(),
+            max_length=max_length,
+            prompts=prompts or {},
+            default_prompt_name=default_prompt_name or "",
         )
 
-        # set attributes
-        self.device = device or infer_torch_device()
-        self.cache_folder = cache_folder or get_cache_dir()
-        self.max_length = max_length or DEFAULT_HUGGINGFACE_LENGTH
-        self.prompts = prompts or {}
-        self.default_prompt_name = default_prompt_name or ""
         
         # set private attribute
         model = SentenceTransformer(

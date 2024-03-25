@@ -69,13 +69,6 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 "HuggingFaceEmbedding requires transformers to be installed.\n"
                 "Please install transformers with `pip install transformers`."
             )
-
-        # set attribute
-        self.device = device or infer_torch_device()
-        self.cache_folder = cache_folder or get_cache_dir()
-        self.normalize = normalize
-        self.query_instruction = query_instruction
-        self.text_instruction = text_instruction
         
         if model_name is None:  # Use model_name with AutoModel
             model_name = DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
@@ -106,6 +99,11 @@ class HuggingFaceEmbedding(BaseEmbedding):
             embed_batch_size=embedding_batch_size,
             callback_manager=callback_manager or CallbackManager(),
             model_name=model_name,
+            device=device or infer_torch_device(),
+            cache_folder=cache_folder or get_cache_dir(),
+            normalize=normalize,
+            query_instruction=query_instruction,
+            text_instruction=text_instruction,
         )
         # set private attribute
         model = AutoModel.from_pretrained(
