@@ -103,7 +103,7 @@ class BaseKeywordTableIndex(BaseIndex):
         **kwargs: Any,
     ) -> "BaseRetriever":
         # NOTE: lazy import
-        from rag.retrievers.dense.keyword_retriever import (
+        from rag.retrievers.sparse.keyword_retriever import (
             KeywordTableRetriever,
             KeywordTableRAKERetriever,
             KeywordTableSimpleRetriever,
