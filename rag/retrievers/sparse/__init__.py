@@ -1,5 +1,9 @@
-from .auto_merging import AutoMergingRetriever
 from .bm25 import BM25Retriever
-from .recursive import RecursiveRetriever
+from .keyword_retriever import KeywordTableSimpleRetriever, KeywordTableRAKERetriever, KeywordTableRetriever
 
-__all__ = ["AutoMergingRetriever", "BM25Retriever", "RecursiveRetriever"]
+__all__ = [
+    "BM25Retriever",
+    "KeywordTableRetriever",
+    "KeywordTableSimpleRetriever",
+    "KeywordTableRAKERetriever",
+]
