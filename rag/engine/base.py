@@ -29,9 +29,9 @@ class BaseEngine(ABC):
             return await self._arun_engine(str_or_query_bundle)
 
     @abstractmethod
-    def _run_engine(self, query_bundle: QueryBundle) -> Any:
+    def _run_engine(self, str_or_query_bundle: QueryType) -> Any:
         pass
 
     @abstractmethod
-    async def _arun_engine(self, query_bundle: QueryBundle) -> Any:
+    async def _arun_engine(self, str_or_query_bundle: QueryType) -> Any:
         pass
