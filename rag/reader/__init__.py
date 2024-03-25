@@ -1,8 +1,7 @@
-from reader.file.pdf import  PDFMinerLoader, PyPDFReader
+from rag.reader.base_reader import BaseReader
 from rag.reader.directory_reader import DirectoryReader
 
 __all__ = [
-    "DirectoryReader",
-    "PDFMinerLoader",
-    "PyPDFReader"
+    "BaseReader",
+    "DirectoryReader"
 ]
