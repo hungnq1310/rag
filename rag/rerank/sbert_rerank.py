@@ -75,7 +75,7 @@ class SentenceTransformerRerank(BaseNodePostprocessor):
             CBEventType.RERANKING,
             payload={
                 EventPayload.NODES: nodes,
-                EventPayload.MODEL_NAME: self.model,
+                EventPayload.MODEL_NAME: self.model_name,
                 EventPayload.QUERY_STR: query_bundle.query_str,
                 EventPayload.TOP_K: self.top_n,
             },
