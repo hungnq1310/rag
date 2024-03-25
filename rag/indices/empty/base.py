@@ -11,8 +11,7 @@ from rag.indices.data_struct import EmptyIndexStruct
 from rag.indices.base_index import BaseIndex 
 
 if TYPE_CHECKING:
-    from rag.retrievers.base_retriver import BaseRetriever
-    from rag.engine.base_query_engine import BaseQueryEngine
+    from rag.retrievers.base import BaseRetriever
     from rag.node.base_node import BaseNode
     from rag.core.service_context import ServiceContext
     from rag.storage.docstore.base import RefDocInfo
@@ -48,15 +47,6 @@ class EmptyIndex(BaseIndex):
         from rag.retrievers.dense.emtpy_retriever import EmptyIndexRetriever
 
         return EmptyIndexRetriever(self)
-
-    def as_query_engine(self, **kwargs: Any) -> "BaseQueryEngine":
-        if "response_mode" not in kwargs:
-            kwargs["response_mode"] = "generation"
-        else:
-            if kwargs["response_mode"] != "generation":
-                raise ValueError("EmptyIndex only supports response_mode=generation.")
-
-        return super().as_query_engine(**kwargs)
 
     def _build_index_from_nodes(self, nodes: Sequence["BaseNode"]) -> EmptyIndexStruct:
         """Build the index from documents.
