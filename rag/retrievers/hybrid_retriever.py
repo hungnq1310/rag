@@ -2,17 +2,18 @@ import asyncio
 from enum import Enum
 from typing import List, Optional
 
+from node import NodeWithScore
+
 from rag.callbacks import CallbackManager
-from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.retrievers.base_retriver import BaseRetriever
-from rag.retrievers.types import QueryBundle
 from rag.node.base_node import NodeWithScore
 
+from .base import BaseRetriever
+from .types import QueryBundle
 
 class HYBRID_MODE(str, Enum):
     """Enum for different fusion modes."""
 
-    OR = "or"  # apply reciprocal rank fusion
+    OR = "or"  # get all 
     AND = "and"  # simple re-ordering of results based on original scores
 
 
@@ -58,3 +59,6 @@ class HybridSearchRetriever(BaseRetriever):
 
         retrive_nodes = [combine_dict[rid] for rid in retrieve_ids]
         return retrive_nodes
+    
+    def aretrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
+        return self._retrieve(query_bundle)
