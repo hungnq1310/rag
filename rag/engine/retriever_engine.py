@@ -12,8 +12,7 @@ class RetrieverEngine(BaseEngine):
 
     Args:
         retriever (BaseRetriever): A retriever object.
-        response_synthesizer (Optional[BaseSynthesizer]): A BaseSynthesizer
-            object.
+        node_postprocessors (Optional[List[BaseNodePostprocessor]]): List of node postprocessors objects.
         callback_manager (Optional[CallbackManager]): A callback manager.
     """
 
