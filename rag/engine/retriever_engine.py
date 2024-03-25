@@ -1,7 +1,7 @@
 from typing import Any, List, Optional
 
 from rag.callbacks.callback_manager import CallbackManager
-from retrievers.base import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.node.base_node import NodeWithScore
 from rag.rerank.base import BaseNodePostprocessor
 
