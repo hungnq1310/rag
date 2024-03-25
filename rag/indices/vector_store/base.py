@@ -14,7 +14,7 @@ from rag.rag_utils.async_utils import run_async_tasks
 from rag.rag_utils.utils import iter_batch
 
 if TYPE_CHECKING:
-    from rag.retrievers.base_retriver import BaseRetriever
+    from retrievers.base import BaseRetriever
     from rag.vector_stores.base_vector import VectorStore
     from rag.storage.docstore.base import RefDocInfo
     from rag.core.storage_context import StorageContext
@@ -57,7 +57,9 @@ class VectorStoreIndex(BaseIndex):
             show_progress=show_progress,
             **kwargs,
         )
+        self._vector_store = self._storage_context.get_vector_store()
 
+    
     @property
     def vector_store(self) -> "VectorStore":
         return self._vector_store
@@ -71,7 +73,7 @@ class VectorStoreIndex(BaseIndex):
         """)
         return VectorIndexRetriever(
             self,
-            node_ids=list(self.index_struct.nodes_dict.values()),
+            node_ids=list(self.index_struct.nodes_dict.values()), # type: ignore
             callback_manager=self._service_context.callback_manager,
             **kwargs,
         )
@@ -216,7 +218,7 @@ class VectorStoreIndex(BaseIndex):
         **insert_kwargs: Any,
     ) -> IndexDict:
         """Build index from nodes."""
-        index_struct = self.index_struct
+        index_struct: IndexDict = self.index_struct # type: ignore
         if self._use_async:
             tasks = [
                 self._async_add_nodes_to_index(
@@ -261,7 +263,7 @@ class VectorStoreIndex(BaseIndex):
 
     def _insert(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert a document."""
-        self._add_nodes_to_index(self.index_struct, nodes, **insert_kwargs)
+        self._add_nodes_to_index(self.index_struct, nodes, **insert_kwargs) # type: ignore
 
     def insert_nodes(self, nodes: Sequence[BaseNode], **insert_kwargs: Any) -> None:
         """Insert nodes.
@@ -304,7 +306,8 @@ class VectorStoreIndex(BaseIndex):
             ref_doc_info = self._docstore.get_ref_doc_info(ref_doc_id)
             if ref_doc_info is not None:
                 for node_id in ref_doc_info.node_ids:
-                    self.index_struct.delete(node_id)
+                    # IndexDict
+                    self.index_struct.delete(node_id) # type: ignore
                     self._vector_store.delete(node_id)
 
         # delete from docstore only if needed
@@ -319,7 +322,7 @@ class VectorStoreIndex(BaseIndex):
     def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
         if not self._vector_store.stores_text or self._store_nodes_override:
-            node_doc_ids = list(self.index_struct.nodes_dict.values())
+            node_doc_ids = list(self.index_struct.nodes_dict.values()) # type: ignore
             nodes = self.docstore.get_nodes(node_doc_ids)
 
             all_ref_doc_info = {}
