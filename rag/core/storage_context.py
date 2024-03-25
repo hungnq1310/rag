@@ -196,10 +196,13 @@ class StorageContext:
             vector_stores=vector_stores,
         )
 
-    @property
-    def vector_store(self) -> VectorStore:
-        """Backwrds compatibility for vector_store property."""
-        return self.vector_stores[DEFAULT_VECTOR_STORE_NAME]
+    def get_vector_store(self, namespace: Optional[str] = None) -> VectorStore:
+        """Get vector store by namespace when having multiple vector stores"""
+        vector_store = self.vector_stores.get(namespace, None) # type: ignore
+        if vector_store is None:
+            print(f"Vector store '{namespace}' not found, using default name for vector store.")
+            return self.vector_stores[DEFAULT_VECTOR_STORE_NAME]
+        return vector_store
 
     def add_vector_store(self, vector_store: VectorStore, namespace: str) -> None:
         """Add a vector store to the storage context."""
