@@ -5,9 +5,9 @@ from rag.bridge.pydantic import validator
 from rag.callbacks.callback_manager import CBEventType, EventPayload
 
 from .interface import BaseLLM
-from .llm_type import *
-from .generic_utils import (
-    messages_to_prompt as generic_messages_to_prompt,
+from .types import *
+from .utils import (
+    generic_messages_to_prompt,
     completion_response_to_chat_response,
     stream_completion_response_to_chat_response,
     llm_chat_callback,
@@ -22,13 +22,13 @@ if TYPE_CHECKING:
 @runtime_checkable
 class MessagesToPromptType(Protocol):
     def __call__(self, messages: Sequence[ChatMessage]) -> str:
-        pass
+        ...
 
 
 @runtime_checkable
 class CompletionToPromptType(Protocol):
     def __call__(self, prompt: str) -> str:
-        pass
+        ...
 
 
 def stream_completion_response_to_tokens(
