@@ -29,8 +29,9 @@ class MockLLM(LLM):
         output_parser: Optional[BaseOutputParser] = None,
         query_wrapper_prompt: Optional[BasePromptTemplate] = None,
     ) -> None:
-        max_tokens = max_tokens
+        
         super().__init__(
+            max_tokens = max_tokens,
             callback_manager=callback_manager, # type: ignore
             system_prompt=system_prompt,
             messages_to_prompt=messages_to_prompt, # type: ignore
