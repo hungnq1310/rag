@@ -47,7 +47,10 @@ class ServiceContext:
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
+            print('Creating new ServiceContext instance...')
+            cls._instance = super().__new__(cls)
+        else:
+            print('Reusing ServiceContext instance...')
         return cls._instance
 
     def __init__(self,
