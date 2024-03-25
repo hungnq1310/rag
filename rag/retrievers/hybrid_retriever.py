@@ -2,7 +2,7 @@ import asyncio
 from enum import Enum
 from typing import List, Optional
 
-from node import NodeWithScore
+from rag.node.base_node import NodeWithScore
 
 from rag.callbacks import CallbackManager
 from rag.node.base_node import NodeWithScore
