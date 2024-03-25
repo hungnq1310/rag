@@ -8,7 +8,7 @@ from rag.constants import DEFAULT_SIMILARITY_TOP_K
 from rag.llm.resolve_llm import resolve_llm
 from rag.prompt.prompt_template import PromptTemplate
 from rag.prompt.mixin import PromptDictType
-from rag.retrievers.base_retriver import BaseRetriever
+from retrievers.base import BaseRetriever
 from rag.retrievers.types import QueryBundle
 from rag.node.base_node import NodeWithScore
 from rag.llm.base import LLMType
@@ -75,7 +75,7 @@ class QueryFusionRetriever(BaseRetriever):
 
         # assume LLM proper put each query on a newline
         queries = response.text.split("\n")
-        if self._verbose:
+        if self.verbose:
             queries_str = "\n".join(queries)
             print(f"Generated queries:\n{queries_str}")
         return response.text.split("\n")
