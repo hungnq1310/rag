@@ -55,7 +55,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         query_instruction: Optional[str] = None,
         text_instruction: Optional[str] = None,
         normalize: bool = True,
-        embed_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
+        embedding_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
         token: Optional[str] = None,
         cache_folder: Optional[str] = None,
         trust_remote_code: bool = False,
@@ -103,7 +103,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 ) from exc
 
         super().__init__(
-            embed_batch_size=embed_batch_size,
+            embed_batch_size=embedding_batch_size,
             callback_manager=callback_manager or CallbackManager(),
             model_name=model_name,
         )
