@@ -59,3 +59,8 @@ class RetrieverEngine(BaseEngine):
     def retriever(self) -> BaseRetriever:
         """Get the retriever object."""
         return self._retriever
+    
+    @property
+    def node_postprocessors(self) -> List[BaseNodePostprocessor]:
+        """Get the node postprocessors."""
+        return self._node_postprocessors
