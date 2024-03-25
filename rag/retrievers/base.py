@@ -1,14 +1,11 @@
 """Base retriever."""
 from abc import abstractmethod, ABC
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 from rag.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
+from rag.node import NodeWithScore
 from .types import *
 
-if TYPE_CHECKING:
-    from rag.node import NodeWithScore
-    from rag.core.service_context import ServiceContext
 
 class BaseRetriever(ABC):
     """Base retriever."""
