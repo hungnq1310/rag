@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,

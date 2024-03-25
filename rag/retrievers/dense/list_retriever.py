@@ -3,7 +3,7 @@ import logging
 from typing import Any, Callable, List, Optional, Tuple, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )

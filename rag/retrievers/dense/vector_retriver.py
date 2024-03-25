@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.node.base_node import NodeWithScore, ObjectType
 from rag.vector_stores.types import (
     MetadataFilters,
