@@ -3,13 +3,15 @@ from typing import List, Protocol, Sequence, runtime_checkable, Any, Union, TYPE
 
 from rag.bridge.pydantic import validator
 from rag.callbacks.callback_manager import CBEventType, EventPayload
+from rag.prompt.utils import (
+    messages_to_prompt as generic_messages_to_prompt,
+    completion_response_to_chat_response,
+    stream_completion_response_to_chat_response,
+)
 
 from .interface import BaseLLM
 from .types import *
 from .utils import (
-    generic_messages_to_prompt,
-    completion_response_to_chat_response,
-    stream_completion_response_to_chat_response,
     llm_chat_callback,
     llm_completion_callback
 )
