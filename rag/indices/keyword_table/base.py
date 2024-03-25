@@ -26,9 +26,10 @@ from rag.constants.default_prompt import (
 )
 
 if TYPE_CHECKING:
-    from rag.retrievers.base_retriver import BaseRetriever
+    from rag.retrievers.base import BaseRetriever
     from rag.prompt.base_prompt import BasePromptTemplate
     from rag.core.service_context import ServiceContext
+    from rag.core.storage_context import StorageContext
     from rag.storage.docstore.base import RefDocInfo  
 
 
@@ -67,6 +68,7 @@ class BaseKeywordTableIndex(BaseIndex):
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[KeywordTable] = None,
         service_context: Optional["ServiceContext"] = None,
+        storage_context: Optional["StorageContext"] = None,
         keyword_extract_template: Optional["BasePromptTemplate"] = None,
         max_keywords_per_chunk: int = 10,
         use_async: bool = False,
@@ -86,8 +88,9 @@ class BaseKeywordTableIndex(BaseIndex):
         self._use_async = use_async
         super().__init__(
             nodes=nodes,
-            index_struct=index_struct,
+            index_struct=index_struct or KeywordTable(),
             service_context=service_context,
+            storage_context=storage_context,
             show_progress=show_progress,
             **kwargs,
         )
@@ -159,7 +162,7 @@ class BaseKeywordTableIndex(BaseIndex):
     def _build_index_from_nodes(self, nodes: Sequence[BaseNode]) -> KeywordTable:
         """Build the index from nodes."""
         # do simple concatenation
-        index_struct = KeywordTable(table={})
+        index_struct: KeywordTable = self.index_struct # type: ignore
         if self._use_async:
             tasks = [
                 self._async_add_nodes_to_index(index_struct, nodes, self._show_progress)
@@ -176,7 +179,7 @@ class BaseKeywordTableIndex(BaseIndex):
             keywords = self._extract_keywords(
                 n.get_content(metadata_mode=MetadataMode.LLM)
             )
-            self._index_struct.add_node(list(keywords), n)
+            self.index_struct.add_node(list(keywords), n)
 
     def _delete_node(self, node_id: str, **delete_kwargs: Any) -> None:
         """Delete a node."""
@@ -195,7 +198,7 @@ class BaseKeywordTableIndex(BaseIndex):
     @property
     def ref_doc_info(self) -> Dict[str, "RefDocInfo"]:
         """Retrieve a dict mapping of ingested documents and their nodes+metadata."""
-        node_doc_ids_sets = list(self._index_struct.table.values())
+        node_doc_ids_sets = list(self.index_struct.table.values())
         node_doc_ids = list(set().union(*node_doc_ids_sets))
         nodes = self.docstore.get_nodes(node_doc_ids)
 
@@ -222,7 +225,7 @@ class KeywordTableIndex(BaseKeywordTableIndex):
 
     def _extract_keywords(self, text: str) -> Set[str]:
         """Extract keywords from text."""
-        response = self._service_context.llm.predict(
+        response = self.service_context.llm.predict(
             self.keyword_extract_template,
             text=text,
         )
@@ -230,7 +233,7 @@ class KeywordTableIndex(BaseKeywordTableIndex):
 
     async def _async_extract_keywords(self, text: str) -> Set[str]:
         """Extract keywords from text."""
-        response = await self._service_context.llm.apredict(
+        response = await self.service_context.llm.apredict(
             self.keyword_extract_template,
             text=text,
         )
