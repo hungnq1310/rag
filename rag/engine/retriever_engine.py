@@ -35,14 +35,16 @@ class RetrieverEngine(BaseEngine):
     def _apply_node_postprocessors(
         self, nodes: List[NodeWithScore], str_or_query_bundle: QueryType
     ) -> List[NodeWithScore]:
-        for node_postprocessor in self._node_postprocessors:
+        for idx, node_postprocessor in enumerate(self._node_postprocessors):
             nodes = node_postprocessor.postprocess_nodes(
                 nodes, str_or_query_bundle=str_or_query_bundle
             )
+            print(f"Score Rerank {idx}: {[score_node.get_score() for score_node in nodes]}")
         return nodes
 
     def retrieve(self, str_or_query_bundle: QueryType) -> List[NodeWithScore]:
         nodes = self._retriever.retrieve(str_or_query_bundle)
+        print(f"Score Retrieval: {[score_node.get_score() for score_node in nodes]}")
         return self._apply_node_postprocessors(nodes, str_or_query_bundle=str_or_query_bundle)
 
     async def aretrieve(self,str_or_query_bundle: QueryType) -> List[NodeWithScore]:
