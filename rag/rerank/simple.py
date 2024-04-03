@@ -118,13 +118,14 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
         if scores.min() < 0 or scores.max() > 1:
             # normalize the scores
             normalized_scores = (scores - scores.min()) / (scores.max() - scores.min())
+            print("Normalizing scores: ", normalized_scores)
         else:
             normalized_scores = scores
 
         # get mean score of all retrieved node
         mean_score: float = 0.0
         if nodes:
-            mean_score = sum([cast(float, node.score) for node in nodes]) / len(nodes)
+            mean_score = sum(normalized_scores) / len(normalized_scores)
         
         new_nodes = []
         for idx, similarity in enumerate(normalized_scores):
