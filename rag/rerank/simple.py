@@ -1,7 +1,8 @@
 """Node postprocessor."""
 
 import logging
-from typing import Dict, List, Optional, cast
+from typing import List, Optional, cast
+import numpy as np
 
 from rag.bridge.pydantic import Field
 from rag.node.base_node import NodeWithScore
@@ -109,6 +110,16 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
     ) -> List[NodeWithScore]:
         """Postprocess nodes."""
         sim_cutoff_exists = self.delta_similarity_cutoff is not None
+        
+        # get the score of all retrieved node
+        scores = np.array([cast(float, node.score) for node in nodes])
+
+        # verify distribution
+        if scores.min() < 0 or scores.max() > 1:
+            # normalize the scores
+            normalized_scores = (scores - scores.min()) / (scores.max() - scores.min())
+        else:
+            normalized_scores = scores
 
         # get mean score of all retrieved node
         mean_score: float = 0.0
@@ -116,13 +127,11 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
             mean_score = sum([cast(float, node.score) for node in nodes]) / len(nodes)
         
         new_nodes = []
-        for node in nodes:
+        for idx, similarity in enumerate(normalized_scores):
             should_use_node = True
             if sim_cutoff_exists:
-                similarity = node.score 
                 if similarity is None:
                     should_use_node = False
-                similarity = cast(float, similarity)
                 # compute gap score
                 gap_score = -(similarity - mean_score) if similarity < mean_score else similarity - mean_score
 
@@ -130,7 +139,7 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
                     should_use_node = False
 
             if should_use_node:
-                new_nodes.append(node)
+                new_nodes.append(nodes[idx])
 
         return new_nodes
     
