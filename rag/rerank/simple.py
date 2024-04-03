@@ -119,15 +119,15 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
         for node in nodes:
             should_use_node = True
             if sim_cutoff_exists:
-                similarity = cast(float, node.score)
+                similarity = node.score 
                 if similarity is None:
                     should_use_node = False
-                elif similarity > mean_score:
-                    if similarity - mean_score > self.delta_similarity_cutoff:
-                        should_use_node = False
-                elif similarity < mean_score:
-                    if mean_score - similarity > self.delta_similarity_cutoff:
-                        should_use_node = False
+                similarity = cast(float, similarity)
+                # compute gap score
+                gap_score = -(similarity - mean_score) if similarity < mean_score else similarity - mean_score
+
+                if gap_score > self.delta_similarity_cutoff:
+                    should_use_node = False
 
             if should_use_node:
                 new_nodes.append(node)
