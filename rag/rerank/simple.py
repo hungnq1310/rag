@@ -63,7 +63,7 @@ class DeltaSimilarityPostprocessor(BaseNodePostprocessor):
 
     @classmethod
     def class_name(cls) -> str:
-        return "SimilarityPostprocessor"
+        return "DeltaSimilarityPostprocessor"
 
     def _postprocess_nodes(
         self,
@@ -100,7 +100,7 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
 
     @classmethod
     def class_name(cls) -> str:
-        return "SimilarityPostprocessor"
+        return "MeanDeltaSimilarityPostprocessor"
 
     def _postprocess_nodes(
         self,
