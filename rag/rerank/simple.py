@@ -76,16 +76,16 @@ class DeltaSimilarityPostprocessor(BaseNodePostprocessor):
         # get best score of first node
         best_score: float = 0.0
         if nodes:
-            best_score = cast(float, nodes[0].score)
+            best_score = max([cast(float, node.score) for node in nodes])
         
         new_nodes = []
         for node in nodes:
             should_use_node = True
             if sim_cutoff_exists:
-                similarity = node.score
+                similarity = cast(float, node.score)
                 if similarity is None:
                     should_use_node = False
-                elif best_score - cast(float, similarity) > self.delta_similarity_cutoff:
+                elif best_score - similarity > self.delta_similarity_cutoff:
                     should_use_node = False
 
             if should_use_node:
@@ -119,11 +119,15 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
         for node in nodes:
             should_use_node = True
             if sim_cutoff_exists:
-                similarity = node.score
+                similarity = cast(float, node.score)
                 if similarity is None:
                     should_use_node = False
-                elif cast(float, similarity) - mean_score > self.delta_similarity_cutoff:
-                    should_use_node = False
+                elif similarity > mean_score:
+                    if similarity - mean_score > self.delta_similarity_cutoff:
+                        should_use_node = False
+                elif similarity < mean_score:
+                    if mean_score - similarity > self.delta_similarity_cutoff:
+                        should_use_node = False
 
             if should_use_node:
                 new_nodes.append(node)
