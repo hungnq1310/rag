@@ -65,7 +65,6 @@ class StorageContext:
         docstore: Optional[BaseDocumentStore] = None,
         index_store: Optional[BaseIndexStore] = None,
         vector_store: Optional[VectorStore] = None,
-        image_store: Optional[VectorStore] = None,
         vector_stores: Optional[
             Dict[str, VectorStore]
         ] = None,
@@ -85,7 +84,6 @@ class StorageContext:
         if persist_dir is None:
             docstore = docstore or SimpleDocumentStore()
             index_store = index_store or SimpleIndexStore()
-            image_store = image_store or SimpleVectorStore()
 
             if vector_store:
                 vector_stores = {DEFAULT_VECTOR_STORE_NAME: vector_store}
