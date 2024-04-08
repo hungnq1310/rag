@@ -49,6 +49,7 @@ class VectorStoreIndex(BaseIndex):
         self._use_async = use_async
         self._store_nodes_override = store_nodes_override
         self._insert_batch_size = insert_batch_size
+        self._vector_store = storage_context.get_vector_store()
         super().__init__(
             nodes=nodes,
             index_struct=index_struct,
@@ -57,7 +58,6 @@ class VectorStoreIndex(BaseIndex):
             show_progress=show_progress,
             **kwargs,
         )
-        self._vector_store = self._storage_context.get_vector_store()
 
     
     @property
