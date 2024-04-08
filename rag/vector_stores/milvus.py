@@ -5,6 +5,7 @@ An index that is built within Milvus.
 """
 import logging
 from typing import Any, List, Dict, Optional, Union, TYPE_CHECKING
+from omegaconf import OmegaConf, DictConfig
 
 from .types import (
     MetadataFilters,
@@ -132,6 +133,14 @@ class MilvusVectorStore(VectorStore):
         self.search_params = search_params
         self.index_params = index_params
 
+        # resolve config when passing DictConfig of omega to Milvus
+        if isinstance(search_params, DictConfig):
+            search_params = OmegaConf.to_container(search_params, resolve=True)
+        self.search_params = search_params
+        if isinstance(index_params, DictConfig):
+            index_params = OmegaConf.to_container(index_params, resolve=True)
+        self.index_params = index_params
+
         # Select the similarity metric
         self.similarity_metric = self.search_params.get("metric_type", None)
 
@@ -141,6 +150,7 @@ class MilvusVectorStore(VectorStore):
         # Delete previous collection if overwriting
         if self.overwrite and self.collection_name in self.milvusclient.list_collections():
             self.milvusclient.drop_collection(self.collection_name)
+            logger.debug(f"Successfully drop old collection: {self.collection_name}")
 
         # Create the collection if it does not exist
         if self.collection_name not in self.milvusclient.list_collections():
@@ -155,12 +165,13 @@ class MilvusVectorStore(VectorStore):
                 metric_type=self.similarity_metric,
                 max_length=65_535,
             )
+            logger.debug(f"Successfully created a new collection: {self.collection_name}")
         
         self.collection = Collection(
             self.collection_name, using=self.milvusclient._using
         )
-        self._create_index_if_required(force=True)
-        logger.debug(f"Successfully created a new collection: {self.collection_name}")
+        self._create_index_if_required()
+        logger.debug(f"Successfully load collection: {self.collection_name}")
 
     
     def client(self) -> "MilvusClient":
@@ -200,6 +211,7 @@ class MilvusVectorStore(VectorStore):
 
         # Insert the data into milvus
         self.milvusclient.insert(self.collection_name, insert_list)
+        self._create_index_if_required(force=True)
         print(
             f"Successfully inserted embeddings into: {self.collection_name} "
             f"Num Inserted: {len(insert_list)}"
@@ -321,10 +333,14 @@ class MilvusVectorStore(VectorStore):
         # provided to ensure that the index is created in the constructor even
         # if self.overwrite is false. In the `add` method, the index is
         # recreated only if self.overwrite is true.
+        if not self.collection.has_index():
+            self.collection.create_index(
+                self.embedding_field, index_config=self.index_params,
+            )
         if (self.collection.has_index() and self.overwrite) or force:
             self.collection.release()
             self.collection.drop_index()
             self.collection.create_index(
                 self.embedding_field, index_config=self.index_params,
             )
-            self.collection.load()
+        self.collection.load()
