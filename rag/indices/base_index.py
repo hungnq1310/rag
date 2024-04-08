@@ -77,7 +77,7 @@ class BaseIndex(ABC):
     @property
     def index_id(self) -> str:
         """Get the index struct."""
-        return self.index_struct.index_id
+        return self._index_struct.index_id
 
     @property
     def docstore(self) -> "BaseDocumentStore":
@@ -157,7 +157,7 @@ class BaseIndex(ABC):
         with self._callback_manager.as_trace("insert_nodes"):
             self.docstore.add_documents(nodes, allow_update=True)
             self._insert(nodes, **insert_kwargs)
-            self.storage_context.index_store.add_index_struct(self.index_struct)
+            self.storage_context.index_store.add_index_struct(self._index_struct)
 
 
     def insert_document(self, document: Document, **insert_kwargs: Any) -> None:
@@ -195,7 +195,7 @@ class BaseIndex(ABC):
             if delete_from_docstore:
                 self.docstore.delete_document(node_id, raise_error=False)
 
-        self.storage_context.index_store.add_index_struct(self.index_struct)
+        self.storage_context.index_store.add_index_struct(self._index_struct)
 
 
     def delete_ref_doc(
