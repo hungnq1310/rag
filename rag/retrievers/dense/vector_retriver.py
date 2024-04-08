@@ -39,7 +39,7 @@ class VectorIndexRetriever(BaseRetriever):
         self,
         index: "VectorStoreIndex",
         similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
-        vector_store_query_mode: VectorStoreQueryMode = VectorStoreQueryMode.DEFAULT,
+        vector_store_query_mode: str = VectorStoreQueryMode.DEFAULT,
         filters: Optional[MetadataFilters] = None,
         alpha: Optional[float] = None,
         node_ids: Optional[List[str]] = None,
