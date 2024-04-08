@@ -51,7 +51,7 @@ class VectorStoreIndex(BaseIndex):
         self._insert_batch_size = insert_batch_size
         super().__init__(
             nodes=nodes,
-            index_struct=index_struct or IndexDict(),
+            index_struct=index_struct,
             service_context=service_context,
             storage_context=storage_context,
             show_progress=show_progress,
