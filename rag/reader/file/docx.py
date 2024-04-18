@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Optional, List, Dict
 
-from src.node.base_node import Document
-from src.reader.base_reader import BaseReader
+from rag.node.base_node import Document
+from rag.reader.base_reader import BaseReader
 
 
 class DocxReader(BaseReader):

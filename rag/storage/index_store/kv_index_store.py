@@ -1,6 +1,5 @@
 from typing import List, Optional, TYPE_CHECKING
 
-from rag.storage.kv_store.base import BaseKVStore
 from .base import BaseIndexStore
 from .utils import (
     index_struct_to_json,
@@ -9,6 +8,7 @@ from .utils import (
 
 if TYPE_CHECKING:
     from rag.indices.data_struct import IndexStruct
+    from rag.storage.kv_store.base import BaseKVStore
 
 DEFAULT_NAMESPACE = "index_store"
 
@@ -22,7 +22,7 @@ class KVIndexStore(BaseIndexStore):
 
     """
 
-    def __init__(self, kvstore: BaseKVStore, namespace: Optional[str] = None) -> None:
+    def __init__(self, kvstore: "BaseKVStore", namespace: Optional[str] = None) -> None:
         """Init a KVIndexStore."""
         self._kvstore = kvstore
         self._namespace = namespace or DEFAULT_NAMESPACE

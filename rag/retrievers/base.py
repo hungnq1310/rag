@@ -1,16 +1,13 @@
 """Base retriever."""
-from abc import abstractmethod
-from typing import List, Optional, TYPE_CHECKING
+from abc import abstractmethod, ABC
+from typing import List, Optional
 
 from rag.callbacks import CallbackManager, CBEventType, EventPayload
-from rag.prompt.mixin import PromptDictType, PromptMixin, PromptMixinType
+from rag.node import NodeWithScore
 from .types import *
 
-if TYPE_CHECKING:
-    from rag.node import NodeWithScore
-    from rag.core.service_context import ServiceContext
 
-class BaseRetriever(PromptMixin):
+class BaseRetriever(ABC):
     """Base retriever."""
 
     def __init__(self, callback_manager: Optional[CallbackManager] = None) -> None:
@@ -21,18 +18,8 @@ class BaseRetriever(PromptMixin):
         if not hasattr(self, "callback_manager"):
             self.callback_manager = CallbackManager()
 
-    def _get_prompts(self) -> PromptDictType:
-        """Get prompts."""
-        return {}
 
-    def _get_prompt_modules(self) -> PromptMixinType:
-        """Get prompt modules."""
-        return {}
-
-    def _update_prompts(self, prompts: PromptDictType) -> None:
-        """Update prompts."""
-
-    def retrieve(self, str_or_query_bundle: QueryType) -> List["NodeWithScore"]:
+    def retrieve(self, str_or_query_bundle: Union[str, QueryBundle]) -> List["NodeWithScore"]:
         """Retrieve nodes given query.
 
         Args:
@@ -57,7 +44,7 @@ class BaseRetriever(PromptMixin):
                 )
         return nodes
 
-    async def aretrieve(self, str_or_query_bundle: QueryType) -> List["NodeWithScore"]:
+    async def aretrieve(self, str_or_query_bundle: Union[str, QueryBundle]) -> List["NodeWithScore"]:
         self._check_callback_manager()
 
         if isinstance(str_or_query_bundle, str):
@@ -92,16 +79,3 @@ class BaseRetriever(PromptMixin):
 
         """
         return self._retrieve(query_bundle)
-
-    def get_service_context(self) -> Optional["ServiceContext"]:
-        """Attempts to resolve a service context.
-        Short-circuits at self.service_context, self._service_context,
-        or self._index.service_context.
-        """
-        if hasattr(self, "service_context"):
-            return self.service_context
-        if hasattr(self, "_service_context"):
-            return self._service_context
-        elif hasattr(self, "_index") and hasattr(self._index, "service_context"):
-            return self._index.service_context
-        return None

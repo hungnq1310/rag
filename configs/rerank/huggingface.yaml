@@ -1,0 +1,6 @@
+model_name: BAAI/bge-small-en
+tokenizer_name: BAAI/bge-small-en
+max_length: 512
+top_n: 5
+token: null
+device: null

@@ -1,0 +1,6 @@
+splitter_mode: recursive
+model_name_tokenizer: BAAI/bge-small-en
+separator: " "
+chunk_size: 256
+chunk_overlap: 20
+backup_separators: null

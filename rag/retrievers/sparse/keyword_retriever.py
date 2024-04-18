@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_KEYWORD_EXTRACT_TEMPLATE,
     DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE,
@@ -90,10 +90,10 @@ class BaseKeywordTableRetriever(BaseRetriever):
 
         # go through text chunks in order of most matching keywords
         chunk_indices_count: Dict[str, int] = defaultdict(int)
-        keywords = [k for k in keywords if k in self._index_struct.keywords]
+        keywords = [k for k in keywords if k in self._index_struct.keywords] # type: ignore
         logger.info(f"> Extracted keywords: {keywords}")
         for k in keywords:
-            for node_id in self._index_struct.table[k]:
+            for node_id in self._index_struct.table[k]: # type: ignore
                 chunk_indices_count[node_id] += 1
         sorted_chunk_indices = sorted(
             chunk_indices_count.keys(),
@@ -150,7 +150,7 @@ class KeywordTableRetriever(BaseKeywordTableRetriever):
 
     def _get_keywords(self, query_str: str) -> List[str]:
         """Extract keywords."""
-        response = self._llm.predict(
+        response = self._llm.predict( # type: ignore
             self.query_keyword_extract_template,
             max_keywords=self.max_keywords_per_query,
             question=query_str,

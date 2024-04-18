@@ -12,7 +12,7 @@ DEFAULT_SENTENCE_TRANSFORMER_MAX_LENGTH = 512
 
 
 class SentenceTransformerRerank(BaseNodePostprocessor):
-    model: str = Field(description="Sentence transformer model name.")
+    model_name: str = Field(description="Sentence transformer model name.")
     top_n: int = Field(description="Number of nodes to return sorted by score.")
     device: str = Field(
         default="cpu",
@@ -27,7 +27,7 @@ class SentenceTransformerRerank(BaseNodePostprocessor):
     def __init__(
         self,
         top_n: int = 2,
-        model: str = "cross-encoder/stsb-distilroberta-base",
+        model_name: str = "cross-encoder/stsb-distilroberta-base",
         device: Optional[str] = None,
         keep_retrieval_score: Optional[bool] = False,
     ):
@@ -39,14 +39,14 @@ class SentenceTransformerRerank(BaseNodePostprocessor):
                 "please `pip install torch sentence-transformers`",
             )
         device = infer_torch_device() if device is None else device
-        self._model = CrossEncoder(
-            model, max_length=DEFAULT_SENTENCE_TRANSFORMER_MAX_LENGTH, device=device
-        )
         super().__init__(
             top_n=top_n,
-            model=model,
+            model_name=model_name,
             device=device,
             keep_retrieval_score=keep_retrieval_score,
+        )
+        self._model = CrossEncoder(
+            model_name, max_length=DEFAULT_SENTENCE_TRANSFORMER_MAX_LENGTH, device=device
         )
 
     @classmethod
@@ -75,7 +75,7 @@ class SentenceTransformerRerank(BaseNodePostprocessor):
             CBEventType.RERANKING,
             payload={
                 EventPayload.NODES: nodes,
-                EventPayload.MODEL_NAME: self.model,
+                EventPayload.MODEL_NAME: self.model_name,
                 EventPayload.QUERY_STR: query_bundle.query_str,
                 EventPayload.TOP_K: self.top_n,
             },

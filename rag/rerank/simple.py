@@ -1,7 +1,8 @@
 """Node postprocessor."""
 
 import logging
-from typing import Dict, List, Optional, cast
+from typing import List, Optional, cast
+import numpy as np
 
 from rag.bridge.pydantic import Field
 from rag.node.base_node import NodeWithScore
@@ -63,7 +64,7 @@ class DeltaSimilarityPostprocessor(BaseNodePostprocessor):
 
     @classmethod
     def class_name(cls) -> str:
-        return "SimilarityPostprocessor"
+        return "DeltaSimilarityPostprocessor"
 
     def _postprocess_nodes(
         self,
@@ -76,16 +77,16 @@ class DeltaSimilarityPostprocessor(BaseNodePostprocessor):
         # get best score of first node
         best_score: float = 0.0
         if nodes:
-            best_score = cast(float, nodes[0].score)
+            best_score = max([cast(float, node.score) for node in nodes])
         
         new_nodes = []
         for node in nodes:
             should_use_node = True
             if sim_cutoff_exists:
-                similarity = node.score
+                similarity = cast(float, node.score)
                 if similarity is None:
                     should_use_node = False
-                elif best_score - cast(float, similarity) > self.delta_similarity_cutoff:
+                elif best_score - similarity > self.delta_similarity_cutoff:
                     should_use_node = False
 
             if should_use_node:
@@ -100,7 +101,7 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
 
     @classmethod
     def class_name(cls) -> str:
-        return "SimilarityPostprocessor"
+        return "MeanDeltaSimilarityPostprocessor"
 
     def _postprocess_nodes(
         self,
@@ -109,6 +110,53 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
     ) -> List[NodeWithScore]:
         """Postprocess nodes."""
         sim_cutoff_exists = self.delta_similarity_cutoff is not None
+        
+        # get the score of all retrieved node
+        scores = np.array([cast(float, node.score) for node in nodes])
+
+        # verify distribution
+        if scores.min() < 0 or scores.max() > 1:
+            # normalize the scores
+            normalized_scores = (scores - scores.min()) / (scores.max() - scores.min())
+            print("Normalizing scores: ", normalized_scores)
+        else:
+            normalized_scores = scores
+
+        # get mean score of all retrieved node
+        mean_score: float = 0.0
+        if nodes:
+            mean_score = sum(normalized_scores) / len(normalized_scores)
+        
+        new_nodes = []
+        for idx, similarity in enumerate(normalized_scores):
+            should_use_node = True
+            if sim_cutoff_exists:
+                if similarity is None:
+                    should_use_node = False
+                # compute gap score
+                gap_score = -(similarity - mean_score) if similarity < mean_score else similarity - mean_score
+
+                if gap_score > self.delta_similarity_cutoff:
+                    should_use_node = False
+
+            if should_use_node:
+                new_nodes.append(nodes[idx])
+
+        return new_nodes
+    
+
+class MeanSimilarityPostprocessor(BaseNodePostprocessor):
+
+    @classmethod
+    def class_name(cls) -> str:
+        return "MeanSimilarityPostprocessor"
+
+    def _postprocess_nodes(
+        self,
+        nodes: List[NodeWithScore],
+        query_bundle: Optional[QueryBundle] = None,
+    ) -> List[NodeWithScore]:
+        """Postprocess nodes."""
 
         # get mean score of all retrieved node
         mean_score: float = 0.0
@@ -118,12 +166,14 @@ class MeanDeltaSimilarityPostprocessor(BaseNodePostprocessor):
         new_nodes = []
         for node in nodes:
             should_use_node = True
-            if sim_cutoff_exists:
-                similarity = node.score
-                if similarity is None:
-                    should_use_node = False
-                elif cast(float, similarity) - mean_score > self.delta_similarity_cutoff:
-                    should_use_node = False
+            # get similiarity score
+            similarity = node.score
+            if similarity is None:
+                should_use_node = False
+            similarity = cast(float, similarity)
+            # compare similarity score with mean score
+            if similarity < mean_score:
+                should_use_node = False
 
             if should_use_node:
                 new_nodes.append(node)

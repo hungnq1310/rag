@@ -4,15 +4,14 @@ import time
 from transformers import AutoTokenizer
 
 from rag.config.schema import (
-    SpiltterConfig,
-    IndexRetrieverConfig,
+    NodeParserConfig,
+    RetrieverConfig,
     ResponseConfig
 )
-from rag.node_parser import SentenceSplitter
+from rag.node_parser.text.sentence import SentenceSplitter
 from rag.callbacks import CallbackManager
 from rag.core.service_context import ServiceContext
-from rag.engine.retriever_engine import RetrieverQueryEngine
-from rag.synthesizer.utils import get_response_synthesizer
+from rag.engine.retriever_engine import RetrieverEngine
 from rag.retrievers.sparse.bm25 import BM25Retriever
 
 
@@ -21,8 +20,8 @@ logger = logging.getLogger(__name__)
 class BM25Pipeline:
     def __init__(
         self,
-        splitter_config: SpiltterConfig,
-        index_retriver_config: IndexRetrieverConfig,
+        splitter_config: NodeParserConfig,
+        index_retriver_config: RetrieverConfig,
         response_config: ResponseConfig,
     ) -> None:
         self.splitter_config = splitter_config
@@ -81,21 +80,10 @@ class BM25Pipeline:
             callback_manager= self.service_context.callback_manager,
         )
 
-        # response_synthesizer
-        response_synthesizer = get_response_synthesizer(
-            service_context= self.service_context,
-            callback_manager= self.service_context.callback_manager,
-            response_mode= self.response_config.response_mode,
-            verbose= self.response_config.verbose,
-            use_async= self.response_config.use_async,
-            streaming= self.response_config.streaming,
-        ) 
-
-
         #TODO: assemble query engine
-        query_engine = RetrieverQueryEngine(
+        query_engine = RetrieverEngine(
             retriever= retriever,
-            response_synthesizer= response_synthesizer,
+            callback_manager=self.service_context.callback_manager,
         )
         #TODO: query
         nodes = query_engine.retrieve(query)

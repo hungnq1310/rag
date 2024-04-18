@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, TYPE_CHECKING
 import fsspec
 
 from rag.bridge.pydantic import Field
-from rag.llm.llm_type import ChatMessage
+from rag.llm.types import ChatMessage
 from .base import BaseChatStore
 
 class SimpleChatStore(BaseChatStore):
@@ -65,12 +65,12 @@ class SimpleChatStore(BaseChatStore):
         fs: Optional[fsspec.AbstractFileSystem] = None,
     ) -> None:
         """Persist the docstore to a file."""
-        fs = fs or fsspec.filesystem("file")
+        file_system = fs or fsspec.filesystem("file")
         dirpath = os.path.dirname(persist_path)
-        if not fs.exists(dirpath):
-            fs.makedirs(dirpath)
+        if not file_system.exists(dirpath):
+            file_system.makedirs(dirpath)
 
-        with fs.open(persist_path, "w") as f:
+        with file_system.open(persist_path, "w") as f:
             f.write(json.dumps(self.json()))
 
     @classmethod
@@ -80,9 +80,9 @@ class SimpleChatStore(BaseChatStore):
         fs: Optional[fsspec.AbstractFileSystem] = None,
     ) -> "SimpleChatStore":
         """Create a SimpleChatStore from a persist path."""
-        fs = fs or fsspec.filesystem("file")
-        if not fs.exists(persist_path):
+        file_system = fs or fsspec.filesystem("file")
+        if not file_system.exists(persist_path):
             return cls()
-        with fs.open(persist_path, "r") as f:
+        with file_system.open(persist_path, "r") as f:
             data = json.load(f)
         return cls.parse_raw(data)

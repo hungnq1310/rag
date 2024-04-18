@@ -3,12 +3,12 @@ import logging
 from typing import Any, Callable, List, Optional, Tuple, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.constants.default_prompt import (
     DEFAULT_CHOICE_SELECT_PROMPT,
 )
 from rag.node.base_node import BaseNode, MetadataMode, NodeWithScore
-from rag.indices.get_embeddings import get_top_k_embeddings
+from rag.embeddings.get_embeddings import get_top_k_embeddings
 from rag.indices.utils import (
     default_format_node_batch_fn,
     default_parse_choice_select_answer_fn,
@@ -47,7 +47,7 @@ class SummaryIndexRetriever(BaseRetriever):
         """Retrieve nodes."""
         del query_bundle
 
-        node_ids = self._index.index_struct.nodes
+        node_ids = self._index.index_struct.nodes # type: ignore
         nodes = self._index.docstore.get_nodes(node_ids)
         return [NodeWithScore(node=node) for node in nodes]
 
@@ -80,7 +80,7 @@ class SummaryIndexEmbeddingRetriever(BaseRetriever):
         query_bundle: QueryBundle,
     ) -> List[NodeWithScore]:
         """Retrieve nodes."""
-        node_ids = self._index.index_struct.nodes
+        node_ids = self._index.index_struct.nodes # type: ignore
         # top k nodes
         nodes = self._index.docstore.get_nodes(node_ids)
         query_embedding, node_embeddings = self._get_embeddings(query_bundle, nodes)
@@ -172,7 +172,7 @@ class SummaryIndexLLMRetriever(BaseRetriever):
 
     def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         """Retrieve nodes."""
-        node_ids = self._index.index_struct.nodes
+        node_ids = self._index.index_struct.nodes # type: ignore
         results = []
         for idx in range(0, len(node_ids), self._choice_batch_size):
             node_ids_batch = node_ids[idx : idx + self._choice_batch_size]

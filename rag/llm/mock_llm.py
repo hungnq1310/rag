@@ -4,13 +4,13 @@ from rag.callbacks.callback_manager import CallbackManager
 from rag.output_parser.output_parser import BaseOutputParser
 from rag.prompt.base_prompt import BasePromptTemplate
 
-from .llm_type import (
+from .types import (
     ChatMessage,
     CompletionResponse,
     CompletionResponseGen,
     LLMMetadata,
 )
-from .generic_utils import (
+from .utils import (
     llm_completion_callback,
 )
 from .base import LLM
@@ -29,12 +29,13 @@ class MockLLM(LLM):
         output_parser: Optional[BaseOutputParser] = None,
         query_wrapper_prompt: Optional[BasePromptTemplate] = None,
     ) -> None:
+        
         super().__init__(
-            max_tokens=max_tokens,
-            callback_manager=callback_manager,
+            max_tokens = max_tokens,
+            callback_manager=callback_manager, # type: ignore
             system_prompt=system_prompt,
-            messages_to_prompt=messages_to_prompt,
-            completion_to_prompt=completion_to_prompt,
+            messages_to_prompt=messages_to_prompt, # type: ignore
+            completion_to_prompt=completion_to_prompt, # type: ignore
             output_parser=output_parser,   
             query_wrapper_prompt=query_wrapper_prompt,    
         )

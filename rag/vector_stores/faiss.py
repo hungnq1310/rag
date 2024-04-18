@@ -153,7 +153,11 @@ class FaissVectorStore(VectorStore):
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
 
-        faiss.write_index(self._faiss_index, persist_path)
+        try:
+            faiss.write_index(self._faiss_index, persist_path)
+        except AttributeError:
+            index_cpu = faiss.index_gpu_to_cpu(self._faiss_index)
+            faiss.write_index(index_cpu, persist_path)
 
     def delete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
         """

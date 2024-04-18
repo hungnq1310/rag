@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from rag.callbacks.callback_manager import CallbackManager
 from rag.constants import DEFAULT_SIMILARITY_TOP_K
-from rag.retrievers.base_retriver import BaseRetriever, QueryBundle
+from rag.retrievers.base import BaseRetriever, QueryBundle
 from rag.node.base_node import NodeWithScore, ObjectType
 from rag.vector_stores.types import (
     MetadataFilters,
@@ -39,7 +39,7 @@ class VectorIndexRetriever(BaseRetriever):
         self,
         index: "VectorStoreIndex",
         similarity_top_k: int = DEFAULT_SIMILARITY_TOP_K,
-        vector_store_query_mode: VectorStoreQueryMode = VectorStoreQueryMode.DEFAULT,
+        vector_store_query_mode: str = VectorStoreQueryMode.DEFAULT,
         filters: Optional[MetadataFilters] = None,
         alpha: Optional[float] = None,
         node_ids: Optional[List[str]] = None,

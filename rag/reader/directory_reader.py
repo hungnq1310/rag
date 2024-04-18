@@ -15,10 +15,14 @@ from tqdm import tqdm
 from rag.node.base_node import Document
 from rag.reader.base_reader import BaseReader
 from .file.pdf import PyPDFReader as PDFReader
+from .file.docx import DocxReader
+from .file.txt import TxtReader
 
 
-DEFAULT_FILE_READER_CLS: Dict[str, Type[BaseReader]] = {
+DEFAULT_FILE_READER_CLS: Dict[str, Type[BaseReader]] = { # type: ignore
     ".pdf": PDFReader,
+    ".docx": DocxReader,
+    ".txt": TxtReader,
 }
 
 

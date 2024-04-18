@@ -17,6 +17,13 @@ from rag.constants.default_storage import (
 )
 from rag.node.base_node import BaseNode
 from rag.rag_utils.utils import concat_dirs
+from rag.embeddings.get_embeddings import (
+    get_top_k_embeddings,
+    get_top_k_embeddings_learner,
+    get_top_k_mmr_embeddings,
+    
+)
+
 from .base_vector import VectorStore
 from .types import (
     MetadataFilters,
@@ -25,11 +32,6 @@ from .types import (
     VectorStoreQueryResult,
 )
 from .utils import node_to_metadata_dict
-from rag.indices.get_embeddings import (
-    get_top_k_embeddings,
-    get_top_k_embeddings_learner,
-    get_top_k_mmr_embeddings,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -247,23 +249,7 @@ class SimpleVectorStore(VectorStore):
 
         query_embedding = cast(List[float], query.query_embedding)
 
-        if query.mode in LEARNER_MODES:
-            top_similarities, top_ids = get_top_k_embeddings_learner(
-                query_embedding,
-                embeddings,
-                similarity_top_k=query.similarity_top_k,
-                embedding_ids=node_ids,
-            )
-        elif query.mode == MMR_MODE:
-            mmr_threshold = kwargs.get("mmr_threshold", None)
-            top_similarities, top_ids = get_top_k_mmr_embeddings(
-                query_embedding,
-                embeddings,
-                similarity_top_k=query.similarity_top_k,
-                embedding_ids=node_ids,
-                mmr_threshold=mmr_threshold,
-            )
-        elif query.mode == VectorStoreQueryMode.DEFAULT:
+        if query.mode == VectorStoreQueryMode.DEFAULT:
             top_similarities, top_ids = get_top_k_embeddings(
                 query_embedding,
                 embeddings,
@@ -281,12 +267,12 @@ class SimpleVectorStore(VectorStore):
         fs: Optional[fsspec.AbstractFileSystem] = None,
     ) -> None:
         """Persist the SimpleVectorStore to a directory."""
-        fs = fs or self._fs
+        file_path = fs or self._fs
         dirpath = os.path.dirname(persist_path)
-        if not fs.exists(dirpath):
-            fs.makedirs(dirpath)
+        if not file_path.exists(dirpath):
+            file_path.makedirs(dirpath)
 
-        with fs.open(persist_path, "w") as f:
+        with file_path.open(persist_path, "w") as f:
             json.dump(self._data.to_dict(), f)
 
     @classmethod
@@ -294,14 +280,14 @@ class SimpleVectorStore(VectorStore):
         cls, persist_path: str, fs: Optional[fsspec.AbstractFileSystem] = None
     ) -> "SimpleVectorStore":
         """Create a SimpleKVStore from a persist directory."""
-        fs = fs or fsspec.filesystem("file")
-        if not fs.exists(persist_path):
+        file_path = fs or fsspec.filesystem("file")
+        if not file_path.exists(persist_path):
             raise ValueError(
                 f"No existing {__name__} found at {persist_path}, skipping load."
             )
 
         logger.debug(f"Loading {__name__} from {persist_path}.")
-        with fs.open(persist_path, "rb") as f:
+        with file_path.open(persist_path, "rb") as f:
             data_dict = json.load(f)
             data = SimpleVectorStoreData.from_dict(data_dict)
         return cls(data)

@@ -8,7 +8,7 @@ from .base import AsyncBaseTool
 from .types import ToolMetadata, ToolOutput
 
 if TYPE_CHECKING:
-    from rag.retrievers.base_retriver import BaseRetriever
+    from rag.retrievers.base import BaseRetriever
 
 DEFAULT_NAME = "retriever_tool"
 DEFAULT_DESCRIPTION = """Useful for running a natural language query

@@ -1,12 +1,15 @@
 from typing import (
     Dict,
     Any,
+    List
 )
 from dataclasses import dataclass
 
 @dataclass
 class MilvusConfig:
     vectorstore_name: str
+    collection_name: str
+    insert_batch_size: int
     embedding_dim: int
     host: str
     port: str
@@ -17,10 +20,9 @@ class MilvusConfig:
     primary_field: str
     text_field: str
     consistency_level: str
-    collection_name: str
+    overwrite: bool
     index_params: Dict[str, Any]
     search_params: Dict[str, Any]
-    overwrite: bool
 
 @dataclass
 class FaissConfig:
@@ -29,13 +31,13 @@ class FaissConfig:
     index_build: str
 
 @dataclass
-class SpiltterConfig:
+class NodeParserConfig:
   model_name_tokenizer: str
-  # fpr sentence splitter 
   splitter_mode: str
   separator: str
   chunk_size: int
   chunk_overlap: int
+  # for sentence splitter 
   paragraph_separator: str
   secondary_chunking_regex: str
   # for token splitter
@@ -70,17 +72,22 @@ class EmbeddingConfig:
     max_length: int
     normalize: bool
     embedding_batch_size: int
+    token: str
+    device: str
     cache_folder: str
     trust_remote_code: bool
+    use_async: bool
+    show_progress: bool
 
 @dataclass
-class IndexRetrieverConfig:
-    hybrid_mode: str
+class RetrieverConfig:
+    retriever_mode: str
     similarity_top_k: int
-    alpha: float
-    sparse_top_k: int 
+    use_async: bool
+    show_progress: bool
     # list
     list_query_mode: str
+    choice_batch_size: int
     #keyword table
     keyword_table_mode: str
     max_keywords_per_chunk: int
@@ -88,16 +95,30 @@ class IndexRetrieverConfig:
     num_chunks_per_query: int
     # for vector store
     vector_store_query_mode: str
-    store_nodes_override: bool
-    insert_batch_size: int
-    use_async: bool
-    show_progress: bool
+    alpha: float
+    sparse_top_k: int 
 
 @dataclass
-class CohereRerankConfig:
+class RerankConfig:
+    modes: List[str]
+    use_async: bool
+    show_progress: bool
+    # cohere
     top_n: int
     model: str
     api_key: str
+    # sbert
+    model_name: str
+    token: str
+    device: str
+    # huggingface
+    tokenizer_name: str
+    max_length: int
+    keep_retrieval_score: bool
+    # llm
+    choice_batch_size: int
+    # simple
+    delta_similarity_cutoff: float
 
 @dataclass
 class ResponseConfig:

@@ -4,7 +4,7 @@ from .base import AsyncBaseTool
 from .types import ToolMetadata, ToolOutput
 
 if TYPE_CHECKING:
-    from rag.engine.base_query_engine import BaseQueryEngine
+    from rag.engine.base import BaseEngine
 
 DEFAULT_NAME = "query_engine_tool"
 DEFAULT_DESCRIPTION = """Useful for running a natural language query
@@ -24,7 +24,7 @@ class QueryEngineTool(AsyncBaseTool):
 
     def __init__(
         self,
-        query_engine: "BaseQueryEngine",
+        query_engine: "BaseEngine",
         metadata: ToolMetadata,
         resolve_input_errors: bool = True,
     ) -> None:
@@ -35,7 +35,7 @@ class QueryEngineTool(AsyncBaseTool):
     @classmethod
     def from_defaults(
         cls,
-        query_engine: "BaseQueryEngine",
+        query_engine: "BaseEngine",
         name: Optional[str] = None,
         description: Optional[str] = None,
         resolve_input_errors: bool = True,
@@ -51,7 +51,7 @@ class QueryEngineTool(AsyncBaseTool):
         )
 
     @property
-    def query_engine(self) -> "BaseQueryEngine":
+    def query_engine(self) -> "BaseEngine":
         return self._query_engine
 
     @property
@@ -71,7 +71,7 @@ class QueryEngineTool(AsyncBaseTool):
                 "Cannot call query engine without specifying `input` parameter."
             )
 
-        response = self._query_engine.query(query_str)
+        response = self._query_engine.query(query_str) # TODO: change this to `run_engine``
         return ToolOutput(
             content=str(response),
             tool_name=self.metadata.name,
@@ -90,7 +90,7 @@ class QueryEngineTool(AsyncBaseTool):
         else:
             raise ValueError("Cannot call query engine without inputs")
 
-        response = await self._query_engine.aquery(query_str)
+        response = await self._query_engine.aquery(query_str) # TODO: change this to `run_engine``
         return ToolOutput(
             content=str(response),
             tool_name=self.metadata.name,

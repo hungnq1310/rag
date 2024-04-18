@@ -1,0 +1,10 @@
+# general
+retriever_mode: vector
+similarity_top_k: 5
+# vector store
+vector_store_query_mode: default
+alpha: null
+sparse_top_k: 5 
+# retrive from list:
+list_query_mode: null
+choice_batch_size: null

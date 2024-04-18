@@ -4,7 +4,7 @@ from typing import Any, Sequence, TYPE_CHECKING
 from rag.bridge.pydantic import Field, validator
 from rag.callbacks.callback_manager import CallbackManager
 from rag.schema.component import BaseComponent
-from .llm_type import *
+from .types import *
 
 if TYPE_CHECKING:
     from rag.output_parser.base import TokenAsyncGen, TokenGen

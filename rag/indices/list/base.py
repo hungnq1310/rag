@@ -13,11 +13,12 @@ from rag.rag_utils.utils import get_tqdm_iterable
 from rag.indices.data_struct import IndexList
 from rag.indices.base_index import BaseIndex
 
-from rag.retrievers.base_retriver import BaseRetriever
+from rag.retrievers.base import BaseRetriever
 from rag.storage.docstore.base import RefDocInfo
 
 if TYPE_CHECKING:
     from rag.core.service_context import ServiceContext
+    from rag.core.storage_context import StorageContext
   
 
 class ListRetrieverMode(str, Enum):
@@ -50,6 +51,7 @@ class SummaryIndex(BaseIndex):
         nodes: Optional[Sequence[BaseNode]] = None,
         index_struct: Optional[IndexList] = None,
         service_context: Optional["ServiceContext"] = None,
+        storage_context: Optional["StorageContext"] = None,
         show_progress: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -58,6 +60,7 @@ class SummaryIndex(BaseIndex):
             nodes=nodes,
             index_struct=index_struct or IndexList(),
             service_context=service_context,
+            storage_context=storage_context,
             show_progress=show_progress,
             **kwargs,
         )
@@ -93,7 +96,7 @@ class SummaryIndex(BaseIndex):
         Returns:
             IndexList: The created summary index.
         """
-        index_struct = self.index_struct
+        index_struct: IndexList = self.index_struct # type: ignore
         nodes_with_progress = get_tqdm_iterable(
             nodes, show_progress, "Processing nodes"
         )

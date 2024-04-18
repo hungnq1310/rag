@@ -1,7 +1,7 @@
 from typing import List
 from pathlib import Path
-from src.reader.base_reader import BaseReader
-from src.node.base_node import Document
+from rag.reader.base_reader import BaseReader
+from rag.node.base_node import Document
 
 
 class TxtReader(BaseReader):

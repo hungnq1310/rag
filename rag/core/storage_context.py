@@ -45,9 +45,19 @@ class StorageContext:
 
     """
 
+    _instance = None
+
     docstore: BaseDocumentStore
     index_store: BaseIndexStore
     vector_stores: Dict[str, VectorStore]
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            print('Creating new StorageContext instance...')
+            cls._instance = super().__new__(cls)
+        else:
+            print('Reusing StorageContext instance...')
+        return cls._instance
 
     @classmethod
     def from_defaults(
@@ -55,7 +65,6 @@ class StorageContext:
         docstore: Optional[BaseDocumentStore] = None,
         index_store: Optional[BaseIndexStore] = None,
         vector_store: Optional[VectorStore] = None,
-        image_store: Optional[VectorStore] = None,
         vector_stores: Optional[
             Dict[str, VectorStore]
         ] = None,
@@ -75,7 +84,6 @@ class StorageContext:
         if persist_dir is None:
             docstore = docstore or SimpleDocumentStore()
             index_store = index_store or SimpleIndexStore()
-            image_store = image_store or SimpleVectorStore()
 
             if vector_store:
                 vector_stores = {DEFAULT_VECTOR_STORE_NAME: vector_store}
@@ -189,10 +197,13 @@ class StorageContext:
             vector_stores=vector_stores,
         )
 
-    @property
-    def vector_store(self) -> VectorStore:
-        """Backwrds compatibility for vector_store property."""
-        return self.vector_stores[DEFAULT_VECTOR_STORE_NAME]
+    def get_vector_store(self, namespace: Optional[str] = None) -> VectorStore:
+        """Get vector store by namespace when having multiple vector stores"""
+        vector_store = self.vector_stores.get(namespace, None) # type: ignore
+        if vector_store is None:
+            print(f"Vector store '{namespace}' not found, using default name for vector store.")
+            return self.vector_stores[DEFAULT_VECTOR_STORE_NAME]
+        return vector_store
 
     def add_vector_store(self, vector_store: VectorStore, namespace: str) -> None:
         """Add a vector store to the storage context."""

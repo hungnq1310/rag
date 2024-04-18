@@ -1,0 +1,26 @@
+vector_name: milvus
+host: localhost
+port: 19530
+address: null
+uri: null
+user: null
+collection_name: MilvusCollection
+insert_batch_size: 2048
+embedding_dim: 384
+embedding_field: embedding
+primary_field: doc_id
+text_field: null
+consistency_level: null
+overwrite: True
+search_params: 
+  metric_type: COSINE
+  offset: 0
+  ignore_growing: False
+  params: 
+    nprobe: 10
+index_params: 
+  metric_type: COSINE
+  index_type: IVF_FLAT
+  params: 
+    nlist: 1024
+

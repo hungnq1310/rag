@@ -1,0 +1,20 @@
+# loading
+context_window: 3900
+max_new_tokens: 256
+model_name: StabilityAI/stablelm-tuned-alpha-3b
+tokenizer_name: StabilityAI/stablelm-tuned-alpha-3b
+device_map: null
+# generation config
+top_p: null
+top_k: null
+temperature: 0.1
+length_penalty: null
+repetition_penalty: null
+num_beams: 3
+do_sample : null
+pelnaty_alpha: null
+use_cache: True
+num_return_sequences: 1
+pad_token_id: null
+bos_token_id: null
+eos_token_id: null

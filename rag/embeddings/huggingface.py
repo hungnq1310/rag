@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Union
 from rag.bridge.pydantic import Field, PrivateAttr
 from rag.callbacks import CallbackManager
 from rag.constants.default_huggingface import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
-from rag.llm.huggingface import HuggingFaceInferenceAPI
 from rag.rag_utils.utils import get_cache_dir, infer_torch_device
+#TODO: change rag_utils to genral_utils
 
 from .base_embeddings import (
     DEFAULT_EMBED_BATCH_SIZE,
@@ -25,7 +25,6 @@ DEFAULT_HUGGINGFACE_LENGTH = 512
 
 
 class HuggingFaceEmbedding(BaseEmbedding):
-    tokenizer_name: str = Field(description="Tokenizer name from HuggingFace.")
     max_length: int = Field(
         default=DEFAULT_HUGGINGFACE_LENGTH, description="Maximum length of input.", gt=0
     )
@@ -56,7 +55,8 @@ class HuggingFaceEmbedding(BaseEmbedding):
         query_instruction: Optional[str] = None,
         text_instruction: Optional[str] = None,
         normalize: bool = True,
-        embed_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
+        embedding_batch_size: int = DEFAULT_EMBED_BATCH_SIZE,
+        token: Optional[str] = None,
         cache_folder: Optional[str] = None,
         trust_remote_code: bool = False,
         device: Optional[str] = None,
@@ -69,10 +69,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 "HuggingFaceEmbedding requires transformers to be installed.\n"
                 "Please install transformers with `pip install transformers`."
             )
-    
-        device = device or infer_torch_device()
-        cache_folder = cache_folder or get_cache_dir()
-
+        
         if model_name is None:  # Use model_name with AutoModel
             model_name = DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
             print(f"Using default model: {model_name}")
@@ -83,7 +80,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         if max_length is None:
             try:
-                max_length = int(self._model.config.max_position_embeddings)
+                self.max_length = int(self._model.config.max_position_embeddings)
             except AttributeError as exc:
                 raise ValueError(
                     "Unable to find max_length from model config. Please specify max_length."
@@ -91,7 +88,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         if isinstance(pooling, str):
             try:
-                pooling = Pooling(pooling)
+                self.pooling = Pooling(pooling)
             except ValueError as exc:
                 raise NotImplementedError(
                     f"Pooling {pooling} unsupported, please pick one in"
@@ -99,21 +96,18 @@ class HuggingFaceEmbedding(BaseEmbedding):
                 ) from exc
 
         super().__init__(
-            embed_batch_size=embed_batch_size,
-            callback_manager=callback_manager,
+            embed_batch_size=embedding_batch_size,
+            callback_manager=callback_manager or CallbackManager(),
             model_name=model_name,
-            tokenizer_name=tokenizer_name,
-            max_length=max_length,
-            pooling=pooling,
+            device=device or infer_torch_device(),
+            cache_folder=cache_folder or get_cache_dir(),
             normalize=normalize,
-            device=device,
             query_instruction=query_instruction,
             text_instruction=text_instruction,
-            cache_folder=cache_folder
         )
         # set private attribute
         model = AutoModel.from_pretrained(
-            model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code
+            model_name, cache_dir=cache_folder, trust_remote_code=trust_remote_code, token=token,
         )
         self._model = model.to(self.device)
 
@@ -199,114 +193,3 @@ class HuggingFaceEmbedding(BaseEmbedding):
             format_text(text, self.model_name, self.text_instruction) for text in texts
         ]
         return self._embed(texts)
-
-
-class HuggingFaceInferenceAPIEmbedding(HuggingFaceInferenceAPI, BaseEmbedding):  # type: ignore[misc]
-    """
-    Wrapper on the Hugging Face's Inference API for embeddings.
-
-    Overview of the design:
-    - Uses the feature extraction task: https://huggingface.co/tasks/feature-extraction
-    """
-
-    pooling: Optional[Pooling] = Field(
-        default=Pooling.CLS,
-        description=(
-            "Optional pooling technique to use with embeddings capability, if"
-            " the model's raw output needs pooling."
-        ),
-    )
-    query_instruction: Optional[str] = Field(
-        default=None,
-        description=(
-            "Instruction to prepend during query embedding."
-            " Use of None means infer the instruction based on the model."
-            " Use of empty string will defeat instruction prepending entirely."
-        ),
-    )
-    text_instruction: Optional[str] = Field(
-        default=None,
-        description=(
-            "Instruction to prepend during text embedding."
-            " Use of None means infer the instruction based on the model."
-            " Use of empty string will defeat instruction prepending entirely."
-        ),
-    )
-
-    @classmethod
-    def class_name(cls) -> str:
-        return "HuggingFaceInferenceAPIEmbedding"
-
-    async def _async_embed_single(self, text: str) -> Embedding:
-        embedding = (await self._async_client.feature_extraction(text)).squeeze(axis=0)
-        if len(embedding.shape) == 1:  # Some models pool internally
-            return list(embedding)
-        try:
-            return list(self.pooling(embedding))  # type: ignore[misc]
-        except TypeError as exc:
-            raise ValueError(
-                f"Pooling is required for {self.model_name} because it returned"
-                " a > 1-D value, please specify pooling as not None."
-            ) from exc
-
-    async def _async_embed_bulk(self, texts: Sequence[str]) -> List[Embedding]:
-        """
-        Embed a sequence of text, in parallel and asynchronously.
-
-        NOTE: this uses an externally created asyncio event loop.
-        """
-        tasks = [self._async_embed_single(text) for text in texts]
-        return await asyncio.gather(*tasks)
-
-    def _get_query_embedding(self, query: str) -> Embedding:
-        """
-        Embed the input query synchronously.
-
-        NOTE: a new asyncio event loop is created internally for this.
-        """
-        return asyncio.run(self._aget_query_embedding(query))
-
-    def _get_text_embedding(self, text: str) -> Embedding:
-        """
-        Embed the text query synchronously.
-
-        NOTE: a new asyncio event loop is created internally for this.
-        """
-        return asyncio.run(self._aget_text_embedding(text))
-
-    def _get_text_embeddings(self, texts: List[str]) -> List[Embedding]:
-        """
-        Embed the input sequence of text synchronously and in parallel.
-
-        NOTE: a new asyncio event loop is created internally for this.
-        """
-        loop = asyncio.new_event_loop()
-        try:
-            tasks = [
-                loop.create_task(self._aget_text_embedding(text)) for text in texts
-            ]
-            loop.run_until_complete(asyncio.wait(tasks))
-        finally:
-            loop.close()
-        return [task.result() for task in tasks]
-
-    async def _aget_query_embedding(self, query: str) -> Embedding:
-        return await self._async_embed_single(
-            text=format_query(query, self.model_name, self.query_instruction)
-        )
-
-    async def _aget_text_embedding(self, text: str) -> Embedding:
-        return await self._async_embed_single(
-            text=format_text(text, self.model_name, self.text_instruction)
-        )
-
-    async def _aget_text_embeddings(self, texts: List[str]) -> List[Embedding]:
-        return await self._async_embed_bulk(
-            texts=[
-                format_text(text, self.model_name, self.text_instruction)
-                for text in texts
-            ]
-        )
-
-
-HuggingFaceInferenceAPIEmbeddings = HuggingFaceInferenceAPIEmbedding
