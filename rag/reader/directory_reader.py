@@ -297,17 +297,22 @@ class DirectoryReader(BaseReader):
                 raise ImportError(str(e))
             except Exception as e:
                 # otherwise, just skip the file and report the error
+                print("-"*10)
                 print(
                     f"Failed to load file {input_file} with error: {e}. Skipping...",
                     flush=True,
                 )
+                print("-"*10)
                 return []
             documents.extend(docs)
         else:
             # do standard read
             with open(input_file, errors=errors, encoding=encoding) as f:
                 data = f.read()
-
+            if not data:
+                print("-"*10)
+                print(f"File {input_file} is empty. Skipping...", flush=True)
+                print("-"*10)
             doc = Document(text=data, metadata=metadata or {})
             if filename_as_id:
                 doc.id_ = str(input_file)
